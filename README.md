@@ -43,7 +43,6 @@ Our web application is a coding competition platform where users can compete aga
     - Profile picture upload
 3. **Matchmaking System**
     - Match users with other users or AI for coding challenges
-    - Option to select difficulty level for challenges
     - Real-time notification of match status
 4. **Coding Environment**
     - Integration with Monaco code editor
