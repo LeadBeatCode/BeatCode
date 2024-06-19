@@ -31,6 +31,32 @@ Our web application is a coding competition platform where users can compete aga
 - **Real-time Functionality**: The application will have real-time updates, allowing users to see their opponent's progress without refreshing the page.
 - **Long-running Task**: Code compilation and execution by Judge0, which can take more than 10 seconds to complete, will be managed as a long-running task.
 
+#### Core Features
+
+1. **User Registration and Authentication**
+    - Implement OAuth 2.0 for user authentication
+    - User registration and login pages
+    - Password reset functionality
+2. **User Profile Management**
+    - View and edit user profiles
+    - Display user statistics and performance history
+    - Profile picture upload
+3. **Matchmaking System**
+    - Match users with other users or AI for coding challenges
+    - Option to select difficulty level for challenges
+    - Real-time notification of match status
+4. **Coding Environment**
+    - Integration with Monaco code editor
+    - Syntax highlighting and code completion
+    - Real-time collaborative editing
+5. **Code Compilation and Execution**
+    - Integration with Judge0 API for code execution
+    - Support for multiple programming languages
+    - Display of compilation errors and execution results
+6. **Real-time Features**
+    - Display opponent's code progress in real-time
+    - Real-time score updates
+
 ### Milestones
 
 #### Alpha Version
@@ -50,4 +76,3 @@ Our web application is a coding competition platform where users can compete aga
 - Fully functional real-time coding competition
 - Detailed performance tracking and statistics
 - Public deployment and accessibility
-- Comprehensive documentation and user guide
