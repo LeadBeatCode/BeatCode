@@ -1,110 +1,53 @@
-# project-cyj
-project-cyj created by GitHub Classroom
-# Group Project Proposal
-
-## Project Title: Motiv8or - A Personal Life Management Application
+# Coding Competition Web Application
 
 ## Team Name: ProductivityBoosters
 
-## Team Members:
+### Team Members
+- Chelsea Chan - chelseacyy.chan@mail.utoronto.ca
+- Jin Zhou - jinting.zhou@mail.utoronto.ca
+- Yesom Son - yesom.son@mail.utoronto.ca
 
-- Member 1: Chelsea Chan - chelseacyy.chan@mail.utoronto.ca
-- Member 2: Jin Zhou - jinting.zhou@mail.utoronto.ca
-- Member 3: Yesom Son - yesom.son@mail.utoronto.ca
+### Project Description
+Our web application is a coding competition platform where users can compete against each other or an AI in real-time on coding challenges. Users will be able to:
 
-## Brief Description:
+- Match with another user or an AI for a coding challenge.
+- View their opponent's real-time progress as they code.
+- Use an integrated online code editor (Monaco).
+- Have their code compiled and executed using Judge0.
+- Track their performance and progress over time.
 
-Motiv8or is a web application designed to help users manage their personal lives effectively by combining task management, goal tracking, a collaborated calendar, and more. It aims to offer a seamless experience in organizing daily activities, setting and achieving goals, and staying motivated through a points and rewards system. Additionally, users can join groups to collaborate and compete with friends on focusing tasks. The focus mode feature allows users to track time spent on tasks and view the cumulative work time of group members, fostering a competitive and motivating environment.
+### Required Elements Fulfillment
 
-## Required Elements:
+- **Modern Frontend Framework**: We will use Angular to create a Single Page Application (SPA).
+- **Backend API**: The backend will be developed using Express.
+- **RESTful API**: Our application's API will be RESTful.
+- **Deployment**: We will deploy our application on a Virtual Machine using Docker and Docker Compose. All deployment files, including CI files for building images, will be committed to GitHub.
+- **Public Access**: The application will be publicly accessible without extra steps.
+- **Third-party API**: We will integrate with Judge0 API for code compilation and execution.
+- **OAuth 2.0**: OAuth 2.0 will be used for user authentication.
 
-- **Frontend Framework**: Using Angular for a modern Single Page Application (SPA) experience.
-- **Backend**: Using Express as the core backend API.
-- **RESTful API**: Ensuring the API is RESTful where appropriate.
-- **Deployment**: Deploying the application on a Virtual Machine using Docker and Docker Compose. Committing all deployment files to GitHub, including CI files for building images.
-- **Public Accessibility**: Ensuring the application is accessible to the general public without extra steps.
-- **Third-Party API**: Integrating with Google Calendar, Apple Calendar API for calendar synchronization.
-- **OAuth 2.0**: Implementing OAuth 2.0 for user authentication and authorization.
+### Additional Requirements Fulfillment
 
-## Additional Requirements:
+- **Real-time Functionality**: The application will have real-time updates, allowing users to see their opponent's progress without refreshing the page.
+- **Long-running Task**: Code compilation and execution by Judge0, which can take more than 10 seconds to complete, will be managed as a long-running task.
 
-1. **Webhook Interaction**: Integrating with a third-party service to trigger notifications or updates.
-2. **Real-Time Feature**: Implementing a real-time collaborated calendar that reflects changes without refreshing the page. Implementing a real-time focus room that allows users to see the status of other users
+### Milestones
 
-## Features:
+#### Alpha Version
+- Basic user interface with Angular
+- Basic Express backend setup
+- Integration with Monaco editor
+- Initial integration with Judge0 for code execution
 
-### Core Features:
+#### Beta Version
+- Full user authentication with OAuth 2.0
+- Real-time match-making and code progress display
+- Deployment setup with Docker and Docker Compose
+- Basic user performance tracking
 
-- **Task Management**:
-    - Create, edit, and delete tasks.
-    - Assign tasks to different categories (e.g., work, personal, hobbies).
-    - Set priority levels for tasks (e.g., low, medium, high).
-    - Add due dates and reminders.
-    - Recurring tasks for daily, weekly, or monthly activities.
-- **Collaborated Calendar**:
-    - Integrated calendar view showing tasks and events.
-    - Share calendar events with friends, family, or teammates.
-    - Sync with Google Calendar, Apple Calendar
-- **Goal Tracking**:
-    - Set short-term and long-term goals.
-    - Break down goals into manageable tasks.
-    - Progress tracking with visual indicators (e.g., progress bars).
-- **Week Planner**:
-    - Weekly overview of tasks and events.
-    - Drag-and-drop interface to reschedule tasks.
-    - Weekly planning template for setting priorities and goals.
-- **Backlog Management**:
-    - Maintain a list of all tasks and ideas not yet scheduled.
-    - Prioritize and move tasks from backlog to active list.
-    - Categorize backlog items for better organization.
-- **Points and Rewards System**:
-    - Assign points to tasks based on difficulty or importance.
-    - Earn rewards or badges for completing tasks and achieving goals.
-    - Customizable reward system for personal motivation.
-- **Time Tracking**:
-    - Log time spent on various tasks and activities.
-    - Weekly and monthly time reports.
-    - Analyze time usage to improve productivity.
-- **Focus Mode**
-	- Users can enter a focus mode when starting a task.
-	- Track the time spent on the task.
-	- See real-time status of other group members' work.
-	- View the cumulative time group members have worked for the day.
-	- View the ranking of focus time among all users
-- **Timeline View**:
-	- Daily schedule view for planning tasks and activities.
-	- Drag-and-drop interface for easy scheduling.
-	- Integration with calendar events for a comprehensive daily plan.
-- **Personal Dashboard**:
-    - Overview of daily tasks, upcoming deadlines, and progress on goals.
-    - Customizable widgets for quick access to important information.
-    - Motivational quotes or tips for personal development. (optional)
-    - Overview of other group mates' progresses
-
-## Milestones:
-
-### Alpha Version:
-
-- Initial setup of project repository.
-- Basic frontend layout with Angular
-- Basic backend setup with Express.
-- Initial implementation of task management feature.
-
-### Beta Version:
-
-- Completion of all core features.
-- Integration with Google Calendar, Apple Calendar API.
-- Implementation of OAuth 2.0 for user authentication.
-- Deployment of the application on a Virtual Machine using Docker.
-- Initial implementation of group collaboration and focus mode.
-- Real-time collaborated calendar feature.
-- Initial implementation of timeline view.
-- Initial testing and bug fixing.
-
-### Final Version:
-
-- Full functionality of all features.
-- Polished UI/UX.
-- Comprehensive testing and bug fixing.
-- Final deployment and ensuring public accessibility.
-- Complete documentation and README.md update.
+#### Final Version
+- Complete and polished user interface
+- Fully functional real-time coding competition
+- Detailed performance tracking and statistics
+- Public deployment and accessibility
+- Comprehensive documentation and user guide
