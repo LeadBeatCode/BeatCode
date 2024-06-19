@@ -47,7 +47,6 @@ Our web application is a coding competition platform where users can compete aga
 4. **Coding Environment**
     - Integration with Monaco code editor
     - Syntax highlighting and code completion
-    - Real-time collaborative editing
 5. **Code Compilation and Execution**
     - Integration with Judge0 API for code execution
     - Support for multiple programming languages
