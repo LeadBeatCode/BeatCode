@@ -1,11 +1,6 @@
-
 # Coding Competition Web Application
 
-  
-
 ## Team Name: ProductivityBoosters
-
-  
 
 ### Team Members
 
@@ -15,13 +10,9 @@
 
 - Yesom Son - yesom.son@mail.utoronto.ca
 
-  
-
 ### Project Description
 
 Our web application is a coding competition platform where users can compete against each other or an AI in real-time on coding challenges. Users will be able to:
-
-  
 
 - Match with another user or an AI for a coding challenge.
 
@@ -33,41 +24,29 @@ Our web application is a coding competition platform where users can compete aga
 
 - Track their performance and progress over time.
 
-  
-
 ### Required Elements Fulfillment
 
-  
+- **Modern Frontend Framework**: We will use Angular to create a Single Page Application (SPA).
 
--  **Modern Frontend Framework**: We will use Angular to create a Single Page Application (SPA).
+- **Backend API**: The backend will be developed using Express.
 
--  **Backend API**: The backend will be developed using Express.
+- **RESTful API**: Our application's API will be RESTful.
 
--  **RESTful API**: Our application's API will be RESTful.
+- **Deployment**: We will deploy our application on a Virtual Machine using Docker and Docker Compose. All deployment files, including CI files for building images, will be committed to GitHub.
 
--  **Deployment**: We will deploy our application on a Virtual Machine using Docker and Docker Compose. All deployment files, including CI files for building images, will be committed to GitHub.
+- **Public Access**: The application will be publicly accessible without extra steps.
 
--  **Public Access**: The application will be publicly accessible without extra steps.
+- **Third-party API**: We will integrate with Judge0 API for code compilation and execution.
 
--  **Third-party API**: We will integrate with Judge0 API for code compilation and execution.
-
--  **OAuth 2.0**: OAuth 2.0 will be used for user authentication.
-
-  
+- **OAuth 2.0**: OAuth 2.0 will be used for user authentication.
 
 ### Additional Requirements Fulfillment
 
-  
+- **Real-time Functionality**: The application will have real-time updates, allowing users to see their opponent's progress without refreshing the page.
 
--  **Real-time Functionality**: The application will have real-time updates, allowing users to see their opponent's progress without refreshing the page.
-
--  **Long-running Task**: Code compilation and execution by Judge0, which can take more than 10 seconds to complete, will be managed as a long-running task.
-
-  
+- **Long-running Task**: Code compilation and execution by Judge0, which can take more than 10 seconds to complete, will be managed as a long-running task.
 
 #### Core Features
-
-  
 
 1.  **User Registration and Authentication**
 
@@ -107,11 +86,7 @@ Our web application is a coding competition platform where users can compete aga
 
 - Real-time score updates
 
-  
-
 ### Milestones
-
-  
 
 #### Alpha Version
 
@@ -123,8 +98,6 @@ Our web application is a coding competition platform where users can compete aga
 
 - Initial integration with Judge0 for code execution
 
-  
-
 #### Beta Version
 
 - Full user authentication with OAuth 2.0
@@ -134,8 +107,6 @@ Our web application is a coding competition platform where users can compete aga
 - Deployment setup with Docker and Docker Compose
 
 - Basic user performance tracking
-
-  
 
 #### Final Version
 
@@ -152,21 +123,25 @@ Our web application is a coding competition platform where users can compete aga
 ### Installation
 
 To start the application, please follow the instructions below:
+
 #### Frontend directory
+
 1. Within the frontend directory and install all packages if not already done so
-	```
-	npm install
-	```
-2.  Start the frontend by running the following:
-	```
-	ng serve
-	```
+   ```
+   npm install
+   ```
+2. Start the frontend by running the following:
+   ```
+   ng serve
+   ```
+
 #### Backend directory
+
 1. Within the backend directory and install all packages if not already done so
-	```
-	npm install
-	```
-2.  Start the backend by running the following:
-	```
-	node app.js
-	```
+   ```
+   npm install
+   ```
+2. Start the backend by running the following:
+   ```
+   node app.js
+   ```

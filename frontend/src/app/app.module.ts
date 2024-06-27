@@ -12,7 +12,11 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, ProblemComponent, /* EditorComponent */],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    ProblemComponent /* EditorComponent */,
+  ],
   imports: [
     BrowserModule,
     FormsModule,
@@ -20,6 +24,6 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
     HttpClientModule,
   ],
   providers: [],
-  bootstrap: [AppComponent,],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -9,5 +9,4 @@ export class ProblemComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
-
 }

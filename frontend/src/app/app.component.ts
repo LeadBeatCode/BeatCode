@@ -9,18 +9,20 @@ declare const monaco: any;
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = "frontend";
+  title = 'frontend';
   editorOptions = { theme: 'vs-dark', language: 'python' };
   opponentEditorOptions = { theme: 'hc-black', language: 'python' };
   code: string = 'print(1)\n';
   opponentCode: string = 'print(2)\n';
   submissionToken: string = '';
   expectedOutput: string = '4\n';
+  result: string = '';
+  stdout: string = '';
+  stderr: string = '';
 
   constructor(private api: ApiService) {}
 
   runCode() {
-    this.logCode();
     this.api.submitCode(this.code).subscribe((data) => {
       this.submissionToken = data.token;
       this.checkSubmission();
@@ -29,11 +31,14 @@ export class AppComponent {
 
   checkSubmission() {
     this.api.getSubmission(this.submissionToken).subscribe((data) => {
+      if (data.stderr) {
+        this.showError(`Error: ${data.stderr}`);
+      }
       if (data.stdout) {
         if (data.stdout === this.expectedOutput) {
-          console.log('Correct answer!');
+          this.showResult(`Output: ${data.stdout}`, 'Correct answer!');
         } else {
-          console.log('Incorrect answer!');
+          this.showResult(`Output: ${data.stdout}`, 'Incorrect answer!');
         }
       } else {
         setTimeout(() => {
@@ -42,10 +47,20 @@ export class AppComponent {
       }
     });
   }
-    
-
 
   logCode() {
     console.log(this.code);
-  } 
+  }
+
+  showResult(stdout: string, result: string) {
+    this.stderr = '';
+    this.stdout = stdout;
+    this.result = result;
+  }
+
+  showError(stderr: string) {
+    this.stderr = stderr;
+    this.stdout = '';
+    this.result = '';
+  }
 }

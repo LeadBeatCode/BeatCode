@@ -1,12 +1,11 @@
 .editors-container {
-    display: flex; /* Use Flexbox */
-    justify-content: space-between; /* Space out children */
-    align-items: center; /* Align items vertically */
-  }
-  .editor-left {
-    margin-right: 10px; /* Add some space between editors */
-  }
-  .editor-left, .editor-right {
-    flex: 1; /* Each editor takes equal width */
-  }
-  
+  display: flex; /* Use Flexbox */
+  align-items: center; /* Align items vertically */
+}
+.editor-left {
+  margin-right: 10px; /* Add some space between editors */
+}
+.editor-left,
+.editor-right {
+  flex: 1;
+}

@@ -13,3 +13,8 @@
   ></ngx-monaco-editor>
 </div>
 <button (click)="runCode()">Run Code</button>
+<div class="result-container">
+  <div class="stdout" [innerHTML]="stdout"></div>
+  <div class="result" [innerHTML]="result"></div>
+  <div class="stderr" [innerHTML]="stderr"></div>
+</div>
