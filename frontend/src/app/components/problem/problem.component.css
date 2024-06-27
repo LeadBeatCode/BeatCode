@@ -1,0 +1,63 @@
+.contents-container {
+  font-family: "Saira";
+  margin: 0 16px 32px 16px;
+  background-color: rgb(26, 25, 25);
+  padding: 0 10px;
+  border: 1px solid rgb(47, 46, 46);
+  border-radius: 15px;
+  height: 190px;
+}
+
+.content {
+  margin: 0 16px 32px 16px;
+}
+
+.contents-container .problem-text {
+  font-size: 16px;
+  margin-bottom: 36px;
+  word-spacing: 1px;
+}
+
+.contents-container .problem-title {
+  line-height: 20px;
+}
+
+.contents-container .btns {
+  display: flex;
+  color: grey;
+}
+
+.word-break {
+  padding: 4px 10px;
+  line-height: 20px;
+  font-size: 15px;
+  margin: 10px 0px;
+}
+
+.btn {
+  padding: 4px 10px;
+  line-height: 20px;
+  border: 1px solid rgb(26, 25, 25);
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  margin: 8px;
+}
+
+.btn.active {
+  background-color: rgb(45, 44, 44);
+  border: 1px solid rgb(45, 44, 44);
+  color: white;
+}
+
+.stderr {
+  color: rgb(191, 25, 25);
+}
+
+.incorrect {
+  color: rgb(191, 25, 25);
+}
+
+.correct {
+  color: rgb(6, 255, 6);
+}

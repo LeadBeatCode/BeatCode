@@ -8,6 +8,7 @@ declare const monaco: any;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
+
 export class AppComponent {
   title = 'frontend';
   editorOptions = { theme: 'vs-dark', language: 'python' };

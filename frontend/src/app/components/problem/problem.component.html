@@ -1,12 +1,24 @@
-<div class="problem-container">
-  <div class="problem">
-    <h1>Compute 2 + 2</h1>
-    <p>
+<div class="contents-container">
+  <div class="btns">
+    <div class="btn" [ngClass]= "{'active': problem}" (click)="showProblem()">Problem</div>
+    <div class="word-break">|</div>
+    <div class="btn" [ngClass]="{'active': testResult}" (click)="showTestResult()">Test Result</div>
+  </div>
+  <div class="problem content" *ngIf="problem">
+    <h1 class="problem-title">Compute 2 + 2</h1>
+    <div class="problem-text">
       2 as the first natural even number has its amazing property of being able
       to represent other numbers in an elegant fashion. Today we will be taking
       an adventure to explore the possibility of the number 2 by magically
       putting them together and creating a bigger number that coincidentally is
-      exactly twice as big as the number 2
-    </p>
+      exactly twice as big as the number 2.
+    </div>
+  </div>
+  <div class="test-result content" *ngIf="testResult">
+    <div class="result-container">
+      <div class="stdout" [innerHTML]="stdout"></div>
+      <div [ngClass]="[resultStyle]" [innerHTML]="result"></div>
+      <div class="stderr" [innerHTML]="stderr"></div>
+    </div>
   </div>
 </div>

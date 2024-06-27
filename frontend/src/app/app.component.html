@@ -1,5 +1,13 @@
-<app-header></app-header>
-<app-problem></app-problem>
+<div class="header-container">
+  <app-header></app-header>
+  <button class="submit-btn" (click)="runCode()">
+    <span class="material-symbols-outlined">
+      play_arrow
+    </span>
+    Run Code
+  </button>
+</div>
+<app-problem [stdout]="stdout" [result]="result" [stderr]="stderr"></app-problem>
 <div class="editors-container">
   <ngx-monaco-editor
     [options]="editorOptions"
@@ -11,10 +19,4 @@
     [(ngModel)]="opponentCode"
     class="editor-right"
   ></ngx-monaco-editor>
-</div>
-<button (click)="runCode()">Run Code</button>
-<div class="result-container">
-  <div class="stdout" [innerHTML]="stdout"></div>
-  <div class="result" [innerHTML]="result"></div>
-  <div class="stderr" [innerHTML]="stderr"></div>
 </div>
