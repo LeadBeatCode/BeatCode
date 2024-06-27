@@ -1,5 +1,15 @@
-<ngx-monaco-editor
-  [options]="editorOptions"
-  [(ngModel)]="code"
-></ngx-monaco-editor>
-<button (click)="logCode()">Log Code</button>
+<app-header></app-header>
+<app-problem></app-problem>
+<div class="editors-container">
+  <ngx-monaco-editor
+    [options]="editorOptions"
+    [(ngModel)]="code"
+    class="editor-left"
+  ></ngx-monaco-editor>
+  <ngx-monaco-editor
+    [options]="opponentEditorOptions"
+    [(ngModel)]="opponentCode"
+    class="editor-right"
+  ></ngx-monaco-editor>
+</div>
+<button (click)="runCode()">Run Code</button>
