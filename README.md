@@ -1,6 +1,6 @@
 # Coding Competition Web Application
 
-## Team Name: ProductivityBoosters
+## Team Name: BeatCode
 
 ### Team Members
 
