@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { ApiService } from './services/apiService/api.service';
+import * as Yjs from "yjs"
+import { MonacoBinding } from "y-monaco"
+import { WebrtcProvider } from "y-webrtc"
 
-declare const monaco: any;
 
 @Component({
   selector: 'app-root',
@@ -9,7 +11,7 @@ declare const monaco: any;
   styleUrls: ['./app.component.css'],
 })
 
-export class AppComponent {
+export class AppComponent{
   title = 'frontend';
   editorOptions = { theme: 'vs-dark', language: 'python' };
   opponentEditorOptions = { theme: 'hc-black', language: 'python' };
@@ -22,6 +24,13 @@ export class AppComponent {
   stderr: string = '';
 
   constructor(private api: ApiService) {}
+
+  editorInit(editor: any) {
+    const ydoc = new Yjs.Doc()
+    const provider = new WebrtcProvider('editor', ydoc)
+    const ytext = ydoc.getText('monaco')
+    const monacoBinding = new MonacoBinding(ytext, editor.getModel(), new Set([editor]), provider.awareness)
+  }
 
   runCode() {
     this.api.submitCode(this.code).subscribe((data) => {

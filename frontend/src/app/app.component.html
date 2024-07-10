@@ -13,6 +13,7 @@
     [options]="editorOptions"
     [(ngModel)]="code"
     class="editor-left"
+    (onInit)="editorInit($event)"
   ></ngx-monaco-editor>
   <ngx-monaco-editor
     [options]="opponentEditorOptions"
