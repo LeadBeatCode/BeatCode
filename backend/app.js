@@ -3,13 +3,25 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
+import { User } from "./models/user.js";
+import { sequelize } from "./datasource.js";
+import { Queue } from "./models/queue.js";
 
 const PORT = 3000;
 const socketPort = 3001;
 export const app = express();
 
+
 const httpServer = http.createServer(app);
 app.use(bodyParser.json());
+
+try {
+  sequelize.authenticate();
+  await sequelize.sync({ alter: { drop: false } });
+  console.log("Connection has been established successfully.");
+} catch (error) {
+  console.error("Unable to connect to the database:", error);
+}
 
 const corsOptions = {
   origin: "http://localhost:4200",
@@ -27,6 +39,7 @@ export const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });

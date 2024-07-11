@@ -19,5 +19,6 @@
     [options]="opponentEditorOptions"
     [(ngModel)]="opponentCode"
     class="editor-right"
+    (onInit)="opponentEditorInit($event)"
   ></ngx-monaco-editor>
 </div>

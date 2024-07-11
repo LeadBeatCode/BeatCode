@@ -9,4 +9,5 @@ import { ApiService } from './services/apiService/api.service';
 
 export class AppComponent{
   constructor(private api: ApiService) {}
+  title = 'frontend';
 }
