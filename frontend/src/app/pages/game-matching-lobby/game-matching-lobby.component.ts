@@ -22,7 +22,13 @@ export class GameMatchingLobbyComponent {
 
   ngOnInit(): void {
     this.loading();
-    this.socket.emit('message', "hello");
+    this.socket.emit('matching', {uid: (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)});
+    this.socket.on('matched', (me:any, opponent:any) => {
+      console.log('matched')
+      this.foundMatch();
+      localStorage.setItem('me', JSON.stringify(me));
+      localStorage.setItem('opponent', JSON.stringify(opponent));
+    })
   }
 
   foundMatch() {
