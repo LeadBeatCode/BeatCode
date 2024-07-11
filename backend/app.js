@@ -36,7 +36,7 @@ export const io = new Server(httpServer, {
     credentials: true,
   },
 });
-
+const queue = [{uuid: '1'}];
 io.on("connection", (socket) => {
   console.log("a user connected");
 
@@ -44,9 +44,17 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
   });
 
-  socket.on('message', function(msg) {
-        console.log('message');
-        io.emit('message', msg);
+  socket.on('matching', function(info) {
+      console.log('matching', socket.id);
+      info.socketId = socket.id;
+      queue.push(info);
+      while (queue.length >= 2) {
+        const player1 = queue.shift();
+        player1.title = "player1"
+        const player2 = queue.shift();
+        player2.title = "player2"
+        io.emit('matched', player1, player2);
+      }
     });
 });
 

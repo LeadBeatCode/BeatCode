@@ -29,10 +29,14 @@ export class GameRoomComponent {
   constructor(private api: ApiService) {}
 
   editorInit(editor: any) {
-    const ydoc = new Yjs.Doc();
-    const provider = new WebrtcProvider('editor', ydoc);
-    const ytext = ydoc.getText('monaco');
+    const ydoc = new Yjs.Doc()
+    const provider = new WebrtcProvider('editor', ydoc)
+    const ytext = ydoc.getText('monaco')
     const monacoBinding = new MonacoBinding(ytext, editor.getModel(), new Set([editor]), provider.awareness);
+    editor.onDidChangeModelContent((event: any) => {
+      //connect to socket
+      console.log('1')
+    });
   }
 
   opponentEditorInit(editor: any) {
