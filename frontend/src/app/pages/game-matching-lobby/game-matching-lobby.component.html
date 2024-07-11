@@ -1,0 +1,6 @@
+<div class="lobby-container">
+    <div class="loading-animation" [innerHTML]="loadingInnerHTML"></div>
+    <div class="assets"></div>
+    <div (click)="enterGame()" [ngClass]= "{'active': found}" class="accept-btn">Accept</div>
+    <div class="error">The player matched left because you did not accept.</div>
+</div>

@@ -1,0 +1,55 @@
+.sign-in-container {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: 400px;
+    margin: auto;
+    inset: 0;
+    position: absolute;
+    padding: 20px;
+    align-items: center;
+}
+
+.sign-in-container .options {
+    display: flex;
+    font-size: 24px;
+    font-family: "Tiny5";
+    color: rgb(6, 255, 6);
+}
+
+.sign-in-container .options > * {
+    margin: 42px;
+    padding: 5px;
+    border: 1px solid rgb(11, 19, 11);
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+.sign-in-container .options .active {
+    border: 1px solid rgb(26, 47, 26) !important;
+}
+
+.sign-in:hover {
+    border: 1px solid rgb(26, 47, 26) !important;
+}
+
+.sign-up:hover {
+    border: 1px solid rgb(26, 47, 26) !important;
+}
+
+.sign-in-container .btn {
+    padding: 8px 12px;
+    line-height: 20px;
+    border: 1px solid rgb(6, 255, 6);
+    border-radius: 8px;
+    font-size: 24px;
+    font-family: "Tiny5";
+    color: white;
+    cursor: pointer;
+    margin: 8px;
+    letter-spacing: 2px;
+}
+
+.sign-in-container .btn:hover {
+    color: rgb(6, 255, 6);
+}

@@ -30,6 +30,11 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
+
+  socket.on('message', function(msg) {
+        console.log('message');
+        io.emit('message', msg);
+    });
 });
 
 app.use( function (req, res, next) {

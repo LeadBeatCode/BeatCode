@@ -11,6 +11,11 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { SignInComponent } from './pages/sign-in/sign-in.component';
+import { GameMatchingLobbyComponent } from './pages/game-matching-lobby/game-matching-lobby.component';
+import { GameRoomComponent } from './pages/game-room/game-room.component';
+
+import { AppRoutingModule } from './app-routing.module';
 
 const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
@@ -18,7 +23,10 @@ const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: 
   declarations: [
     AppComponent,
     HeaderComponent,
-    ProblemComponent /* EditorComponent */,
+    ProblemComponent,
+    SignInComponent,
+    GameMatchingLobbyComponent,
+    GameRoomComponent,
   ],
   imports: [
     BrowserModule,
@@ -26,6 +34,7 @@ const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: 
     MonacoEditorModule.forRoot(), // use forRoot() in main app module only.
     HttpClientModule,
     SocketIoModule.forRoot(socketIoConfig),
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
