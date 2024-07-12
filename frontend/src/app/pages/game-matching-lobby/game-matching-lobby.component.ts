@@ -12,7 +12,7 @@ export class GameMatchingLobbyComponent {
   loadingText: string = "Matching A Game...";
   foundText: string = "Found A Match!";
   loadingInnerHTML: string = '';
-  found = true;
+  found = false;
   
   constructor(
     private api: ApiService,
@@ -22,7 +22,7 @@ export class GameMatchingLobbyComponent {
 
   ngOnInit(): void {
     this.loading();
-    this.socket.emit('matching', {uid: (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)});
+    this.socket.emit('matching');
     this.socket.on('matched', (me:any, opponent:any) => {
       console.log('matched')
       this.foundMatch();

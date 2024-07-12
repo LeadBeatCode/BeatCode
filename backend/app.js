@@ -3,9 +3,14 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
-import { User } from "./models/user.js";
 import { sequelize } from "./datasource.js";
-import { Queue } from "./models/queue.js";
+
+import { userRouter } from "./routers/user_router.js";
+import { queueRouter } from "./routers/queue_router.js";
+import { pairRouter } from "./routers/pair_router.js";
+import { roomRouter } from "./routers/room_router.js";
+import { apiService } from "./api-service.js";
+
 
 const PORT = 3000;
 const socketPort = 3001;
@@ -29,6 +34,16 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+app.use(function (req, res, next) {
+  console.log("HTTP request", req.method, req.url, req.body);
+  next();
+});
+
+app.use("/api/users", userRouter);
+app.use("/api/queues", queueRouter);
+app.use("/api/pairs", pairRouter);
+app.use("/api/rooms", roomRouter);
+
 export const io = new Server(httpServer, {
   cors: {
     origin: "http://localhost:4200",
@@ -39,23 +54,35 @@ export const io = new Server(httpServer, {
 const queue = [{uuid: '1'}];
 io.on("connection", (socket) => {
   console.log("a user connected");
-
+  const username = generateRandomString(8);
+  const password = generateRandomString(8);
+  apiService.signup(username, password).then((res) => {
+    console.log("signup", res);
+    const user = res;
+    console.log("logging user", res.id);
+    const info = { userId: user.id, socketId: socket.id };
+    console.log('info', info);
+    socket.on('matching', function() {
+        console.log('matching', info);
+        apiService.enqueue(info);      
+        const queue = apiService.getQueue();
+        while (queue.count >= 2) {
+          const player1 = apiService.dequeue();
+          player1.title = "player1"
+          const player2 = apiService.dequeue();
+          player2.title = "player2"
+  
+          apiService.createPair(player1.userId, player2.userId);
+          socket.to(player1.socketId).emit('matched', player1, player2);
+          socket.to(player2.socketId).emit('matched', player1, player2);
+          //io.emit('matched', player1, player2);
+        }
+      });
+  });
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
 
-  socket.on('matching', function(info) {
-      console.log('matching', socket.id);
-      info.socketId = socket.id;
-      queue.push(info);
-      while (queue.length >= 2) {
-        const player1 = queue.shift();
-        player1.title = "player1"
-        const player2 = queue.shift();
-        player2.title = "player2"
-        io.emit('matched', player1, player2);
-      }
-    });
 });
 
 app.use( function (req, res, next) {
@@ -63,6 +90,15 @@ app.use( function (req, res, next) {
   next();
 });
 
+function generateRandomString(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);

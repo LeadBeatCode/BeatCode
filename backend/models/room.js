@@ -1,12 +1,16 @@
 import { sequelize } from "../datasource.js";
 import { DataTypes } from "sequelize";
 
-export const Queue = sequelize.define("Queue", {
-    userId: {
+export const Room = sequelize.define("Room", {
+    status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    userId1: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    socketId: {
+    userId2: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
