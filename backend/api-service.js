@@ -86,13 +86,13 @@ export const apiService = (function () {
         }).then((res) => res.json());
     }
 
-    module.createRoom = function (status, userId1, userId2) {
+    module.createRoom = function (status, userId1, userId2, socketId1, socketId2) {
         return fetch("http://localhost:3000/api/rooms", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ status, userId1, userId2 }),
+            body: JSON.stringify({ status, userId1, userId2, socketId1, socketId2}),
         }).then((res) => res.json());
     }
 

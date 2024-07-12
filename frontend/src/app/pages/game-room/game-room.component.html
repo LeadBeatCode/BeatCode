@@ -1,5 +1,6 @@
 <div class="header-container">
   <app-header></app-header>
+  <div class="displayTime">Time used: {{displayTime }}</div> 
   <button class="submit-btn" (click)="runCode()">
     <span class="material-symbols-outlined">
       play_arrow
@@ -7,17 +8,17 @@
     Run Code
   </button>
 </div>
-<app-problem [stdout]="stdout" [result]="result" [stderr]="stderr"></app-problem>
-<div class="editors-container">
+<app-problem [stdout]="stdout" [result]="result" [numAttemptsText]="numAttemptsText" [stderr]="stderr"></app-problem>
+<div class="editors-container" [ngClass]="{'reverse': playerTitle === 'p2'}">
   <ngx-monaco-editor
     [options]="editorOptions"
-    [(ngModel)]="code"
+    [(ngModel)]="player1Code"
     class="editor-left"
     (onInit)="editorInit($event)"
   ></ngx-monaco-editor>
   <ngx-monaco-editor
     [options]="opponentEditorOptions"
-    [(ngModel)]="opponentCode"
+    [(ngModel)]="player2Code"
     class="editor-right"
     (onInit)="opponentEditorInit($event)"
   ></ngx-monaco-editor>

@@ -44,7 +44,10 @@ export class ApiService {
       },
     });
   }
-
+  getRoomSocketIds(roomId: string): Observable<any> {
+    return this.http.get(this.endpoint + '/api/rooms/' + roomId + '/sockets');
+  }
+    
   enterQueue(userId: number, socketId: number): Observable<any> {
     return this.http.post(this.endpoint + '/api/queues/enqueue', {
       userId,

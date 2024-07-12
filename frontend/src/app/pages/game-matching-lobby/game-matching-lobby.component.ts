@@ -15,6 +15,7 @@ export class GameMatchingLobbyComponent {
   found = false;
   pair: any;
   userId: any;
+  accepted = false;
   
   constructor(
     private api: ApiService,
@@ -54,8 +55,9 @@ export class GameMatchingLobbyComponent {
 
   waitForAccept() {
     this.socket.emit('accepted', this.pair, this.userId);
-    this.socket.on('start', () => {
-      this.router.navigate(['/game-room']);
+
+    this.socket.on('start', (roomId:number, userId:number) => {
+      this.router.navigate(['/game-room'], { queryParams: { roomId: roomId, userId: userId } });
     });
     
   }

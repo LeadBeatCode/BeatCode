@@ -3,6 +3,10 @@
   align-items: center;
 }
 
+.editors-container.reverse {
+  flex-direction: row-reverse;
+}
+
 .editor-left {
   margin-right: 10px;
 }
@@ -36,4 +40,11 @@
 
 .header-container .submit-btn:hover {
   color: rgb(6, 255, 6);
+}
+
+.displayTime {
+  font-size: 20px;
+  margin-right: 10px;
+  position: absolute;
+  left: 30%;
 }

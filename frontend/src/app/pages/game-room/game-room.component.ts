@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ApiService } from '../../services/apiService/api.service';
 import * as Yjs from "yjs"
 import { MonacoBinding } from "y-monaco"
-import { WebrtcProvider } from "y-webrtc"
-
+import { WebsocketProvider } from "y-websocket"
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Socket } from 'ngx-socket-io';
 
 @Component({
   // selector: 'app-root',
@@ -14,37 +15,122 @@ import { WebrtcProvider } from "y-webrtc"
   styleUrl: './game-room.component.css'
 })
 
-export class GameRoomComponent {
+export class GameRoomComponent implements OnInit{
   title = 'frontend';
   editorOptions = { theme: 'vs-dark', language: 'python' };
   opponentEditorOptions = { theme: 'hc-black', language: 'python' };
-  code: string = 'print(1)\n';
-  opponentCode: string = 'print(2)\n';
+  player1Code: string = 'print(1)\n';
+  player2Code: string = 'print(2)\n';
   submissionToken: string = '';
   expectedOutput: string = '4\n';
   result: string = '';
   stdout: string = '';
   stderr: string = '';
+  playerTitle: string = '';
+  currentRoom: string = '';
+  numAttempts: number = 0;
+  numAttemptsText: string = '';
+  time: number = 0;
+  displayTime: string = '';
+  timeInterval: any;
+  opponentSocketId: string = '';
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private activatedRoute: ActivatedRoute, private socket: Socket) {
+    this.activatedRoute.queryParams.subscribe(params => {
+        const roomId = params['roomId'];
+        const userId = params['userId'];
+        this.currentRoom = roomId;
+        this.api.getRoom(roomId).subscribe((data) => {
+          if (data.userId2 === parseInt(params['userId'], 10)) {
+            this.playerTitle = 'p2';
+          } else {
+            this.playerTitle = 'p1';
+          }
+          this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
+            if (this.playerTitle === 'p1') {
+              this.opponentSocketId = data.socketId2;
+            } else {
+              this.opponentSocketId = data.socketId1;
+            }
+          });
+        });
+        this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
+      if (this.playerTitle === 'p1') {
+        this.opponentSocketId = data.socketId2;
+      } else {
+        this.opponentSocketId = data.socketId1;
+      }
+    });
+      });
+  }
+
+  ngOnInit() {
+    this.startTimer();
+    
+  }
+
+  startTimer() {
+    console.log("=====>");
+    this.timeInterval = setInterval(() => {
+      if (this.time === 0) {
+        this.time++;
+      } else {
+        this.time++;
+      }
+      this.displayTime=this.transform( this.time)
+    }, 1000);
+  }
+
+  transform(value: number): string {
+    const minutes: number = Math.floor(value / 60);
+    return minutes + ':' + (value - minutes * 60);
+  }
+
+
 
   editorInit(editor: any) {
-    const ydoc = new Yjs.Doc()
-    const provider = new WebrtcProvider('editor', ydoc)
-    const ytext = ydoc.getText('monaco')
-    const monacoBinding = new MonacoBinding(ytext, editor.getModel(), new Set([editor]), provider.awareness);
-    editor.onDidChangeModelContent((event: any) => {
-      //connect to socket
-      console.log('1')
-    });
+    if (this.playerTitle === 'p2') {
+      editor.updateOptions({ readOnly: true });
+      this.socket.on('editor', (data: any) => {
+        editor.setValue(data.code);
+      });
+    } else {
+      editor.updateOptions({ readOnly: false });
+      editor.onDidChangeModelContent((event: any) => {
+        //connect to socket
+        console.log('editor content changed', this.opponentSocketId, editor.getValue());
+        this.socket.emit('editor', { targetSocketId: this.opponentSocketId, code: editor.getValue()});
+      });
+      
+    }
+    
   }
 
   opponentEditorInit(editor: any) {
-    editor.updateOptions({ readOnly: true });
+    if (this.playerTitle === 'p1') {
+      editor.updateOptions({ readOnly: true });
+      this.socket.on('editor', (data: any) => {
+        console.log('opponent editor content changed', data.code);
+        editor.setValue(data.code);
+      });
+    } else {
+      editor.updateOptions({ readOnly: false });
+      editor.onDidChangeModelContent((event: any) => {
+
+        this.socket.emit('editor', { targetSocketId: this.opponentSocketId, code: editor.getValue()});
+      });
+    }
+    // const ydoc = new Yjs.Doc()
+    // const provider = new WebsocketProvider('http://localhost:1235', 'p1Editor' + this.currentRoom, ydoc)
+    // const ytext = ydoc.getText('p2Monaco' + this.currentRoom)
+    // const monacoBinding = new MonacoBinding(ytext, editor.getModel(), new Set([editor]), provider.awareness);
+    
   }
 
   runCode() {
-    this.api.submitCode(this.code).subscribe((data) => {
+    const code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
+    this.numAttempts += 1;
+    this.api.submitCode(code).subscribe((data) => {
       this.submissionToken = data.token;
       this.checkSubmission();
     });
@@ -57,9 +143,9 @@ export class GameRoomComponent {
       }
       if (data.stdout) {
         if (data.stdout === this.expectedOutput) {
-          this.showResult(`Output: ${data.stdout}`, 'Correct answer!');
+          this.showResult(`Output: ${data.stdout}`, 'Correct answer!', this.numAttempts);
         } else {
-          this.showResult(`Output: ${data.stdout}`, 'Incorrect answer!');
+          this.showResult(`Output: ${data.stdout}`, 'Incorrect answer!', this.numAttempts);
         }
       } else {
         setTimeout(() => {
@@ -69,14 +155,11 @@ export class GameRoomComponent {
     });
   }
 
-  logCode() {
-    console.log(this.code);
-  }
-
-  showResult(stdout: string, result: string) {
+  showResult(stdout: string, result: string, numAttempts: number) {
     this.stderr = '';
     this.stdout = stdout;
     this.result = result;
+    this.numAttemptsText = 'Congratulations! You solved the problem in ' + this.numAttempts + ' attempts!';
   }
 
   showError(stderr: string) {

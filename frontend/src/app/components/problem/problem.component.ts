@@ -11,6 +11,7 @@ export class ProblemComponent implements OnInit {
   @Input() stderr: string = '';
   @Input() stdout: string = '';
   @Input() result: string = '';
+  @Input() numAttemptsText: string = '';
 
   problem:boolean=true;
   testResult:boolean=false;
