@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
   if (queueRes.count >= 2) {
     // while (count >= 2) {
     for (let i = 0; i < queueRes.queue.length; i = i+2) {
-      if (queueRes.queue[i + 1]) { // Ensure there's a pair
+      if (queueRes.queue[i + 1] && queueRes.queue[i + 1].userId !== queueRes.queue[i].userId) { // Ensure there's a pair
         console.log('dequeue', queueRes.queue[i]);
 
         const player1 = await apiService.dequeue(queueRes.queue[i].socketId);
@@ -88,13 +88,27 @@ io.on("connection", (socket) => {
     //console.log('accepted', data, userId);
     apiService.setPlayerStatus(data.id, true, userId.userId).then((res) => {
       console.log('accepted', res);
-      const pair = apiService.getPair(data.id).then((pair) => {
-        console.log('pair', pair);
-        if (pair.p1status === true && pair.p2status === true) {
+      apiService.getPair(data.id).then(pair => {
+        io.fetchSockets().then(data => {
+          const socketIds = data.map(socket => socket.id);
+          console.log('socketIds', socketIds);
           console.log('in if statement', pair);
-          io.to(pair.socketId1).emit('start', pair);
-          io.to(pair.socketId2).emit('start', pair);
-        }
+          if (pair.p1status && pair.p2status) {
+            if (pair.socketId1 in socketIds && pair.socketId2 in socketIds) {
+              apiService.createRoom(true, pair.userId1, pair.userId2).then((res) => {
+                console.log('room', res.id);
+                io.to(pair.socketId1).emit('start', res.id, pair.userId1);
+                io.to(pair.socketId2).emit('start', res.id, pair.userId2);
+              });
+            } else {
+              if (pair.socketId1 in socketIds) {
+                apiService.enqueue(data, pair.socketId1)
+              } else {
+                apiService.enqueue(data, pair.socketId2)
+              }
+            }
+          }
+        });
       });
     });
   });

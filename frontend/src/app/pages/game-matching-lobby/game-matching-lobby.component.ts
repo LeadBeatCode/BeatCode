@@ -54,8 +54,8 @@ export class GameMatchingLobbyComponent {
 
   waitForAccept() {
     this.socket.emit('accepted', this.pair, this.userId);
-    this.socket.on('start', () => {
-      this.router.navigate(['/game-room']);
+    this.socket.on('start', (roomId:number, userId:number) => {
+      this.router.navigate(['/game-room'], { queryParams: { roomId: roomId, userId: userId } });
     });
     
   }
