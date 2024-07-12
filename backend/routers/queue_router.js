@@ -15,11 +15,23 @@ queueRouter.post("/enqueue", async (req, res) => {
     }
 });
 
-queueRouter.delete("/dequeue", async (req, res) => {
+queueRouter.post("/dequeue", async (req, res) => {
+    try {
+        const queue = await Queue.findOne({
+            where: {
+                socketId: req.body.socketId,
+            },
+        });
+        return res.json(queue);
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+});
+
+queueRouter.delete("/", async (req, res) => {
     try {
         const queue = await Queue.destroy({
             where: {
-                userId: req.body.userId,
                 socketId: req.body.socketId,
             },
         });

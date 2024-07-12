@@ -2,28 +2,38 @@ export const apiService = (function () {
     "use strict";
     const module = {};
 
-    module.enqueue = function (userId) {
+    module.enqueue = function (userId, socketId) {
         return fetch("http://localhost:3000/api/queues/enqueue", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ userId }),
+            body: JSON.stringify({ userId, socketId }),
         }).then((res) => res.json());
     }
 
-    module.dequeue = function (userId) {
+    module.dequeue = function (socketId) {
         return fetch("http://localhost:3000/api/queues/dequeue", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({socketId}),
+        }).then((res) => res.json());
+    }
+
+    module.deleteQueue = function (socketId) {
+        return fetch("http://localhost:3000/api/queues", {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ userId }),
+            body: JSON.stringify({socketId}),
         }).then((res) => res.json());
     }
 
     module.getQueue = function () {
-        return fetch("http://localhost:3000/api/queues");
+        return fetch("http://localhost:3000/api/queues").then((res) => res.json());
     }
 
     module.signup = function (username, password) {
@@ -46,7 +56,7 @@ export const apiService = (function () {
         }).then((res) => res.json());
     }
 
-    module.pairUsers = function (userId1, userId2, status) {
+    module.createPair = function (userId1, userId2, status) {
         return fetch("http://localhost:3000/api/pairs", {
             method: "POST",
             headers: {

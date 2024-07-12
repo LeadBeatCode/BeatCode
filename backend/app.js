@@ -16,7 +16,6 @@ const PORT = 3000;
 const socketPort = 3001;
 export const app = express();
 
-
 const httpServer = http.createServer(app);
 app.use(bodyParser.json());
 
@@ -51,36 +50,56 @@ export const io = new Server(httpServer, {
     credentials: true,
   },
 });
-const queue = [{uuid: '1'}];
+
 io.on("connection", (socket) => {
   console.log("a user connected");
-  const username = generateRandomString(8);
-  const password = generateRandomString(8);
-  apiService.signup(username, password).then((res) => {
-    console.log("signup", res);
-    const user = res;
-    console.log("logging user", res.id);
-    const info = { userId: user.id, socketId: socket.id };
-    console.log('info', info);
-    socket.on('matching', function() {
-        console.log('matching', info);
-        apiService.enqueue(info);      
-        const queue = apiService.getQueue();
-        while (queue.count >= 2) {
-          const player1 = apiService.dequeue();
-          player1.title = "player1"
-          const player2 = apiService.dequeue();
-          player2.title = "player2"
-  
-          apiService.createPair(player1.userId, player2.userId);
-          socket.to(player1.socketId).emit('matched', player1, player2);
-          socket.to(player2.socketId).emit('matched', player1, player2);
-          //io.emit('matched', player1, player2);
+  socket.on('matching', function(data) {
+    console.log('matching', data);
+    apiService.enqueue(data, socket.id).then((res) => {
+      console.log('enqueue', res);
+      apiService.getQueue().then((queueRes) => {
+        console.log('queue', queueRes);
+        if (queueRes.count >= 2) {
+          let count = queueRes.count;
+          let increment = 0;
+          // while (count >= 2) {
+          for (let i = 0; i < queueRes.queue.length; i++) {
+            console.log('dequeue', queueRes.queue[i]);
+            
+            apiService.dequeue(queueRes.queue[i].socketId).then((player1Res) => {
+              const player1 = player1Res;
+              player1.title = "player1"
+              console.log('dequeue just the res', queueRes.queue);
+              console.log('dequeue, increment', queueRes.queue[i+1], i+1);
+              apiService.dequeue(queueRes.queue[i+1].socketId).then((player2Res) => {
+                const player2 = player2Res;
+                player2.title = "player2"
+                apiService.createPair(player1.userId, player2.userId).then((res) => {
+                  socket.to(player1.socketId).emit('matched', player1, player2);
+                  socket.to(player2.socketId).emit('matched', player1, player2);
+                });
+
+                apiService.deleteQueue(queueRes.queue[i].socketId).then((res) => {
+                  console.log('delete', res);
+                });
+                apiService.deleteQueue(queueRes.queue[i+1].socketId).then((res) => {
+                  console.log('delete', res);
+                });
+              });
+            });
+            count = count - 2;
+            increment = increment + 2;
+          }
         }
       });
-  });
+    });
+      
+    });
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    apiService.dequeue(socket.id).then((res) => {
+      console.log("dequeue", res);
+    });
   });
 
 });

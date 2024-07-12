@@ -45,15 +45,16 @@ export class ApiService {
     });
   }
 
-  enterQueue(userId: number): Observable<any> {
-    return this.http.post(this.endpoint + '/api/enqueue', {
+  enterQueue(userId: number, socketId: number): Observable<any> {
+    return this.http.post(this.endpoint + '/api/queues/enqueue', {
       userId,
+      socketId,
     });
   }
 
-  leaveQueue(userId: number): Observable<any> {
-    return this.http.post(this.endpoint + '/api/dequeue', {
-      userId,
+  leaveQueue(socketId: number): Observable<any> {
+    return this.http.post(this.endpoint + '/api/queues/dequeue', {
+      socketId,
     });
   }
 
@@ -62,7 +63,7 @@ export class ApiService {
   }
 
   pairUser(userId1: number, userId2: number): Observable<any> {
-    return this.http.post(this.endpoint + '/api/pair', {
+    return this.http.post(this.endpoint + '/api/pairs', {
       userId1,
       userId2,
       status: 'paired',
@@ -70,15 +71,15 @@ export class ApiService {
   }
 
   getPairedUser(pairId: number): Observable<any> {
-    return this.http.get(this.endpoint + '/api/pair/' + pairId);
+    return this.http.get(this.endpoint + '/api/pairs/' + pairId);
   }
 
   deletePair(pairId: number): Observable<any> {
-    return this.http.delete(this.endpoint + '/api/pair/' + pairId);
+    return this.http.delete(this.endpoint + '/api/pairs/' + pairId);
   }
 
   createRoom(userId1: number, userId2: number): Observable<any> {
-    return this.http.post(this.endpoint + '/api/room', {
+    return this.http.post(this.endpoint + '/api/rooms', {
       status: 'live',
       userId1,
       userId2,
@@ -86,14 +87,28 @@ export class ApiService {
   }
 
   getRoom(roomId: number): Observable<any> {
-    return this.http.get(this.endpoint + '/api/room/' + roomId);
+    return this.http.get(this.endpoint + '/api/rooms/' + roomId);
   }
 
   deleteRoom(roomId: number): Observable<any> {
-    return this.http.delete(this.endpoint + '/api/room/' + roomId);
+    return this.http.delete(this.endpoint + '/api/rooms/' + roomId);
   }
 
   getUser(): Observable<any> {
-    return this.http.get(this.endpoint + '/api/user/me');
+    return this.http.get(this.endpoint + '/api/users/me');
+  }
+
+  signUp(username: string, password: string): Observable<any> {
+    return this.http.post(this.endpoint + '/api/users/signup', {
+      username,
+      password,
+    });
+  }
+
+  signIn(username: string, password: string): Observable<any> {
+    return this.http.post(this.endpoint + '/api/users/login', {
+      username,
+      password,
+    });
   }
 }

@@ -7,7 +7,7 @@ export const Queue = sequelize.define("Queue", {
         allowNull: false,
     },
     socketId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
     },
 });

@@ -22,7 +22,8 @@ export class GameMatchingLobbyComponent {
 
   ngOnInit(): void {
     this.loading();
-    this.socket.emit('matching');
+
+    this.socket.emit('matching', localStorage.getItem('userId'));
     this.socket.on('matched', (me:any, opponent:any) => {
       console.log('matched')
       this.foundMatch();
