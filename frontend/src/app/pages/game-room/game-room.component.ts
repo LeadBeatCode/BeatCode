@@ -89,6 +89,7 @@ export class GameRoomComponent implements OnInit{
 
 
   editorInit(editor: any) {
+    editor.updateOptions({ scrollBeyondLastLine: false , renderLineHighlight: 'none'});
     if (this.playerTitle === 'p2') {
       editor.updateOptions({ readOnly: true });
       this.socket.on('editor', (data: any) => {
@@ -107,6 +108,7 @@ export class GameRoomComponent implements OnInit{
   }
 
   opponentEditorInit(editor: any) {
+    editor.updateOptions({ scrollBeyondLastLine: false , renderLineHighlight: 'none'});
     if (this.playerTitle === 'p1') {
       editor.updateOptions({ readOnly: true });
       this.socket.on('editor', (data: any) => {
