@@ -42,9 +42,9 @@
   color: rgb(6, 255, 6);
 }
 
-.displayTime {
-  font-size: 20px;
-  margin-right: 10px;
-  position: absolute;
-  left: 30%;
+@media (max-width: 576px) {
+  .editor-left,
+.editor-right {
+  width: 240px;
+}
 }

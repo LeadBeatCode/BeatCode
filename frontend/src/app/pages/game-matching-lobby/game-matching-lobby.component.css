@@ -14,17 +14,13 @@
     padding: 8px 12px;
     line-height: 20px;
     border-radius: 8px;
-    font-size: 24px;
+    font-size: 32px;
     font-family: "Tiny5";
     color: rgb(104, 104, 104);
     cursor: pointer;
     margin: 8px;
     letter-spacing: 2px;
     visibility: hidden;
-}
-
-.accept-btn .accepted {
-    color: rgb(6, 255, 6);
 }
 
 .accept-btn.active {
@@ -36,9 +32,13 @@
     transition: 0.5s;
 }
 
+.accept-btn.clicked {
+    color: rgb(6, 255, 6);
+}
+
 .loading-animation {
     height: 24px;
-    font-size: 24px;
+    font-size: 32px;
     font-family: "Tiny5";
     letter-spacing: 5px;
     margin-bottom: 50px;

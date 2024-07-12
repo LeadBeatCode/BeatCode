@@ -19,8 +19,8 @@ export class GameRoomComponent implements OnInit{
   title = 'frontend';
   editorOptions = { theme: 'vs-dark', language: 'python' };
   opponentEditorOptions = { theme: 'hc-black', language: 'python' };
-  player1Code: string = 'print(1)\n';
-  player2Code: string = 'print(2)\n';
+  player1Code: string = "# Welcome to BeatCode!\n# Write down your code here.\n";
+  player2Code: string = "# Welcome to BeatCode!\n# Write down your code here.\n";
   submissionToken: string = '';
   expectedOutput: string = '4\n';
   result: string = '';
@@ -159,7 +159,12 @@ export class GameRoomComponent implements OnInit{
     this.stderr = '';
     this.stdout = stdout;
     this.result = result;
-    this.numAttemptsText = 'Congratulations! You solved the problem in ' + this.numAttempts + ' attempts!';
+    // console.log(this.stdout, this.expectedOutput)
+    // if ('' + this.stdout + '\n' === this.expectedOutput) {
+    //   this.numAttemptsText = 'Congratulations! You solved the problem in ' + this.numAttempts + ' attempts!';
+    // } else {
+    this.numAttemptsText = 'You have made ' + this.numAttempts + ' attempts.';
+    // }
   }
 
   showError(stderr: string) {

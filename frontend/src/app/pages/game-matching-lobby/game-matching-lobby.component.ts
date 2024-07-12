@@ -16,6 +16,7 @@ export class GameMatchingLobbyComponent {
   pair: any;
   userId: any;
   accepted = false;
+  clicked = false;
   
   constructor(
     private api: ApiService,
@@ -54,6 +55,7 @@ export class GameMatchingLobbyComponent {
   }
 
   waitForAccept() {
+    this.clicked = true;
     this.socket.emit('accepted', this.pair, this.userId);
 
     this.socket.on('start', (roomId:number, userId:number) => {

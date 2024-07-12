@@ -1,8 +1,8 @@
 .sign-in-container {
     display: flex;
     flex-direction: column;
-    width: 400px;
-    height: 400px;
+    width: 120px;
+    height: 120px;
     margin: auto;
     inset: 0;
     position: absolute;
@@ -38,11 +38,11 @@
 }
 
 .sign-in-container .btn {
-    padding: 8px 12px;
+    padding: 12px 14px;
     line-height: 20px;
     border: 1px solid rgb(6, 255, 6);
     border-radius: 8px;
-    font-size: 24px;
+    font-size: 36px;
     font-family: "Tiny5";
     color: white;
     cursor: pointer;
