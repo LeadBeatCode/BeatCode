@@ -14,4 +14,12 @@ export const Room = sequelize.define("Room", {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    socketId1: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    socketId2: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
 });

@@ -41,3 +41,10 @@
 .header-container .submit-btn:hover {
   color: rgb(6, 255, 6);
 }
+
+.displayTime {
+  font-size: 20px;
+  margin-right: 10px;
+  position: absolute;
+  left: 30%;
+}

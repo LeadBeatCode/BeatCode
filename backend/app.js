@@ -53,6 +53,13 @@ export const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+  
+  socket.on('editor', function(data) {
+    const { targetSocketId, code } = data;
+    // Using 'to' to emit to a specific socket by its ID
+    io.to(targetSocketId).emit('editor', { code });
+  });
+
   socket.on('matching', async function(data) { // Make this function async
   console.log('matching', data);
   await apiService.enqueue(data, socket.id); // Assuming you handle the response inside the enqueue function
@@ -99,7 +106,7 @@ io.on("connection", (socket) => {
           //console.log('in if statement', pair.socketId1, pair.socketId2, socketIds.includes(pair.socketId1), socketIds.includes(pair.socketId2));
           if (socketIds.includes(pair.socketId1) && socketIds.includes(pair.socketId2)) {
             if (pair.p1status && pair.p2status) {
-              apiService.createRoom(true, pair.userId1, pair.userId2).then((res) => {
+              apiService.createRoom(true, pair.userId1, pair.userId2, pair.socketId1, pair.socketId2).then((res) => {
                 console.log('room', res.id);
                 io.to(pair.socketId1).emit('start', res.id, pair.userId1);
                 io.to(pair.socketId2).emit('start', res.id, pair.userId2);

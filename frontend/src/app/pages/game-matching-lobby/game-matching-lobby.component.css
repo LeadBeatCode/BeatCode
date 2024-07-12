@@ -23,6 +23,10 @@
     visibility: hidden;
 }
 
+.accept-btn .accepted {
+    color: rgb(6, 255, 6);
+}
+
 .accept-btn.active {
     visibility: visible;
 }
