@@ -80,6 +80,10 @@ io.on("connection", (socket) => {
         await apiService.deleteQueue(queueRes.queue[i].socketId);
         await apiService.deleteQueue(queueRes.queue[i+1].socketId);
         console.log('delete', 'success'); // Assuming deleteQueue works as expected
+      } else {
+        const player1 = await apiService.dequeue(queueRes.queue[i].socketId);
+        await apiService.deleteQueue(queueRes.queue[i].socketId);
+        console.log('delete', 'success');
       }
     }
   }
@@ -92,20 +96,22 @@ io.on("connection", (socket) => {
         io.fetchSockets().then(data => {
           const socketIds = data.map(socket => socket.id);
           console.log('socketIds', socketIds);
-          console.log('in if statement', pair);
-          if (pair.p1status && pair.p2status) {
-            if (pair.socketId1 in socketIds && pair.socketId2 in socketIds) {
+          //console.log('in if statement', pair.socketId1, pair.socketId2, socketIds.includes(pair.socketId1), socketIds.includes(pair.socketId2));
+          if (socketIds.includes(pair.socketId1) && socketIds.includes(pair.socketId2)) {
+            if (pair.p1status && pair.p2status) {
               apiService.createRoom(true, pair.userId1, pair.userId2).then((res) => {
                 console.log('room', res.id);
                 io.to(pair.socketId1).emit('start', res.id, pair.userId1);
                 io.to(pair.socketId2).emit('start', res.id, pair.userId2);
               });
+            } 
+          } else {
+            const tempSocketIds = pair.socketId1;
+            console.log('tempSocketIds', tempSocketIds);
+            if (pair.socketId1 in socketIds) {
+              apiService.enqueue(data, pair.socketId1)
             } else {
-              if (pair.socketId1 in socketIds) {
-                apiService.enqueue(data, pair.socketId1)
-              } else {
-                apiService.enqueue(data, pair.socketId2)
-              }
+              apiService.enqueue(data, pair.socketId2)
             }
           }
         });
