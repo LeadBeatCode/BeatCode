@@ -13,6 +13,8 @@ export class GameMatchingLobbyComponent {
   foundText: string = "Found A Match!";
   loadingInnerHTML: string = '';
   found = false;
+  pair: any;
+  userId: any;
   
   constructor(
     private api: ApiService,
@@ -24,11 +26,11 @@ export class GameMatchingLobbyComponent {
     this.loading();
 
     this.socket.emit('matching', localStorage.getItem('userId'));
-    this.socket.on('matched', (me:any, opponent:any) => {
+    this.socket.on('matched', (matchedPair: any, userId: any) => {
       console.log('matched')
       this.foundMatch();
-      localStorage.setItem('me', JSON.stringify(me));
-      localStorage.setItem('opponent', JSON.stringify(opponent));
+      this.pair = matchedPair;
+      this.userId = userId;
     })
   }
 
@@ -50,8 +52,11 @@ export class GameMatchingLobbyComponent {
     }, 200);
   }
 
-  enterGame() {
-    console.log('enterLobby');
-    this.router.navigate(['/game-room']);
+  waitForAccept() {
+    this.socket.emit('accepted', this.pair, this.userId);
+    this.socket.on('start', () => {
+      this.router.navigate(['/game-room']);
+    });
+    
   }
 }

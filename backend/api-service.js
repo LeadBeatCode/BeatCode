@@ -56,18 +56,28 @@ export const apiService = (function () {
         }).then((res) => res.json());
     }
 
-    module.createPair = function (userId1, userId2, status) {
+    module.createPair = function (userId1, userId2, socketId1, socketId2) {
         return fetch("http://localhost:3000/api/pairs", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ userId1, userId2, status }),
+            body: JSON.stringify({ userId1, userId2, socketId1, socketId2}),
         }).then((res) => res.json());
     }
 
     module.getPair = function (id) {
         return fetch(`http://localhost:3000/api/pairs/${id}`).then((res) => res.json());
+    }
+
+    module.setPlayerStatus = function (id, status, userId) {
+        return fetch(`http://localhost:3000/api/pairs/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status , userId}),
+        }).then((res) => res.json());
     }
 
     module.deletePair = function (id) {

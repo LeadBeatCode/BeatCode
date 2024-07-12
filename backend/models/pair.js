@@ -10,7 +10,19 @@ export const Pair = sequelize.define("Pair", {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    status: {
+    p1status: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+    },
+    p2status: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+    },
+    socketId1: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    socketId2: {
         type: DataTypes.STRING,
         allowNull: false,
     },

@@ -62,11 +62,13 @@ export class ApiService {
     return this.http.get(this.endpoint + '/api/queue');
   }
 
-  pairUser(userId1: number, userId2: number): Observable<any> {
+  pairUser(userId1: number, userId2: number, socketId1: string, socketId2: string): Observable<any> {
     return this.http.post(this.endpoint + '/api/pairs', {
       userId1,
       userId2,
       status: 'paired',
+      socketId1,
+      socketId2,
     });
   }
 

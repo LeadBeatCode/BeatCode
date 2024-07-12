@@ -8,7 +8,8 @@ pairRouter.post('/', async (req, res) => {
         const pair = await Pair.create({
             userId1: req.body.userId1,
             userId2: req.body.userId2,
-            status: req.body.status,
+            socketId1: req.body.socketId1,
+            socketId2: req.body.socketId2,
         });
         return res.json(pair);
     } catch (error) {
@@ -42,6 +43,27 @@ pairRouter.delete('/:id', async (req, res) => {
             },
         });
         return res.json(pair);
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+});
+
+pairRouter.put('/:id', async (req, res) => {
+    try {
+        const pair = await Pair.findByPk(req.params.id);
+        console.log(pair, pair.userId1, pair.userId2, req.body.status);
+        if (!pair) return res.status(404).json({ error: 'Pair not found' });
+        if (pair.userId1 === req.body.userId) {
+            await pair.update({
+                p1status: req.body.status,
+            });
+        } else if (pair.userId2 === req.body.userId) {
+            await pair.update({
+                p2status: req.body.status,
+            });
+        } else {
+            return res.status(400).json({ error: 'User not in pair' });
+        }
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
