@@ -12,7 +12,9 @@ export class GameMatchingLobbyComponent {
   loadingText: string = "Matching A Game...";
   foundText: string = "Found A Match!";
   loadingInnerHTML: string = '';
-  found = true;
+  found = false;
+  pair: any;
+  userId: any;
   
   constructor(
     private api: ApiService,
@@ -22,12 +24,13 @@ export class GameMatchingLobbyComponent {
 
   ngOnInit(): void {
     this.loading();
-    this.socket.emit('matching', {uid: (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)});
-    this.socket.on('matched', (me:any, opponent:any) => {
+
+    this.socket.emit('matching', localStorage.getItem('userId'));
+    this.socket.on('matched', (matchedPair: any, userId: any) => {
       console.log('matched')
       this.foundMatch();
-      localStorage.setItem('me', JSON.stringify(me));
-      localStorage.setItem('opponent', JSON.stringify(opponent));
+      this.pair = matchedPair;
+      this.userId = userId;
     })
   }
 
@@ -49,8 +52,11 @@ export class GameMatchingLobbyComponent {
     }, 200);
   }
 
-  enterGame() {
-    console.log('enterLobby');
-    this.router.navigate(['/game-room']);
+  waitForAccept() {
+    this.socket.emit('accepted', this.pair, this.userId);
+    this.socket.on('start', () => {
+      this.router.navigate(['/game-room']);
+    });
+    
   }
 }

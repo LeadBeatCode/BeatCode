@@ -44,4 +44,73 @@ export class ApiService {
       },
     });
   }
+
+  enterQueue(userId: number, socketId: number): Observable<any> {
+    return this.http.post(this.endpoint + '/api/queues/enqueue', {
+      userId,
+      socketId,
+    });
+  }
+
+  leaveQueue(socketId: number): Observable<any> {
+    return this.http.post(this.endpoint + '/api/queues/dequeue', {
+      socketId,
+    });
+  }
+
+  getQueue(): Observable<any> {
+    return this.http.get(this.endpoint + '/api/queue');
+  }
+
+  pairUser(userId1: number, userId2: number, socketId1: string, socketId2: string): Observable<any> {
+    return this.http.post(this.endpoint + '/api/pairs', {
+      userId1,
+      userId2,
+      status: 'paired',
+      socketId1,
+      socketId2,
+    });
+  }
+
+  getPairedUser(pairId: number): Observable<any> {
+    return this.http.get(this.endpoint + '/api/pairs/' + pairId);
+  }
+
+  deletePair(pairId: number): Observable<any> {
+    return this.http.delete(this.endpoint + '/api/pairs/' + pairId);
+  }
+
+  createRoom(userId1: number, userId2: number): Observable<any> {
+    return this.http.post(this.endpoint + '/api/rooms', {
+      status: 'live',
+      userId1,
+      userId2,
+    });
+  }
+
+  getRoom(roomId: number): Observable<any> {
+    return this.http.get(this.endpoint + '/api/rooms/' + roomId);
+  }
+
+  deleteRoom(roomId: number): Observable<any> {
+    return this.http.delete(this.endpoint + '/api/rooms/' + roomId);
+  }
+
+  getUser(): Observable<any> {
+    return this.http.get(this.endpoint + '/api/users/me');
+  }
+
+  signUp(username: string, password: string): Observable<any> {
+    return this.http.post(this.endpoint + '/api/users/signup', {
+      username,
+      password,
+    });
+  }
+
+  signIn(username: string, password: string): Observable<any> {
+    return this.http.post(this.endpoint + '/api/users/login', {
+      username,
+      password,
+    });
+  }
 }

@@ -1,17 +1,17 @@
 import { sequelize } from "../datasource.js";
 import { DataTypes } from "sequelize";
 
-export const User = sequelize.define("User", {
-    title: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-    username: {
+export const Room = sequelize.define("Room", {
+    status: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    password: {
-        type: DataTypes.STRING,
+    userId1: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    userId2: {
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
 });
