@@ -65,12 +65,12 @@ io.on("connection", (socket) => {
         console.log('dequeue', queueRes.queue[i]);
 
         const player1 = await apiService.dequeue(queueRes.queue[i].socketId);
-        player1.title = "player1"
+        //player1.title = "player1"
         console.log('dequeue just the res', queueRes.queue);
         console.log('dequeue, increment', queueRes.queue[i+1], i+1);
 
         const player2 = await apiService.dequeue(queueRes.queue[i+1].socketId); 
-        player2.title = "player2"
+        //player2.title = "player2"
         const pair = await apiService.createPair(player1.userId, player2.userId, player1.socketId, player2.socketId);
         io.to(player1.socketId).emit('matched', pair, player1);
         io.to(player2.socketId).emit('matched', pair, player2);
@@ -84,14 +84,19 @@ io.on("connection", (socket) => {
     }
   }
   });
-  socket.on('accepted', async function(data, userId) {
-    console.log('accepted', data, userId);
-    await apiService.setPlayerStatus(data.id, true, userId);
-    const pair = await apiService.getPair(data.id);
-    if (pair.p1status === true && pair.p2status === true) {
-      io.to(pair.socketId1).emit('start', pair);
-      io.to(pair.socketId2).emit('start', pair);
-    }
+  socket.on('accepted', function(data, userId) {
+    //console.log('accepted', data, userId);
+    apiService.setPlayerStatus(data.id, true, userId.userId).then((res) => {
+      console.log('accepted', res);
+      const pair = apiService.getPair(data.id).then((pair) => {
+        console.log('pair', pair);
+        if (pair.p1status === true && pair.p2status === true) {
+          console.log('in if statement', pair);
+          io.to(pair.socketId1).emit('start', pair);
+          io.to(pair.socketId2).emit('start', pair);
+        }
+      });
+    });
   });
 
   // socket.on('matching', async function(data) {

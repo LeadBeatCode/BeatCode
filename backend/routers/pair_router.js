@@ -59,6 +59,7 @@ pairRouter.put('/:id', async (req, res) => {
             pair.set({
                 p1status: req.body.status,
             });
+            pair.save();
         } else if (pair.userId2 === req.body.userId) {
             pair.set({
                 p2status: req.body.status,
