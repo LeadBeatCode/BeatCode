@@ -5,6 +5,7 @@ import { MonacoBinding } from "y-monaco"
 import { WebsocketProvider } from "y-websocket"
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
+import { GameService } from '../../services/gameService/game.service';
 
 @Component({
   // selector: 'app-root',
@@ -35,7 +36,7 @@ export class GameRoomComponent implements OnInit{
   timeInterval: any;
   opponentSocketId: string = '';
 
-  constructor(private api: ApiService, private activatedRoute: ActivatedRoute, private socket: Socket) {
+  constructor(private api: ApiService, private activatedRoute: ActivatedRoute, private socket: Socket, game: GameService) {
     this.activatedRoute.queryParams.subscribe(params => {
         const roomId = params['roomId'];
         const userId = params['userId'];
