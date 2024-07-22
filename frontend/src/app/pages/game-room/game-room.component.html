@@ -8,18 +8,40 @@
     Run Code
   </button>
 </div>
-<app-problem [stdout]="stdout" [result]="result" [numAttemptsText]="numAttemptsText" [stderr]="stderr"></app-problem>
+<app-problem [problemTitle]="problemTitle" [problemText]="problemText" [stdout]="stdout" [result]="result" [numAttemptsText]="numAttemptsText" [stderr]="stderr"></app-problem>
 <div class="editors-container" [ngClass]="{'reverse': playerTitle === 'p2'}">
-  <ngx-monaco-editor
-    [options]="editorOptions"
-    [(ngModel)]="player1Code"
-    class="editor-left"
-    (onInit)="editorInit($event)"
-  ></ngx-monaco-editor>
-  <ngx-monaco-editor
-    [options]="opponentEditorOptions"
-    [(ngModel)]="player2Code"
-    class="editor-right"
-    (onInit)="opponentEditorInit($event)"
-  ></ngx-monaco-editor>
+  <div class="editor-contaier-left">
+    <div class="editor-header-container">
+      <div class="lang" [ngClass]="{'on': playerTitle === 'p1'}">C++</div>
+      <div class="reset-btn"></div>
+      <div class="hearts">
+        <div class="heart-container" *ngFor="let num of player1HeartCount">
+          <div *ngIf="num === 1" class="heart"></div>
+        </div>
+      </div>
+    </div>
+    <ngx-monaco-editor
+      [options]="editorOptions"
+      [(ngModel)]="player1Code"
+      class="editor-left"
+      (onInit)="editorInit($event)"
+    ></ngx-monaco-editor>
+  </div>
+  <div class="editor-contaier-right">
+    <div class="editor-header-container">
+      <div class="lang" [ngClass]="{'on': playerTitle === 'p2'}">Java</div>
+      <div class="reset-btn"></div>
+      <div class="hearts">
+        <div class="heart-container" *ngFor="let num of player2HeartCount">
+          <div *ngIf="num === 1" class="heart"></div>
+        </div>
+      </div>
+    </div>
+    <ngx-monaco-editor
+      [options]="opponentEditorOptions"
+      [(ngModel)]="player2Code"
+      class="editor-right"
+      (onInit)="opponentEditorInit($event)"
+    ></ngx-monaco-editor>
+  </div>
 </div>

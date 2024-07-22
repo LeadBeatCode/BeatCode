@@ -12,6 +12,8 @@ export class ApiService {
   judege0Token = environment.judge0Token;
   judege0Url = environment.judge0Url;
 
+  leetcodeApiEndpoint = 'http://localhost:3000/api/leetcode';
+
   constructor(private http: HttpClient) {}
   /**
    * HttpClient has methods for all the CRUD actions: get, post, put, patch, delete, and head.
@@ -115,5 +117,18 @@ export class ApiService {
       username,
       password,
     });
+  }
+
+  /* Leetcode API */
+  getLeetcodeProblems(): Observable<any> {
+    return this.http.get(this.leetcodeApiEndpoint + '/problems');
+  }
+
+  getLeetcodeOfficialSolution(): Observable<any> {
+    return this.http.get(this.leetcodeApiEndpoint + '/official-solution/two-sum');
+  }
+
+  getRandomProblem(): Observable<any> {
+    return this.http.get(this.leetcodeApiEndpoint + '/random-problem');
   }
 }

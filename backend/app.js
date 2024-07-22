@@ -9,6 +9,7 @@ import { userRouter } from "./routers/user_router.js";
 import { queueRouter } from "./routers/queue_router.js";
 import { pairRouter } from "./routers/pair_router.js";
 import { roomRouter } from "./routers/room_router.js";
+import { leetcodeRouter } from "./routers/leetcode_router.js";
 import { apiService } from "./api-service.js";
 
 
@@ -42,6 +43,7 @@ app.use("/api/users", userRouter);
 app.use("/api/queues", queueRouter);
 app.use("/api/pairs", pairRouter);
 app.use("/api/rooms", roomRouter);
+app.use("/api/leetcode", leetcodeRouter);
 
 export const io = new Server(httpServer, {
   cors: {

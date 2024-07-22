@@ -35,6 +35,11 @@ export class GameRoomComponent implements OnInit{
   displayTime: string = '';
   timeInterval: any;
   opponentSocketId: string = '';
+  problemTitle: string = '';
+  problemText: string = '';
+  player1HeartCount: number[] = Array(10).fill(1);
+  player2HeartCount: number[] = Array(10).fill(1);
+  
 
   constructor(private api: ApiService, private activatedRoute: ActivatedRoute, private socket: Socket, game: GameService) {
     this.activatedRoute.queryParams.subscribe(params => {
@@ -67,7 +72,16 @@ export class GameRoomComponent implements OnInit{
 
   ngOnInit() {
     this.startTimer();
-    
+    this.api.getLeetcodeOfficialSolution().subscribe(data => {
+      console.log(data.data.allPlaygroundCodes)
+      this.player1Code = data.data.allPlaygroundCodes[6].code;
+    })
+    // const getQuestionInterval = setInterval(() => {
+    //   if (this.problemText) {
+    //     clearInterval(getQuestionInterval);
+    //   }
+      this.getProblem();
+    // }, 5000);
   }
 
   startTimer() {
@@ -131,8 +145,8 @@ export class GameRoomComponent implements OnInit{
   }
 
   runCode() {
-    const code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
-    this.numAttempts += 1;
+    var code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
+    code += '\nsoln = Solution()\nprint(soln.twoSum([2,7,11,15], 9))'
     this.api.submitCode(code).subscribe((data) => {
       this.submissionToken = data.token;
       this.checkSubmission();
@@ -148,6 +162,20 @@ export class GameRoomComponent implements OnInit{
         if (data.stdout === this.expectedOutput) {
           this.showResult(`Output: ${data.stdout}`, 'Correct answer!', this.numAttempts);
         } else {
+          if (this.playerTitle === 'p1') {
+            this.player1HeartCount[this.numAttempts] = 0;
+            this.player1HeartCount = [...this.player1HeartCount];
+            console.log(this.player1HeartCount)
+          } else {
+            this.player2HeartCount[this.numAttempts] = 0;
+            this.player2HeartCount = [...this.player2HeartCount];
+            console.log(this.player2HeartCount)
+          }
+          if (this.numAttempts < 9) {
+            this.numAttempts += 1;
+          } else {
+            console.log("Game Over");
+          }
           this.showResult(`Output: ${data.stdout}`, 'Incorrect answer!', this.numAttempts);
         }
       } else {
@@ -174,5 +202,14 @@ export class GameRoomComponent implements OnInit{
     this.stderr = stderr;
     this.stdout = '';
     this.result = '';
+  }
+
+  getProblem() {
+    this.api.getRandomProblem().subscribe(data => {
+      console.log(data.question.title)
+      this.problemTitle = data.question.title;
+      this.problemText = data.question.content;
+      console.log(data.question)
+    })
   }
 }
