@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import http from "http";
+import { auth } from 'express-openid-connect';
 import { Server } from "socket.io";
 import { sequelize } from "./datasource.js";
 
@@ -10,6 +11,7 @@ import { queueRouter } from "./routers/queue_router.js";
 import { pairRouter } from "./routers/pair_router.js";
 import { roomRouter } from "./routers/room_router.js";
 import { apiService } from "./api-service.js";
+import dotenv from "dotenv"
 
 
 const PORT = 3000;
@@ -18,6 +20,7 @@ export const app = express();
 
 const httpServer = http.createServer(app);
 app.use(bodyParser.json());
+dotenv.config();
 
 try {
   sequelize.authenticate();
@@ -181,6 +184,23 @@ app.use( function (req, res, next) {
   res.io = io;
   next();
 });
+
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: process.env.SECRET,
+  baseURL: 'http://localhost:3000',
+  clientID: 'uX8myf4pVo9ES0OdSJV3P350oPJXcme9',
+  issuerBaseURL: 'https://dev-3x6di7i1o663vxh0.us.auth0.com'
+};
+
+app.use(auth(config));
+
+app.get('/profile', (req, res) => {
+  res.send(req.oidc.isAuthenticated() ? JSON.stringify(req.oidc.user) : 'Logged out');
+});
+
+app.get('/login', (req, res) => res.oidc.login({ returnTo: '/sign-in' }));
 
 function generateRandomString(length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

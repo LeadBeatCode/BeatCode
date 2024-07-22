@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../services/apiService/api.service';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,13 +8,37 @@ import { Router } from '@angular/router';
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css'
 })
-export class SignInComponent {
+
+export class SignInComponent implements OnInit  {
+
   constructor(
     private api: ApiService,
     private router: Router,
   ) {}
+  private readonly oidcSecurityService = inject(OidcSecurityService);
 
-  ngOnInit(): void {}
+  isAuthenticated = false;
+  userData: any;
+
+  ngOnInit(){
+    this.oidcSecurityService
+    .checkAuth()
+    .subscribe(({ isAuthenticated, userData}) => {
+      console.log('app authenticated', isAuthenticated);
+      this.isAuthenticated = isAuthenticated;
+      this.userData = userData;
+    });
+  }
+
+  loginUser() {
+    this.oidcSecurityService.authorize();
+  }
+
+  logout() {
+    this.oidcSecurityService
+      .logoff()
+      .subscribe((result) => console.log(result));
+  }
 
   randomString(length: number) {
     const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
