@@ -1,19 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../services/apiService/api.service';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css'
 })
-export class SignInComponent {
+
+export class SignInComponent implements OnInit  {
+
   constructor(
     private api: ApiService,
     private router: Router,
   ) {}
+  private readonly oidcSecurityService = inject(OidcSecurityService);
 
-  ngOnInit(): void {}
+  isAuthenticated = false;
+  userData: any;
+
+  ngOnInit(){
+    this.oidcSecurityService
+    .checkAuth()
+    .subscribe(({ isAuthenticated, userData, accessToken }) => {
+      //console.log('app authenticated', isAuthenticated);
+      //console.log(userData.access_token);
+      this.isAuthenticated = isAuthenticated;
+      this.userData = userData;
+      console.log(userData);
+      localStorage.setItem('accessToken', accessToken);
+      this.oidcSecurityService.getAccessToken().subscribe((token) => {
+        console.log(token);
+      }
+      );
+    });
+  }
+
+  loginUser() {
+    this.oidcSecurityService.authorize();
+  }
+
+  logout() {
+    this.oidcSecurityService
+      .logoff()
+      .subscribe((result) => console.log(result));
+  }
 
   randomString(length: number) {
     const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -25,19 +58,20 @@ export class SignInComponent {
   }
   enterLobby() {
     console.log('enterLobby');
-    const username = this.randomString(8);
-    const password = this.randomString(8);
-    this.api.signUp(username, password).subscribe({
-      next:(data) => {
-        console.log(data);
-        const userId = data.id;
-        localStorage.setItem('userId', userId);
-        this.router.navigate(['/matching-lobby']);
-      },
-      error: (err) => {
-        console.log(err);
-      }
+    // const username = this.randomString(8);
+    // const password = this.randomString(8);
+    // this.api.signUp(username, password).subscribe({
+    //   next:(data) => {
+    //     console.log(data);
+    //     const userId = data.id;
+    //     localStorage.setItem('userId', userId);
+    //     this.router.navigate(['/matching-lobby']);
+    //   },
+    //   error: (err) => {
+    //     console.log(err);
+    //   }
 
-    });
+    // });
+    this.router.navigate(['/matching-lobby']);
   }
 }
