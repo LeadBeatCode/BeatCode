@@ -190,8 +190,8 @@ const config = {
   auth0Logout: true,
   secret: process.env.SECRET,
   baseURL: 'http://localhost:3000',
-  clientID: 'uX8myf4pVo9ES0OdSJV3P350oPJXcme9',
-  issuerBaseURL: 'https://dev-3x6di7i1o663vxh0.us.auth0.com'
+  clientID: 'Kmosk0ISBss1diEABRcTzKJwNceZpSqn',
+  issuerBaseURL: 'https://dev-jqe0hc4zidat2q1z.us.auth0.com'
 };
 
 app.use(auth(config));

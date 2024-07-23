@@ -23,10 +23,12 @@ export class SignInComponent implements OnInit  {
   ngOnInit(){
     this.oidcSecurityService
     .checkAuth()
-    .subscribe(({ isAuthenticated, userData}) => {
+    .subscribe(({ isAuthenticated, userData, accessToken }) => {
       console.log('app authenticated', isAuthenticated);
+      //console.log(userData.access_token);
       this.isAuthenticated = isAuthenticated;
       this.userData = userData;
+      console.log(accessToken);
     });
   }
 

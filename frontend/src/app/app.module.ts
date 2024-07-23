@@ -33,10 +33,10 @@ const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: 
   imports: [
     AuthModule.forRoot({
       config: {
-        authority: 'https://dev-3x6di7i1o663vxh0.us.auth0.com',
+        authority: 'https://dev-jqe0hc4zidat2q1z.us.auth0.com',
         redirectUrl: window.location.origin,
         postLogoutRedirectUri: window.location.origin,
-        clientId: 'uX8myf4pVo9ES0OdSJV3P350oPJXcme9',
+        clientId: 'Kmosk0ISBss1diEABRcTzKJwNceZpSqn',
         scope: 'openid profile email',
         responseType: 'code',
         silentRenew: true,
