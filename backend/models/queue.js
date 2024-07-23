@@ -2,8 +2,8 @@ import { sequelize } from "../datasource.js";
 import { DataTypes } from "sequelize";
 
 export const Queue = sequelize.define("Queue", {
-    userId: {
-        type: DataTypes.INTEGER,
+    accessToken: {
+        type: DataTypes.STRING(1000),
         allowNull: false,
     },
     socketId: {

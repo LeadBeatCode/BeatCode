@@ -2,12 +2,12 @@ import { sequelize } from "../datasource.js";
 import { DataTypes } from "sequelize";
 
 export const Pair = sequelize.define("Pair", {
-    userId1: {
-        type: DataTypes.INTEGER,
+    token1: {
+        type: DataTypes.STRING(1000),
         allowNull: false,
     },
-    userId2: {
-        type: DataTypes.INTEGER,
+    token2: {
+        type: DataTypes.STRING(1000),
         allowNull: false,
     },
     p1status: {

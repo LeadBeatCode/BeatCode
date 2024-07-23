@@ -63,15 +63,15 @@ io.on("connection", (socket) => {
     io.to(targetSocketId).emit('editor', { code });
   });
 
-  socket.on('matching', async function(data) { // Make this function async
-  console.log('matching', data);
-  await apiService.enqueue(data, socket.id); // Assuming you handle the response inside the enqueue function
+  socket.on('matching', async function(accessToken) { // Make this function async
+  console.log('matching', accessToken);
+  await apiService.enqueue(accessToken, socket.id); // Assuming you handle the response inside the enqueue function
+  
   const queueRes = await apiService.getQueue();
   console.log('queue', queueRes);
   if (queueRes.count >= 2) {
-    // while (count >= 2) {
     for (let i = 0; i < queueRes.queue.length; i = i+2) {
-      if (queueRes.queue[i + 1] && queueRes.queue[i + 1].userId !== queueRes.queue[i].userId) { // Ensure there's a pair
+      if (queueRes.queue[i + 1] && queueRes.queue[i + 1].accessToken !== queueRes.queue[i].accessToken) { // Ensure there's a pair
         console.log('dequeue', queueRes.queue[i]);
 
         const player1 = await apiService.dequeue(queueRes.queue[i].socketId);
@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
 
         const player2 = await apiService.dequeue(queueRes.queue[i+1].socketId); 
         //player2.title = "player2"
-        const pair = await apiService.createPair(player1.userId, player2.userId, player1.socketId, player2.socketId);
+        const pair = await apiService.createPair(player1.accessToken, player2.accessToken, player1.socketId, player2.socketId);
         io.to(player1.socketId).emit('matched', pair, player1);
         io.to(player2.socketId).emit('matched', pair, player2);
         console.log('matched', pair);
@@ -98,10 +98,10 @@ io.on("connection", (socket) => {
     }
   }
   });
-  socket.on('accepted', function(data, userId) {
+  socket.on('accepted', function(data, token) {
     //console.log('accepted', data, userId);
-    apiService.setPlayerStatus(data.id, true, userId.userId).then((res) => {
-      console.log('accepted', res);
+    apiService.setPlayerStatus(data.id, true, token).then((res) => {
+      console.log('accepted');
       apiService.getPair(data.id).then(pair => {
         io.fetchSockets().then(data => {
           const socketIds = data.map(socket => socket.id);
@@ -109,10 +109,10 @@ io.on("connection", (socket) => {
           //console.log('in if statement', pair.socketId1, pair.socketId2, socketIds.includes(pair.socketId1), socketIds.includes(pair.socketId2));
           if (socketIds.includes(pair.socketId1) && socketIds.includes(pair.socketId2)) {
             if (pair.p1status && pair.p2status) {
-              apiService.createRoom(true, pair.userId1, pair.userId2, pair.socketId1, pair.socketId2).then((res) => {
+              apiService.createRoom(true, pair.token1, pair.token2, pair.socketId1, pair.socketId2).then((res) => {
                 console.log('room', res.id);
-                io.to(pair.socketId1).emit('start', res.id, pair.userId1);
-                io.to(pair.socketId2).emit('start', res.id, pair.userId2);
+                io.to(pair.socketId1).emit('start', res.id, pair.token1);
+                io.to(pair.socketId2).emit('start', res.id, pair.token2);
               });
             } 
           } else {
@@ -173,8 +173,8 @@ io.on("connection", (socket) => {
   //   });
   socket.on("disconnect", () => {
     console.log("user disconnected");
-    apiService.dequeue(socket.id).then((res) => {
-      console.log("dequeue", res);
+    apiService.deleteQueue(socket.id).then((res) => {
+      console.log("deleteQueue", res);
     });
   });
 

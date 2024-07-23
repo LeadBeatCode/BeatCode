@@ -15,7 +15,6 @@ export class GameMatchingLobbyComponent {
   loadingInnerHTML: string = '';
   found = false;
   pair: any;
-  userId: any;
   accepted = false;
   timer = '';
   lobbyTimer = '';
@@ -36,11 +35,10 @@ export class GameMatchingLobbyComponent {
   ngOnInit(): void {
     this.loading();
 
-    this.socket.emit('matching', localStorage.getItem('userId'));
-    this.socket.on('matched', (matchedPair: any, userId: any) => {
+    this.socket.emit('matching', localStorage.getItem('accessToken'));
+    this.socket.on('matched', (matchedPair: any, accessToken: any) => {
       this.foundMatch();
       this.pair = matchedPair;
-      this.userId = userId;
     })
   }
 
@@ -104,12 +102,12 @@ export class GameMatchingLobbyComponent {
 
   waitForAccept() {
     this.accepted = true;
-    this.socket.emit('accepted', this.pair, this.userId);
+    this.socket.emit('accepted', this.pair, localStorage.getItem('accessToken'));
 
-    this.socket.on('start', (roomId:number, userId:number) => {
+    this.socket.on('start', (roomId:number, accessToken:string) => {
       this.game.updateStatus(true);
       clearInterval(this.timerInterval);
-      this.router.navigate(['/game-room'], { queryParams: { roomId: roomId, userId: userId } });
+      this.router.navigate(['/game-room'], { queryParams: { roomId: roomId } });
     });
   }
 }

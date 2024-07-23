@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../services/apiService/api.service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sign-in',
@@ -24,11 +25,16 @@ export class SignInComponent implements OnInit  {
     this.oidcSecurityService
     .checkAuth()
     .subscribe(({ isAuthenticated, userData, accessToken }) => {
-      console.log('app authenticated', isAuthenticated);
+      //console.log('app authenticated', isAuthenticated);
       //console.log(userData.access_token);
       this.isAuthenticated = isAuthenticated;
       this.userData = userData;
-      console.log(accessToken);
+      console.log(userData);
+      localStorage.setItem('accessToken', accessToken);
+      this.oidcSecurityService.getAccessToken().subscribe((token) => {
+        console.log(token);
+      }
+      );
     });
   }
 
@@ -52,19 +58,20 @@ export class SignInComponent implements OnInit  {
   }
   enterLobby() {
     console.log('enterLobby');
-    const username = this.randomString(8);
-    const password = this.randomString(8);
-    this.api.signUp(username, password).subscribe({
-      next:(data) => {
-        console.log(data);
-        const userId = data.id;
-        localStorage.setItem('userId', userId);
-        this.router.navigate(['/matching-lobby']);
-      },
-      error: (err) => {
-        console.log(err);
-      }
+    // const username = this.randomString(8);
+    // const password = this.randomString(8);
+    // this.api.signUp(username, password).subscribe({
+    //   next:(data) => {
+    //     console.log(data);
+    //     const userId = data.id;
+    //     localStorage.setItem('userId', userId);
+    //     this.router.navigate(['/matching-lobby']);
+    //   },
+    //   error: (err) => {
+    //     console.log(err);
+    //   }
 
-    });
+    // });
+    this.router.navigate(['/matching-lobby']);
   }
 }

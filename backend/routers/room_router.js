@@ -5,10 +5,12 @@ export const roomRouter = Router();
 
 roomRouter.post("/", async (req, res) => {
     try {
+        const token1 = req.headers.authorization1.split(" ")[1];
+        const token2 = req.headers.authorization2.split(" ")[1];
         const room = await Room.create({
             status: req.body.status,
-            userId1: req.body.userId1,
-            userId2: req.body.userId2,
+            token1: token1,
+            token2: token2,
             socketId1: req.body.socketId1,
             socketId2: req.body.socketId2,
         });
