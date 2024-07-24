@@ -10,6 +10,7 @@
   resize: vertical;
   max-height: 400px;
   min-height: 48px;
+  position: relative;
 }
 
 .contents-container::-webkit-scrollbar-thumb {
@@ -17,6 +18,26 @@
   border: 4px solid transparent;
   border-radius: 15px;
   background-clip: padding-box;
+}
+
+/* .resize-icon {
+  background-image: url(../../../assets/resize_icon.png);
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  z-index: 100;
+  transform: rotate(135deg);
+  right: 0;
+  position: absolute;
+} */
+
+::-webkit-resizer {
+  background: rgb(26, 25, 25);
+  padding: 2px;
+  background-image: url(../../../assets/resize_icon.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  overflow:hidden !important;
 }
 
 .example-block {
