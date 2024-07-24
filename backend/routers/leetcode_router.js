@@ -163,6 +163,38 @@ leetcodeRouter.get('/question-set', async (req, res) => {
     }
 });
 
+leetcodeRouter.get('/startcode/:title', async (req, res) => {
+    try {
+        const query = `query questionEditorData($titleSlug: String!) {
+                        question(titleSlug: $titleSlug) {
+                        codeSnippets {
+                            lang
+                            langSlug
+                            code
+                        }
+                        }
+                    }`;
+        const variables = {
+                    titleSlug: req.params.title,
+                };
+        axios.get('https://leetcode.com/graphql/', {
+                data: {
+                    query,
+                    variables,
+                }
+            },
+        ).then((response) => {
+            var data = {}
+            response.data.data.question.codeSnippets.map(language => {
+                data[language.lang] = language.code;
+            })
+            return res.json(data);
+        });
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+});
+
 leetcodeRouter.get('/random-problem', (req, res) => {
     try {
         const query = `query randomQuestion($categorySlug: String, $filters: QuestionListFilterInput) {

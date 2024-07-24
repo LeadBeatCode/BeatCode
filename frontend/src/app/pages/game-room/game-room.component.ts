@@ -6,6 +6,7 @@ import { WebsocketProvider } from "y-websocket"
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
 import { GameService } from '../../services/gameService/game.service';
+import { switchMap } from 'rxjs';
 
 @Component({
   // selector: 'app-root',
@@ -29,6 +30,8 @@ export class GameRoomComponent implements OnInit{
   stderr: string = '';
   playerTitle: string = '';
   currentRoom: string = '';
+  language: string = 'Python3';
+  import: string = 'from typing import List\n';
   numAttempts: number = 0;
   numAttemptsText: string = '';
   time: number = 0;
@@ -75,10 +78,10 @@ export class GameRoomComponent implements OnInit{
 
   ngOnInit() {
     this.startTimer();
-    this.api.getLeetcodeOfficialSolution().subscribe(data => {
-      console.log(data.data.allPlaygroundCodes)
-      this.player1Code = data.data.allPlaygroundCodes[6].code;
-    })
+    // this.api.getLeetcodeOfficialSolution().subscribe(data => {
+    //   console.log(data.data.allPlaygroundCodes)
+    //   this.player1Code = '\n' + data.data.allPlaygroundCodes[6].code;
+    // })
     // const getQuestionInterval = setInterval(() => {
     //   if (this.problemText) {
     //     clearInterval(getQuestionInterval);
@@ -149,6 +152,7 @@ export class GameRoomComponent implements OnInit{
 
   runCode() {
     var code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
+    code = this.import + code;
     code += '\nsoln = Solution()\nprint(soln.twoSum([2,7,11,15], 9))'
     this.api.submitCode(code).subscribe((data) => {
       this.submissionToken = data.token;
@@ -212,6 +216,9 @@ export class GameRoomComponent implements OnInit{
       console.log(data.question.title)
       this.problemTitle = data.question.title;
       this.problemText = data.question.content;
+      this.api.getProblemStartCode().subscribe(data => {
+        this.player1Code += data[this.language];
+      })
       console.log(data.question)
     })
   }

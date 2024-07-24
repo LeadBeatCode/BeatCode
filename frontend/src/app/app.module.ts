@@ -17,6 +17,11 @@ import { GameMatchingLobbyComponent } from './pages/game-matching-lobby/game-mat
 import { GameRoomComponent } from './pages/game-room/game-room.component';
 
 import { AppRoutingModule } from './app-routing.module';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { FriendListComponent } from './components/friend-list/friend-list.component';
+import { FriendActionComponent } from './components/friend-action/friend-action.component';
+import { UserPerformanceComponent } from './components/user-performance/user-performance.component';
+import { MatchHistoryComponent } from './components/match-history/match-history.component';
 import { AuthInterceptor } from './services/auth.intercepter';
 
 const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
@@ -29,6 +34,11 @@ const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: 
     SignInComponent,
     GameMatchingLobbyComponent,
     GameRoomComponent,
+    DashboardComponent,
+    FriendListComponent,
+    FriendActionComponent,
+    UserPerformanceComponent,
+    MatchHistoryComponent,
   ],
   imports: [
     AuthModule.forRoot({

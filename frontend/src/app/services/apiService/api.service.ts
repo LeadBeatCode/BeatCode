@@ -133,4 +133,8 @@ export class ApiService {
   getRandomProblem(): Observable<any> {
     return this.http.get(this.leetcodeApiEndpoint + '/random-problem');
   }
+
+  getProblemStartCode(): Observable<any> {
+    return this.http.get(this.leetcodeApiEndpoint + '/startcode/two-sum');
+  }
 }
