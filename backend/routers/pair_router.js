@@ -5,9 +5,11 @@ export const pairRouter = Router();
 
 pairRouter.post('/', async (req, res) => {
     try {
+        const token1 = req.headers.authorization1.split(' ')[1];
+        const token2 = req.headers.authorization2.split(' ')[1];
         const pair = await Pair.create({
-            userId1: req.body.userId1,
-            userId2: req.body.userId2,
+            token1: token1,
+            token2: token2,
             socketId1: req.body.socketId1,
             socketId2: req.body.socketId2,
             p1status: false,
@@ -53,14 +55,14 @@ pairRouter.delete('/:id', async (req, res) => {
 pairRouter.put('/:id', async (req, res) => {
     try {
         const pair = await Pair.findByPk(req.params.id);
-        console.log(pair, pair.userId1, pair.userId2, req.body.status);
         if (!pair) return res.status(404).json({ error: 'Pair not found' });
-        if (pair.userId1 === req.body.userId) {
+        const token = req.headers.authorization.split(' ')[1];
+        if (pair.token1 === token) {
             pair.set({
                 p1status: req.body.status,
             });
             pair.save();
-        } else if (pair.userId2 === req.body.userId) {
+        } else if (pair.token2 === token) {
             pair.set({
                 p2status: req.body.status,
             });

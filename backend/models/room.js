@@ -6,12 +6,12 @@ export const Room = sequelize.define("Room", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    userId1: {
-        type: DataTypes.INTEGER,
+    token1: {
+        type: DataTypes.STRING(1000),
         allowNull: false,
     },
-    userId2: {
-        type: DataTypes.INTEGER,
+    token2: {
+        type: DataTypes.STRING(1000),
         allowNull: false,
     },
     socketId1: {

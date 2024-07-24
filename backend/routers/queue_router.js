@@ -5,10 +5,14 @@ export const queueRouter = Router();
 
 queueRouter.post("/enqueue", async (req, res) => {
     try {
+        const token = req.headers.authorization.split(" ")[1];
+        console.log('token', token);
+        console.log('socketId', req.body.socketId);
         const queue = await Queue.create({
-            userId: req.body.userId,
+            accessToken: req.headers.authorization.split(" ")[1],
             socketId: req.body.socketId,
         });
+        console.log('enqueue', queue);
         return res.json(queue);
     } catch (error) {
         return res.status(400).json({ error: error.message });

@@ -50,9 +50,11 @@ export class ApiService {
     return this.http.get(this.endpoint + '/api/rooms/' + roomId + '/sockets');
   }
     
-  enterQueue(userId: number, socketId: number): Observable<any> {
+  enterQueue(token: number, socketId: number): Observable<any> {
     return this.http.post(this.endpoint + '/api/queues/enqueue', {
-      userId,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
       socketId,
     });
   }

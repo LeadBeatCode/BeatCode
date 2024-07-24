@@ -7,6 +7,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { ProblemComponent } from './components/problem/problem.component';
 // import { EditorComponent } from './components/editor/editor.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
 
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
@@ -21,6 +22,7 @@ import { FriendListComponent } from './components/friend-list/friend-list.compon
 import { FriendActionComponent } from './components/friend-action/friend-action.component';
 import { UserPerformanceComponent } from './components/user-performance/user-performance.component';
 import { MatchHistoryComponent } from './components/match-history/match-history.component';
+import { AuthInterceptor } from './services/auth.intercepter';
 
 const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
@@ -39,6 +41,19 @@ const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: 
     MatchHistoryComponent,
   ],
   imports: [
+    AuthModule.forRoot({
+      config: {
+        authority: 'https://dev-jqe0hc4zidat2q1z.us.auth0.com',
+        redirectUrl: window.location.origin,
+        postLogoutRedirectUri: window.location.origin,
+        clientId: 'Kmosk0ISBss1diEABRcTzKJwNceZpSqn',
+        scope: 'openid profile email',
+        responseType: 'code',
+        silentRenew: true,
+        useRefreshToken: true,
+        logLevel: LogLevel.Debug,
+      },}),
+
     BrowserModule,
     FormsModule,
     MonacoEditorModule.forRoot(), // use forRoot() in main app module only.
@@ -46,7 +61,9 @@ const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: 
     SocketIoModule.forRoot(socketIoConfig),
     AppRoutingModule,
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

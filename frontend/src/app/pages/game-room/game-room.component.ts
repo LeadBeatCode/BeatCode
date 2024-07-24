@@ -44,16 +44,19 @@ export class GameRoomComponent implements OnInit{
   player2HeartCount: number[] = Array(10).fill(1);
   
 
-  constructor(private api: ApiService, private activatedRoute: ActivatedRoute, private socket: Socket, game: GameService) {
+  constructor(private api: ApiService, private activatedRoute: ActivatedRoute, private socket: Socket, game: GameService, private router: Router) {
     this.activatedRoute.queryParams.subscribe(params => {
         const roomId = params['roomId'];
-        const userId = params['userId'];
+        const accessToken = localStorage.getItem('accessToken');
         this.currentRoom = roomId;
         this.api.getRoom(roomId).subscribe((data) => {
-          if (data.userId2 === parseInt(params['userId'], 10)) {
+          if (data.token2 === accessToken) {
             this.playerTitle = 'p2';
-          } else {
+          } else if (data.token1 === accessToken) {
             this.playerTitle = 'p1';
+          } else {
+            console.log('You are not a player in this room');
+            this.router.navigate(['/']);
           }
           this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
             if (this.playerTitle === 'p1') {
