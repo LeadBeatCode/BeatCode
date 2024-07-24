@@ -7,12 +7,15 @@
             </div>
             <div class="username">User1</div>
         </div>
-        <div class="freinds-container">
-            <div class="freinds-title">
-                <div class="text">friends</div>
+        <div class="friends-container">
+            <div class="friends-title">
+                <div class="title-container">
+                    <div class="text">friends</div>
+                    <div class="number">100</div>
+                </div>
                 <div class="add-friend-btn" (click)="changeLoadFriendList()"></div>
             </div>
-            <div class="freinds-component">
+            <div class="friends-component">
                 <app-friend-list *ngIf="loadFriendList"></app-friend-list>
                 <app-friend-action *ngIf="!loadFriendList"></app-friend-action>
             </div>
@@ -24,49 +27,14 @@
     <div class="main-container highlight">
         <div class="header-container">
             <div class="menu">
-                Dashboard
+                <div class="menu-item" [ngClass]="{'active': loadUserPerformance}" (click)="changeLoadUserPerformance(true)">User Performance</div>
+                <div class="menu-item" [ngClass]="{'active': !loadUserPerformance}" (click)="changeLoadUserPerformance(false)">Match History</div>
             </div>
-            <div class="profile">
-                User1
+            <div class="play-game-btn" (click)="enterLobby()">
+                Start Game
             </div>
         </div>
-        <app-user-performance ></app-user-performance>
-        <!-- <div class="dashboard-container"> -->
-            <!-- <div class="dashboard-content-container">
-                <div class="user-info-container">
-                    <div class="user-statistics-container">
-                        <div class="statistics-container"></div>
-                        <div class="ranking-container">ranking: silver point</div>
-                    </div>
-                    <div class="overview">number of wins/lose</div>
-                </div>
-                <div class="game-history-container">
-                    <div class="game-history-contents">
-                        <div class="title-container">
-                            <div class="title">Last Match</div>
-                            <div class="game-history-btn">view all history</div>
-                        </div>
-                        <div class="contents-container">
-                            <div class="match-history-container">
-                                <div class="date">TODAY</div>
-                                <div class="match-container">
-                                    <div class="match-info"></div>
-                                    <div class="match-info"></div>
-                                    <div class="match-info"></div>
-                                </div>
-                            </div>
-                            <div class="match-history-container">
-                                <div class="date">2 / 1</div>
-                                <div class="match-container">
-                                    <div class="match-info"></div>
-                                    <div class="match-info"></div>
-                                    <div class="match-info"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-        <!-- </div> -->
+        <app-user-performance *ngIf="loadUserPerformance"></app-user-performance>
+        <app-match-history *ngIf="!loadUserPerformance"></app-match-history>
     </div>
 </div>

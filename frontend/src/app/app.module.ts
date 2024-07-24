@@ -23,6 +23,8 @@ import { FriendActionComponent } from './components/friend-action/friend-action.
 import { UserPerformanceComponent } from './components/user-performance/user-performance.component';
 import { MatchHistoryComponent } from './components/match-history/match-history.component';
 import { AuthInterceptor } from './services/auth.intercepter';
+import { FriendComponent } from './components/friend/friend.component';
+import { FriendRequestComponent } from './components/friend-request/friend-request.component';
 
 const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
@@ -39,6 +41,8 @@ const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: 
     FriendActionComponent,
     UserPerformanceComponent,
     MatchHistoryComponent,
+    FriendComponent,
+    FriendRequestComponent,
   ],
   imports: [
     AuthModule.forRoot({

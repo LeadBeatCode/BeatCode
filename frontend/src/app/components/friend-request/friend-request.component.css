@@ -1,0 +1,82 @@
+.friend {
+    height: 55px;
+    /* border-bottom: 1px solid #17152c; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* box-shadow: inset 0px 0px 5px 5px #0d0d1a; */
+    background: rgba(36, 34, 34, 0.1);
+    backdrop-filter: blur(30px);
+    font-size: 12px;
+}
+
+.friend:hover {
+    cursor: pointer;
+    backdrop-filter: blur(0);
+    background: rgba(111, 76, 76, 0.1);
+}
+
+.friend:hover .delete-friend-btn {
+    opacity: 0.8;
+    transition: 1s;
+}
+
+.friend:hover .accept-friend-btn {
+    opacity: 0.8;
+    transition: 1s;
+}
+
+.friend-info {
+    width: 45%;
+    margin: 10px 10px 10px 11px;
+}
+
+.friend-info .friend-rank {
+    font-size: 10px;
+    margin-top: 2px;
+    color: rgb(125, 125, 125);
+}
+
+.friend-info .friend-name {
+    margin-top: 2px;
+}
+
+.friend-image-container {
+    width: 14%;
+}
+.friend-image-container .friend-image {
+    border: 1px solid transparent;
+    border-radius: 50%;
+    position: relative;
+}
+
+.friend-image-container .friend-image {
+    background-image: url("https://www.w3schools.com/howto/img_avatar.png");
+    width: 24px;
+    height: 24px;
+    background-size: cover;
+}
+
+.delete-friend-btn {
+    background-image: url(../../../assets/delete-btn.png);
+    width: 16px;
+    height: 16px;
+    opacity: 0;
+    background-size: contain;
+    cursor: pointer;
+}
+
+.accept-friend-btn {
+    background-image: url(../../../assets/accept-btn.png);
+    width: 16px;
+    height: 16px;
+    opacity: 0;
+    background-size: contain;
+    cursor: pointer;
+    margin-right: 4px;
+}
+
+.friend-action-btns {
+    display: flex;
+    width: 20%;
+}

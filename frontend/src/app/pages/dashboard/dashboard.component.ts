@@ -14,9 +14,14 @@ export class DashboardComponent {
   ) {}
 
   loadFriendList: boolean = true;
+  loadUserPerformance: boolean = true;
 
   changeLoadFriendList() {
     this.loadFriendList = !this.loadFriendList;
+  }
+
+  changeLoadUserPerformance(value: boolean) {
+    this.loadUserPerformance = value;
   }
 
   enterLobby() {
