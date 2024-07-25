@@ -11,6 +11,7 @@ import { queueRouter } from "./routers/queue_router.js";
 import { pairRouter } from "./routers/pair_router.js";
 import { roomRouter } from "./routers/room_router.js";
 import { leetcodeRouter } from "./routers/leetcode_router.js";
+import { friendRouter } from "./routers/friend_router.js";
 import { apiService } from "./api-service.js";
 import dotenv from "dotenv"
 
@@ -47,6 +48,7 @@ app.use("/api/queues", queueRouter);
 app.use("/api/pairs", pairRouter);
 app.use("/api/rooms", roomRouter);
 app.use("/api/leetcode", leetcodeRouter);
+app.use("/api/friends", friendRouter);
 
 export const io = new Server(httpServer, {
   cors: {
@@ -58,6 +60,18 @@ export const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+
+  socket.on('online', function(data) {
+    const { userId, friendSocketId } = data;
+    console.log('online', userId, friendSocketId);
+    io.to(friendSocketId).emit('friend online', userId);
+  });
+
+  socket.on('new friend', function(data) {
+    const { friendId, friendSocketId } = data;
+    console.log('new friend', friendId, friendSocketId);
+    io.to(friendSocketId).emit('new friend added', friendId);
+  });
   
   socket.on('editor', function(data) {
     const { targetSocketId, code } = data;

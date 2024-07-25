@@ -2,19 +2,15 @@
     <div class="friend-container">
         <div class="friend-search-container">
             <input class="friend-search" type="text" placeholder="Search a freind...">
-            <div class="request-send-icon">Send</div>
+            <div class="request-send-icon" (click)="sendFriendRequest()">Send</div>
         </div>
         <div class="friend-requests">
             <div class="title-container">
                 <div class="title">Request</div>
                 <div class="count">5</div>
             </div>
-            <div class="request-item">
-                <app-friend-request></app-friend-request>
-                <app-friend-request></app-friend-request>
-                <app-friend-request></app-friend-request>
-                <app-friend-request></app-friend-request>
-                <app-friend-request></app-friend-request>
+            <div class="request-item" *ngFor="let request of pendingRequests">
+                <app-friend-request [requesterId]="request.id" [requesterName]="request.nickname" [requesterRank]="request.rank" [requesterProfilePic]="request.picture"></app-friend-request>
             </div>
         </div>
         <div class="friend-online">

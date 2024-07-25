@@ -1,23 +1,67 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/apiService/api.service';
 import { Router } from '@angular/router';
+import { Socket } from 'ngx-socket-io';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+
+  userData: any;
+  loadFriendList: boolean = true;
+  loadUserPerformance: boolean = true;
+  onlineFriends: any[] = [];
+
   constructor(
     private api: ApiService,
     private router: Router,
-  ) {}
+    private socket: Socket,
+  ) {
+    const navigation = this.router.getCurrentNavigation();
+    console.log('navigation', navigation);
+    if (navigation && navigation.extras.state) {
+      this.userData = navigation.extras.state['userData'];
+      console.log('userData in dashboard', this.userData);
+    }
+  }
 
-  loadFriendList: boolean = true;
-  loadUserPerformance: boolean = true;
+  ngOnInit() {
+    this.api.getFriends(this.userData.id).subscribe({
+      next: (friends) => {
+        for (const friend of friends) {
+          console.log('friend', friend);
+          // Check if friend's socket is not null
+          const token = localStorage.getItem('accessToken');
+          if (token !== null) {
+            this.api.getUserById(friend.id).subscribe({
+              next: (data) => {
+                console.log('friend data', data);
+                const friendSocketId = data.socketId
+                if (friendSocketId !== null) {
+                  // Send online notification to friend
+                  console.log('emit online', friendSocketId);
+                  this.socket.emit('online', {userId: this.userData.id, friendSocketId: friendSocketId});
+                  this.onlineFriends.push(friend.id);
+                  console.log('onlineFriends', this.onlineFriends);
+                }
+              }
+            });
+          }
+          
+        }
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
 
   changeLoadFriendList() {
     this.loadFriendList = !this.loadFriendList;
+
   }
 
   changeLoadUserPerformance(value: boolean) {

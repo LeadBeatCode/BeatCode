@@ -3,11 +3,11 @@
         <div class="friend-image"></div>
     </div>
     <div class="friend-info">
-        <div class="friend-name">User2</div>
-        <div class="friend-rank">silver I</div>
+        <div class="friend-name">{{requesterName}}</div>
+        <div class="friend-rank">{{requesterRank}}</div>
     </div>
     <div class="friend-action-btns">
-        <div class="accept-friend-btn"></div>
+        <div class="accept-friend-btn" (click)="acceptRequest()"></div>
         <div class="delete-friend-btn"></div>
     </div>
 </div>

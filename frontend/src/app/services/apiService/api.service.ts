@@ -107,17 +107,69 @@ export class ApiService {
     return this.http.get(this.endpoint + '/api/users/me');
   }
 
-  signUp(username: string, password: string): Observable<any> {
+  signUp(userData: JSON, socketId: string, accessToken: string): Observable<any> {
     return this.http.post(this.endpoint + '/api/users/signup', {
-      username,
-      password,
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      userData,
+      socketId,
     });
   }
 
-  signIn(username: string, password: string): Observable<any> {
+  signIn(userData: JSON, socketId: string, accessToken:string): Observable<any> {
     return this.http.post(this.endpoint + '/api/users/login', {
-      username,
-      password,
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      userData,
+      socketId,
+    });
+  }
+
+  getUserById(userId: string): Observable<any> {
+    return this.http.get(this.endpoint + '/api/users/' + userId);
+  }
+
+  sendFriendRequest(accessToken: string, receiverId: string): Observable<any> {
+    return this.http.post(this.endpoint + '/api/friends/request', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      receiverId,
+    });
+  }
+
+  acceptFriendRequest(accessToken: string, senderId: string): Observable<any> {
+    return this.http.post(this.endpoint + '/api/friends/accept', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      senderId,
+    });
+  }
+
+  getFriends(accessToken: string): Observable<any> {
+    return this.http.get(this.endpoint + '/api/friends/list', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  getPendingFriendRequests(accessToken: string): Observable<any> {
+    return this.http.get(this.endpoint + '/api/friends/pending', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  getUsersSocketId(userId: string, accessToken: string): Observable<any> {
+    return this.http.get(this.endpoint + '/api/users/' + userId + '/socket', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
     });
   }
 

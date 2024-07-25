@@ -3,9 +3,9 @@
     <div class="header-side-container">
         <div class="user-profile-container">
             <div class="user-profile-image-container">
-                <div class="user-profile-image"></div>
+                <div class="user-profile-image" [style.backgroundImage]="'url(' + userData.picture + ')'"></div>
             </div>
-            <div class="username">User1</div>
+            <div class="username">{{ userData.nickname }}</div>
         </div>
         <div class="friends-container">
             <div class="friends-title">
@@ -16,7 +16,7 @@
                 <div class="add-friend-btn" (click)="changeLoadFriendList()"></div>
             </div>
             <div class="friends-component">
-                <app-friend-list *ngIf="loadFriendList"></app-friend-list>
+                <app-friend-list *ngIf="loadFriendList" [onlineFriends]="onlineFriends"></app-friend-list>
                 <app-friend-action *ngIf="!loadFriendList"></app-friend-action>
             </div>
         </div>
