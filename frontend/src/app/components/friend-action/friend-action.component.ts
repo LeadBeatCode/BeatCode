@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   styleUrl: './friend-action.component.css'
 })
 export class FriendActionComponent {
-
+  friends: any[] = [];
   pendingRequests: any[] = [];
   constructor( private api: ApiService, private router: Router ) { 
     const accessToken = localStorage.getItem('accessToken');
@@ -24,11 +24,26 @@ export class FriendActionComponent {
           console.log(err);
         }
       });
+      this.api.getFriends(accessToken).subscribe({
+        next: (friends) => {
+          this.friends = friends;
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
     }
+
+    
   }
 
   ngOnInit(): void {
   }
+
+  // isFriendOnline(friendId: any) : boolean {
+  //   console.log('is friend online', this.onlineFriends.includes(friendId), friendId, this.onlineFriends);
+  //   return this.onlineFriends.includes(friendId);
+  // }
 
   sendFriendRequest() {
     console.log('send friend request');

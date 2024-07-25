@@ -165,13 +165,6 @@ export class ApiService {
     });
   }
 
-  getUsersSocketId(userId: string, accessToken: string): Observable<any> {
-    return this.http.get(this.endpoint + '/api/users/' + userId + '/socket', {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
-    });
-  }
 
   /* Leetcode API */
   getLeetcodeProblems(): Observable<any> {

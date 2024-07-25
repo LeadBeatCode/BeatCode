@@ -13,13 +13,10 @@
                 <app-friend-request [requesterId]="request.id" [requesterName]="request.nickname" [requesterRank]="request.rank" [requesterProfilePic]="request.picture"></app-friend-request>
             </div>
         </div>
-        <div class="friend-online">
+        <!-- <div class="friend-online" *ngFor="let friend of friends">
             <div class="friend-item">
-                <app-friend-request></app-friend-request>
-                <app-friend-request></app-friend-request>
-                <app-friend-request></app-friend-request>
-                <app-friend-request></app-friend-request>
+                <app-friend-request [isOnline]="isFriendOnline(friend.id)" [name]="friend.nickname" [rank]="friend.rank" [image]="friend.picture"></app-friend-request>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>

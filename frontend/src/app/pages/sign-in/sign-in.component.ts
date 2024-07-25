@@ -75,11 +75,16 @@ export class SignInComponent implements OnInit  {
       next: (friends) => {
         for (const friend of friends) {
           // Check if friend's socket is not null
-          const friendSocketId = this.api.getUsersSocketId(friend.id, accessToken);
-          if (friend.socketId !== null) {
-            // Send online notification to friend
-            this.socket.emit('online', userId, friend.socket);
-          }
+          this.api.getUserById(friend.id).subscribe({
+            next: (data) => {
+              const friendSocketId = data.socketId;
+              if (friend.socketId !== null) {
+                // Send online notification to friend
+                this.socket.emit('online', userId, friend.socket);
+              }
+            }
+          });
+          
         }
       },
       error: (err) => {

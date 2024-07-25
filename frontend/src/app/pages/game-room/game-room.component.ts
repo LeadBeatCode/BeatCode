@@ -182,6 +182,7 @@ export class GameRoomComponent implements OnInit{
             this.numAttempts += 1;
           } else {
             console.log("Game Over");
+            clearInterval(this.timeInterval);
           }
           this.showResult(`Output: ${data.stdout}`, 'Incorrect answer!', this.numAttempts);
         }
