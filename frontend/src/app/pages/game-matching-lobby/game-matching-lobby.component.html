@@ -1,10 +1,23 @@
 <div class="lobby-container">
-    <div class="loading-animation" [innerHTML]="loadingInnerHTML"></div>
-    <div class="assets">
-        <div class="you-player player-sprite"></div>
-        <div class="opponent-player player-sprite" [ngClass] = "{'blur': !found}"></div>
-    </div>
-    <div class="timer" [innerHTML]="timer"></div>
-    <div (click)="waitForAccept()"  [ngClass]= "{'active': found}" [ngClass]= "{'clicked': accepted}" [ngClass]= "{'active clicked': found && accepted}" class="accept-btn">Accept</div>
-    <div class="error"><span [innerHTML]="error"></span><span [innerHTML]="lobbyTimer"></span></div>
+  <div class="loading-animation" [innerHTML]="loadingInnerHTML"></div>
+  <div class="assets">
+    <div class="you-player player-sprite"></div>
+    <div
+      class="opponent-player player-sprite"
+      [ngClass]="{ blur: !found }"
+    ></div>
+  </div>
+  <div class="timer" [innerHTML]="timer"></div>
+  <div
+    (click)="waitForAccept()"
+    [ngClass]="{ active: found }"
+    [ngClass]="{ clicked: accepted }"
+    [ngClass]="{ 'active clicked': found && accepted }"
+    class="accept-btn"
+  >
+    Accept
+  </div>
+  <div class="error">
+    <span [innerHTML]="error"></span><span [innerHTML]="lobbyTimer"></span>
+  </div>
 </div>

@@ -42,9 +42,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  position:absolute;
-  left:50%;
-  margin-left:-25px;
+  position: absolute;
+  left: 50%;
+  margin-left: -25px;
 }
 
 .header-container .submit-btn:hover {
@@ -75,7 +75,7 @@
   border-radius: 6px;
   color: rgb(192, 192, 192);
   padding: 6px 10px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   letter-spacing: 1px;
   background-color: rgb(31, 31, 31);
 }

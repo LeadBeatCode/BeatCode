@@ -1,10 +1,10 @@
 .body-container {
-    display: flex;
-    flex-direction: row;
-    margin: 0;
-    height: 100vh;
-    width: 100%;
-    font-family: 'Saira';
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  height: 100vh;
+  width: 100%;
+  font-family: "Saira";
 }
 
 .header-side-container {
@@ -17,306 +17,306 @@
 }
 
 .main-container {
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
-    height: 100%;
-    width: 82%;
-    background-color: black;
-    margin-left: 5px;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+  width: 82%;
+  background-color: black;
+  margin-left: 5px;
 }
 
 .header-container {
-    width: 100%;
-    /* background-color: aqua; */
-    height: 15%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    letter-spacing: 2px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    align-items: center;
+  width: 100%;
+  /* background-color: aqua; */
+  height: 15%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  align-items: center;
 }
 
 .menu-item {
-    cursor: pointer;
-    margin-right: 30px;
-    border-radius: 1px solid transparent;
-    padding: 16px 20px;
-    background-color: #0c0c18;
-    border-radius: 10px;
-    cursor: pointer;
+  cursor: pointer;
+  margin-right: 30px;
+  border-radius: 1px solid transparent;
+  padding: 16px 20px;
+  background-color: #0c0c18;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .play-game-btn {
-    text-align: center;
-    margin-right: 30px;
-    font-size: 16px;
-    width: 150px;
-    cursor: pointer;
-    border: 1px solid white;
-    padding: 2px;
-    border-radius: 15px;
+  text-align: center;
+  margin-right: 30px;
+  font-size: 16px;
+  width: 150px;
+  cursor: pointer;
+  border: 1px solid white;
+  padding: 2px;
+  border-radius: 15px;
 }
 
 .play-game-btn:hover {
-    border: 1px solid rgb(6, 255, 6);
-    color: rgb(6, 255, 6);
-    transition: 1.1s;
+  border: 1px solid rgb(6, 255, 6);
+  color: rgb(6, 255, 6);
+  transition: 1.1s;
 }
 
 .menu-item.active {
-    background-color: rgb(24, 24, 48);
+  background-color: rgb(24, 24, 48);
 }
 
 .header-container .menu {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    height: 95%;
-    width:  80%;
-    color: rgb(216, 216, 216);
-    margin: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 95%;
+  width: 80%;
+  color: rgb(216, 216, 216);
+  margin: 30px;
 }
 
 .dashboard-container {
-    font-family: 'Saira';
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 85%;
+  font-family: "Saira";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85%;
 }
 
 .dashboard-container .dashboard-content-container {
-    height: 95%;
-    width:  97%;
-    display: flex;
-    /* background-color: aqua; */
+  height: 95%;
+  width: 97%;
+  display: flex;
+  /* background-color: aqua; */
 }
 
 .dashboard-container .dashboard-content-container > * {
-    margin: 15px;
-    margin-top: 0px;
+  margin: 15px;
+  margin-top: 0px;
 }
 
 .user-info-container {
-    width: 72%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    /* background-color: rgb(57, 91, 91); */
+  width: 72%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  /* background-color: rgb(57, 91, 91); */
 }
 
 .user-info-container .user-statistics-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    font-family: Arial, Helvetica, sans-serif;
-    color: white;
-    height: 48%;
-    margin-bottom: 30px;
-    width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  height: 48%;
+  margin-bottom: 30px;
+  width: 100%;
 }
 
 .user-statistics-container .statistics-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #0c0c18;
-    font-family: 'Saira';
-    color: white;
-    border-radius: 18px;
-    height: 100%;
-    margin-right: 30px;
-    width: 58%;
-    border: 1px solid rgb(31, 31, 31);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #0c0c18;
+  font-family: "Saira";
+  color: white;
+  border-radius: 18px;
+  height: 100%;
+  margin-right: 30px;
+  width: 58%;
+  border: 1px solid rgb(31, 31, 31);
 }
 
 .user-profile-container {
-    width: 80%;
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
+  width: 80%;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .user-profile-container .user-profile-image-container {
-    width: 86px;
-    height: 86px;
-    border-radius: 50%;
-    overflow: hidden;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .user-profile-container .username {
-    font-size: 18px;
-    margin-top: 14px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 600;
-    color: rgb(222, 222, 222);
-    letter-spacing: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 190px;
-    text-align: center;
+  font-size: 18px;
+  margin-top: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  color: rgb(222, 222, 222);
+  letter-spacing: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 190px;
+  text-align: center;
 }
 
 .header-side-container .friends-container {
-    width: 80%;
-    height: 70%;
-    margin: 20px 0;
-    padding: 20px 0;
-    user-select: none;
-    border-top: 1px solid rgb(27, 27, 27);
+  width: 80%;
+  height: 70%;
+  margin: 20px 0;
+  padding: 20px 0;
+  user-select: none;
+  border-top: 1px solid rgb(27, 27, 27);
 }
 
 .friends-container .friends-title {
-    /* font-weight: 500; */
-    font-family: Arial, Helvetica, sans-serif;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: rgb(192, 192, 192);
-    margin-bottom: 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 2px;
-    font-size: 10px;
+  /* font-weight: 500; */
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgb(192, 192, 192);
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 2px;
+  font-size: 10px;
 }
 
 .add-friend-btn {
-    background-image: url(../../../assets/add-friend-btn.png);
-    width: 20px;
-    z-index: 100;
-    height: 24px;
-    cursor: pointer;
-    background-size: contain;
-    background-repeat: no-repeat;
+  background-image: url(../../../assets/add-friend-btn.png);
+  width: 20px;
+  z-index: 100;
+  height: 24px;
+  cursor: pointer;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .logo {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .friends-container .friends-component {
-    /* background-image: linear-gradient(125deg, #191b29, #211128);
+  /* background-image: linear-gradient(125deg, #191b29, #211128);
     border: 1px solid transparent;
     border-radius: 6px;
     width: 100%;*/
-    height: 90%;
-    /* box-shadow: inset 0px 0px 50px 50px #0c0c18; */
+  height: 90%;
+  /* box-shadow: inset 0px 0px 50px 50px #0c0c18; */
 }
 
 .user-profile-image {
-    background-image: url("https://www.w3schools.com/howto/img_avatar.png");
-    width: 86px;
-    height: 86px;
-    background-size: cover;
+  /* background-image: url("https://lh3.googleusercontent.com/a/ACg8ocLmXbSLH6sCOqd978QthE9U5ByX42LiCZyBFtFSk6iMInZLvw=s96-c"); */
+  width: 86px;
+  height: 86px;
+  background-size: cover;
 }
 
 .title-container {
-    display: flex;
-    width: 100px;
+  display: flex;
+  width: 100px;
 }
 
 .title-container .text {
-    margin-right: 4px;
+  margin-right: 4px;
 }
 .title-container .number {
-    color: rgb(155, 155, 155);
+  color: rgb(155, 155, 155);
 }
 
 .user-statistics-container .ranking-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #0c0c18;
-    font-family: 'Saira';
-    color: white;
-    border-radius: 18px;
-    height: 100%;
-    width: 38%;
-    border: 1px solid rgb(31, 31, 31);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #0c0c18;
+  font-family: "Saira";
+  color: white;
+  border-radius: 18px;
+  height: 100%;
+  width: 38%;
+  border: 1px solid rgb(31, 31, 31);
 }
 
 .user-info-container .overview {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #0c0c18;
-    /* margin: 20px; */
-    font-family: 'Saira';
-    color: white;
-    height: 48%;
-    border-radius: 18px;
-    width: 100%;
-    border: 1px solid rgb(31, 31, 31);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #0c0c18;
+  /* margin: 20px; */
+  font-family: "Saira";
+  color: white;
+  height: 48%;
+  border-radius: 18px;
+  width: 100%;
+  border: 1px solid rgb(31, 31, 31);
 }
 
 .game-history-container {
-    width: 28%;
-    height: 100%;
-    padding-left: 4px;
-    /* margin: 30px; */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 28%;
+  height: 100%;
+  padding-left: 4px;
+  /* margin: 30px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .game-history-container .game-history-contents {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #0c0c18;
-    font-family: 'Saira';
-    color: white;
-    height: 100%;
-    border-radius: 18px;
-    width: 100%;
-    border: 1px solid rgb(31, 31, 31);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #0c0c18;
+  font-family: "Saira";
+  color: white;
+  height: 100%;
+  border-radius: 18px;
+  width: 100%;
+  border: 1px solid rgb(31, 31, 31);
 }
 
 .join-room-container {
-    display: flex;
-    flex-direction: column;
-    width: 500px;
-    height: 120px;
-    margin: auto;
-    inset: 0;
-    position: absolute;
-    padding: 20px;
-    align-items: center;
-    font-family: "Tiny5";
-    border-radius: 10px;
-    bottom: 30px;
-    padding: 28px 36px;
-    background-color: rgb(26, 25, 25);
-    border: 1px solid rgb(74, 74, 74);
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  height: 120px;
+  margin: auto;
+  inset: 0;
+  position: absolute;
+  padding: 20px;
+  align-items: center;
+  font-family: "Tiny5";
+  border-radius: 10px;
+  bottom: 30px;
+  padding: 28px 36px;
+  background-color: rgb(26, 25, 25);
+  border: 1px solid rgb(74, 74, 74);
 }
 
 .join-room-container .btn {
-    padding: 12px 14px;
-    line-height: 20px;
-    font-size: 32px;
-    font-family: "Tiny5";
-    color: white;
-    cursor: pointer;
-    margin: 8px;
-    letter-spacing: 2px;
+  padding: 12px 14px;
+  line-height: 20px;
+  font-size: 32px;
+  font-family: "Tiny5";
+  color: white;
+  cursor: pointer;
+  margin: 8px;
+  letter-spacing: 2px;
 }
 
 .join-room-container .btn:hover {
-    color: rgb(154, 154, 154);
+  color: rgb(154, 154, 154);
 }
 
 .main-container {
-    /* display: flex;
+  /* display: flex;
     flex-direction: column;
     width: 500px;
     height: 120px;
@@ -331,21 +331,21 @@
     padding: 12px 14px; */
 }
 .join-btn {
-    padding: 12px 14px;
-    line-height: 20px;
-    border: 1px solid rgb(6, 255, 6);
-    border-radius: 8px;
-    font-size: 36px;
-    font-family: "Tiny5";
-    color: white;
-    cursor: pointer;
-    letter-spacing: 2px;
+  padding: 12px 14px;
+  line-height: 20px;
+  border: 1px solid rgb(6, 255, 6);
+  border-radius: 8px;
+  font-size: 36px;
+  font-family: "Tiny5";
+  color: white;
+  cursor: pointer;
+  letter-spacing: 2px;
 }
 
 .btn:hover {
-    color: rgb(6, 255, 6);
+  color: rgb(6, 255, 6);
 }
 
 .hidden {
-    visibility: hidden;
+  visibility: hidden;
 }

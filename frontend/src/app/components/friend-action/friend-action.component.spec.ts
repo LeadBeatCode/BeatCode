@@ -8,9 +8,8 @@ describe('FriendActionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FriendActionComponent]
-    })
-    .compileComponents();
+      declarations: [FriendActionComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FriendActionComponent);
     component = fixture.componentInstance;

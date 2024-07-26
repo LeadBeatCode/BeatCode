@@ -37,21 +37,21 @@
   background-image: url(../../../assets/resize_icon.png);
   background-repeat: no-repeat;
   background-size: contain;
-  overflow:hidden !important;
+  overflow: hidden !important;
 }
 
 .example-block {
-    border: 2px solid #b5b5b524 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
+  border: 2px solid #b5b5b524 !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
 }
 
 pre {
-    border: 2px solid #b5b5b524 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
+  border: 2px solid #b5b5b524 !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
 }
 
 .contents-container::-webkit-scrollbar {
@@ -75,34 +75,34 @@ pre {
 }
 
 code {
-    background-color: #000a2008;
-    border-radius: 5px;
-    border-width: 1px;
-    color: #262626bf;
-    font-family: Menlo, sans-serif;
-    font-size: .8rem;
-    line-height: 1rem;
-    padding: .175rem;
-    white-space: pre-wrap;
-    background-color: #ffffff1c;
-    border-color: #f7faff1f;
-    color: #f7f8fbbf;
+  background-color: #000a2008;
+  border-radius: 5px;
+  border-width: 1px;
+  color: #262626bf;
+  font-family: Menlo, sans-serif;
+  font-size: 0.8rem;
+  line-height: 1rem;
+  padding: 0.175rem;
+  white-space: pre-wrap;
+  background-color: #ffffff1c;
+  border-color: #f7faff1f;
+  color: #f7f8fbbf;
 }
 
 pre {
-    border-left-width: 2px;
-    font-size: .875rem;
-    line-height: 1.25rem;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    overflow: visible;
-    padding-left: 1rem;
-    white-space: pre-wrap;
-    display: block;
-    font-family: monospace;
-    unicode-bidi: isolate;
-    white-space: pre;
-    margin: 1em 0px;
+  border-left-width: 2px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  overflow: visible;
+  padding-left: 1rem;
+  white-space: pre-wrap;
+  display: block;
+  font-family: monospace;
+  unicode-bidi: isolate;
+  white-space: pre;
+  margin: 1em 0px;
 }
 
 .contents-container .problem-title {

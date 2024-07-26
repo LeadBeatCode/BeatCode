@@ -1,12 +1,16 @@
 import { sequelize } from "../datasource.js";
 import { DataTypes } from "sequelize";
 
-export const Queue = sequelize.define("Queue", {
-  accessToken: {
-    type: DataTypes.STRING(1000),
+export const Friend = sequelize.define("Friend", {
+  user1: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
-  socketId: {
+  user2: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  status: {
     type: DataTypes.STRING,
     allowNull: false,
   },
