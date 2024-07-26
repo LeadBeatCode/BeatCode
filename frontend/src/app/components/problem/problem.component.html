@@ -1,13 +1,23 @@
 <div class="contents-container">
   <div class="btns">
-    <div class="btn" [ngClass]= "{'active': problem}" (click)="showProblem()">Problem</div>
+    <div class="btn" [ngClass]="{ active: problem }" (click)="showProblem()">
+      Problem
+    </div>
     <div class="word-break">|</div>
-    <div class="btn" [ngClass]="{'active': testResult}" (click)="showTestResult()">Test Result</div>
+    <div
+      class="btn"
+      [ngClass]="{ active: testResult }"
+      (click)="showTestResult()"
+    >
+      Test Result
+    </div>
   </div>
   <div class="problem content" *ngIf="problem">
     <h1 class="problem-title" [innerHTML]="problemTitle"></h1>
-    <div class="problem-text" [innerHTML]="sanitizer.bypassSecurityTrustHtml(problemText)">
-    </div>
+    <div
+      class="problem-text"
+      [innerHTML]="sanitizer.bypassSecurityTrustHtml(problemText)"
+    ></div>
   </div>
   <div class="test-result content" *ngIf="testResult">
     <div class="result-container">

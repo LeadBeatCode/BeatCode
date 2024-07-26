@@ -1,40 +1,56 @@
 <!-- <div class="header-container"></div> -->
 <div class="body-container">
-    <div class="header-side-container">
-        <div class="user-profile-container">
-            <div class="user-profile-image-container">
-                <div class="user-profile-image" [style.backgroundImage]="'url(' + userData.picture + ')'"></div>
-            </div>
-            <div class="username">{{ userData.nickname }}</div>
-        </div>
-        <div class="friends-container">
-            <div class="friends-title">
-                <div class="title-container">
-                    <div class="text">friends</div>
-                    <div class="number">100</div>
-                </div>
-                <div class="add-friend-btn" (click)="changeLoadFriendList()"></div>
-            </div>
-            <div class="friends-component">
-                <app-friend-list *ngIf="loadFriendList" [onlineFriends]="onlineFriends"></app-friend-list>
-                <app-friend-action *ngIf="!loadFriendList"></app-friend-action>
-            </div>
-        </div>
-        <div class="footer">
-            <app-header></app-header>
-        </div>
+  <div class="header-side-container">
+    <div class="user-profile-container">
+      <div class="user-profile-image-container">
+        <div
+          class="user-profile-image"
+          [style.backgroundImage]="'url(' + userData.picture + ')'"
+        ></div>
+      </div>
+      <div class="username">{{ userData.nickname }}</div>
     </div>
-    <div class="main-container highlight">
-        <div class="header-container">
-            <div class="menu">
-                <div class="menu-item" [ngClass]="{'active': loadUserPerformance}" (click)="changeLoadUserPerformance(true)">User Performance</div>
-                <div class="menu-item" [ngClass]="{'active': !loadUserPerformance}" (click)="changeLoadUserPerformance(false)">Match History</div>
-            </div>
-            <div class="play-game-btn" (click)="enterLobby()">
-                Start Game
-            </div>
+    <div class="friends-container">
+      <div class="friends-title">
+        <div class="title-container">
+          <div class="text">friends</div>
+          <div class="number">100</div>
         </div>
-        <app-user-performance *ngIf="loadUserPerformance"></app-user-performance>
-        <app-match-history *ngIf="!loadUserPerformance"></app-match-history>
+        <div class="add-friend-btn" (click)="changeLoadFriendList()"></div>
+      </div>
+      <div class="friends-component">
+        <app-friend-list
+          *ngIf="loadFriendList"
+          [onlineFriends]="onlineFriends"
+        ></app-friend-list>
+        <app-friend-action *ngIf="!loadFriendList"></app-friend-action>
+      </div>
     </div>
+    <div class="footer">
+      <app-header></app-header>
+    </div>
+  </div>
+  <div class="main-container highlight">
+    <div class="header-container">
+      <div class="menu">
+        <div
+          class="menu-item"
+          [ngClass]="{ active: loadUserPerformance }"
+          (click)="changeLoadUserPerformance(true)"
+        >
+          User Performance
+        </div>
+        <div
+          class="menu-item"
+          [ngClass]="{ active: !loadUserPerformance }"
+          (click)="changeLoadUserPerformance(false)"
+        >
+          Match History
+        </div>
+      </div>
+      <div class="play-game-btn" (click)="enterLobby()">Start Game</div>
+    </div>
+    <app-user-performance *ngIf="loadUserPerformance"></app-user-performance>
+    <app-match-history *ngIf="!loadUserPerformance"></app-match-history>
+  </div>
 </div>

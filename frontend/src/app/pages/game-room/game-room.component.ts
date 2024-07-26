@@ -1,8 +1,8 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/apiService/api.service';
-import * as Yjs from "yjs"
-import { MonacoBinding } from "y-monaco"
-import { WebsocketProvider } from "y-websocket"
+import * as Yjs from 'yjs';
+import { MonacoBinding } from 'y-monaco';
+import { WebsocketProvider } from 'y-websocket';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
 import { GameService } from '../../services/gameService/game.service';
@@ -14,15 +14,16 @@ import { switchMap } from 'rxjs';
   // styleUrls: ['./app.component.css'],
   selector: 'app-game-room',
   templateUrl: './game-room.component.html',
-  styleUrl: './game-room.component.css'
+  styleUrl: './game-room.component.css',
 })
-
-export class GameRoomComponent implements OnInit{
+export class GameRoomComponent implements OnInit {
   title = 'frontend';
   editorOptions = { theme: 'vs-dark', language: 'python' };
   opponentEditorOptions = { theme: 'hc-black', language: 'python' };
-  player1Code: string = "# Welcome to BeatCode!\n# Write down your code here.\n";
-  player2Code: string = "# Welcome to BeatCode!\n# Write down your code here.\n";
+  player1Code: string =
+    '# Welcome to BeatCode!\n# Write down your code here.\n';
+  player2Code: string =
+    '# Welcome to BeatCode!\n# Write down your code here.\n';
   submissionToken: string = '';
   expectedOutput: string = '4\n';
   result: string = '';
@@ -42,38 +43,49 @@ export class GameRoomComponent implements OnInit{
   problemText: string = '';
   player1HeartCount: number[] = Array(10).fill(1);
   player2HeartCount: number[] = Array(10).fill(1);
-  
+  isPve: boolean = false;
 
-  constructor(private api: ApiService, private activatedRoute: ActivatedRoute, private socket: Socket, game: GameService, private router: Router) {
-    this.activatedRoute.queryParams.subscribe(params => {
-        const roomId = params['roomId'];
-        const accessToken = localStorage.getItem('accessToken');
-        this.currentRoom = roomId;
-        this.api.getRoom(roomId).subscribe((data) => {
-          if (data.token2 === accessToken) {
-            this.playerTitle = 'p2';
-          } else if (data.token1 === accessToken) {
-            this.playerTitle = 'p1';
-          } else {
-            console.log('You are not a player in this room');
-            this.router.navigate(['/']);
-          }
-          this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
-            if (this.playerTitle === 'p1') {
-              this.opponentSocketId = data.socketId2;
-            } else {
-              this.opponentSocketId = data.socketId1;
+  constructor(
+    private api: ApiService,
+    private activatedRoute: ActivatedRoute,
+    private socket: Socket,
+    private game: GameService,
+    private router: Router,
+  ) {
+    
+    this.activatedRoute.queryParams.subscribe((params) => {
+      const roomId = params['roomId'];
+      const accessToken = localStorage.getItem('accessToken');
+      this.currentRoom = roomId;
+      if (accessToken) {
+        this.api.getRoom(roomId, accessToken).subscribe({
+          next: (data) => {
+            this.isPve = data.isPve;
+            this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
+              if (this.playerTitle === 'p1') {
+                this.opponentSocketId = data.socketId2;
+              } else {
+                this.opponentSocketId = data.socketId1;
+              }
+            });
+          },
+          error: (err) => {
+            console.log(err);
+            if (err.status === 401) {
+              console.log('Please sign in');
+              this.router.navigate(['/']);
+            } else if (err.status === 403) {
+              console.log('You are not authorized to access this page');
+              this.router.navigate(['/']);
             }
-          });
+          },
         });
-        this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
-      if (this.playerTitle === 'p1') {
-        this.opponentSocketId = data.socketId2;
       } else {
-        this.opponentSocketId = data.socketId1;
+        console.log('Please sign in');
+        this.router.navigate(['/']);
       }
+
     });
-      });
   }
 
   ngOnInit() {
@@ -86,19 +98,19 @@ export class GameRoomComponent implements OnInit{
     //   if (this.problemText) {
     //     clearInterval(getQuestionInterval);
     //   }
-      this.getProblem();
+    this.getProblem();
     // }, 5000);
   }
 
   startTimer() {
-    console.log("=====>");
+    console.log('=====>');
     this.timeInterval = setInterval(() => {
       if (this.time === 0) {
         this.time++;
       } else {
         this.time++;
       }
-      this.displayTime=this.transform( this.time)
+      this.displayTime = this.transform(this.time);
     }, 1000);
   }
 
@@ -107,11 +119,13 @@ export class GameRoomComponent implements OnInit{
     return minutes + ':' + (value - minutes * 60);
   }
 
-
-
   editorInit(editor: any) {
-    editor.updateOptions({ scrollBeyondLastLine: false , renderLineHighlight: 'none'});
-    if (this.playerTitle === 'p2') {
+    editor.updateOptions({
+      scrollBeyondLastLine: false,
+      renderLineHighlight: 'none',
+    });
+
+    if (!this.isPve) {if (this.playerTitle === 'p2') {
       editor.updateOptions({ readOnly: true });
       this.socket.on('editor', (data: any) => {
         editor.setValue(data.code);
@@ -120,17 +134,25 @@ export class GameRoomComponent implements OnInit{
       editor.updateOptions({ readOnly: false });
       editor.onDidChangeModelContent((event: any) => {
         //connect to socket
-        console.log('editor content changed', this.opponentSocketId, editor.getValue());
-        this.socket.emit('editor', { targetSocketId: this.opponentSocketId, code: editor.getValue()});
+        console.log(
+          'editor content changed',
+          this.opponentSocketId,
+          editor.getValue(),
+        );
+        this.socket.emit('editor', {
+          targetSocketId: this.opponentSocketId,
+          code: editor.getValue(),
+        });
       });
-      
-    }
-    
+    }}
   }
 
   opponentEditorInit(editor: any) {
-    editor.updateOptions({ scrollBeyondLastLine: false , renderLineHighlight: 'none'});
-    if (this.playerTitle === 'p1') {
+    editor.updateOptions({
+      scrollBeyondLastLine: false,
+      renderLineHighlight: 'none',
+    });
+    if(!this.isPve) {if (this.playerTitle === 'p1') {
       editor.updateOptions({ readOnly: true });
       this.socket.on('editor', (data: any) => {
         console.log('opponent editor content changed', data.code);
@@ -139,21 +161,20 @@ export class GameRoomComponent implements OnInit{
     } else {
       editor.updateOptions({ readOnly: false });
       editor.onDidChangeModelContent((event: any) => {
-
-        this.socket.emit('editor', { targetSocketId: this.opponentSocketId, code: editor.getValue()});
+        this.socket.emit('editor', {
+          targetSocketId: this.opponentSocketId,
+          code: editor.getValue(),
+        });
       });
+    }} else {
+      editor.updateOptions({ readOnly: true });
     }
-    // const ydoc = new Yjs.Doc()
-    // const provider = new WebsocketProvider('http://localhost:1235', 'p1Editor' + this.currentRoom, ydoc)
-    // const ytext = ydoc.getText('p2Monaco' + this.currentRoom)
-    // const monacoBinding = new MonacoBinding(ytext, editor.getModel(), new Set([editor]), provider.awareness);
-    
   }
 
   runCode() {
     var code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
     code = this.import + code;
-    code += '\nsoln = Solution()\nprint(soln.twoSum([2,7,11,15], 9))'
+    code += '\nsoln = Solution()\nprint(soln.twoSum([2,7,11,15], 9))';
     this.api.submitCode(code).subscribe((data) => {
       this.submissionToken = data.token;
       this.checkSubmission();
@@ -167,24 +188,32 @@ export class GameRoomComponent implements OnInit{
       }
       if (data.stdout) {
         if (data.stdout === this.expectedOutput) {
-          this.showResult(`Output: ${data.stdout}`, 'Correct answer!', this.numAttempts);
+          this.showResult(
+            `Output: ${data.stdout}`,
+            'Correct answer!',
+            this.numAttempts,
+          );
         } else {
           if (this.playerTitle === 'p1') {
             this.player1HeartCount[this.numAttempts] = 0;
             this.player1HeartCount = [...this.player1HeartCount];
-            console.log(this.player1HeartCount)
+            console.log(this.player1HeartCount);
           } else {
             this.player2HeartCount[this.numAttempts] = 0;
             this.player2HeartCount = [...this.player2HeartCount];
-            console.log(this.player2HeartCount)
+            console.log(this.player2HeartCount);
           }
           if (this.numAttempts < 9) {
             this.numAttempts += 1;
           } else {
-            console.log("Game Over");
+            console.log('Game Over');
             clearInterval(this.timeInterval);
           }
-          this.showResult(`Output: ${data.stdout}`, 'Incorrect answer!', this.numAttempts);
+          this.showResult(
+            `Output: ${data.stdout}`,
+            'Incorrect answer!',
+            this.numAttempts,
+          );
         }
       } else {
         setTimeout(() => {
@@ -213,14 +242,26 @@ export class GameRoomComponent implements OnInit{
   }
 
   getProblem() {
-    this.api.getRandomProblem().subscribe(data => {
-      console.log(data.question.title)
+    if(this.isPve) {
+      this.api.getRandomPveProblem().subscribe((data) => {
+        console.log(data.question.title);
+        this.problemTitle = data.title;
+        this.problemText = data.description;
+        this.api.getProblemStartCode().subscribe((data) => {
+          this.player1Code += data[this.language];
+        });
+        console.log(data.question);
+      });
+    } else {
+    this.api.getRandomProblem().subscribe((data) => {
+      console.log(data.question.title);
       this.problemTitle = data.question.title;
       this.problemText = data.question.content;
-      this.api.getProblemStartCode().subscribe(data => {
+      this.api.getProblemStartCode().subscribe((data) => {
         this.player1Code += data[this.language];
-      })
-      console.log(data.question)
-    })
+      });
+      console.log(data.question);
+    });
   }
+}
 }

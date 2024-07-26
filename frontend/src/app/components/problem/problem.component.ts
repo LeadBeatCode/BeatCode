@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { ApiService } from '../../services/apiService/api.service'
+import { ApiService } from '../../services/apiService/api.service';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -8,7 +8,6 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./problem.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-
 export class ProblemComponent implements OnInit {
   @Input() stderr: string = '';
   @Input() stdout: string = '';
@@ -17,23 +16,25 @@ export class ProblemComponent implements OnInit {
   @Input() problemText: string = '';
   @Input() numAttemptsText: string = '';
 
-  problem:boolean=true;
-  testResult:boolean=false;
-  resultStyle:string = '';
-  
-  constructor(private ApiService: ApiService, public sanitizer: DomSanitizer) {
-  }
+  problem: boolean = true;
+  testResult: boolean = false;
+  resultStyle: string = '';
+
+  constructor(
+    private ApiService: ApiService,
+    public sanitizer: DomSanitizer,
+  ) {}
 
   ngOnInit(): void {}
 
-  showProblem(){
-    this.problem=true;
-    this.testResult=false;
+  showProblem() {
+    this.problem = true;
+    this.testResult = false;
   }
 
-  showTestResult(){
-    this.testResult=true;
-    this.problem=false;
+  showTestResult() {
+    this.testResult = true;
+    this.problem = false;
   }
 
   ngOnChanges() {

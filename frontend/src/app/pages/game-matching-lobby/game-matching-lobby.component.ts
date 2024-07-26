@@ -7,11 +7,11 @@ import { GameService } from '../../services/gameService/game.service';
 @Component({
   selector: 'app-game-matching-lobby',
   templateUrl: './game-matching-lobby.component.html',
-  styleUrl: './game-matching-lobby.component.css'
+  styleUrl: './game-matching-lobby.component.css',
 })
 export class GameMatchingLobbyComponent {
-  loadingText: string = "Matching A Game...";
-  foundText: string = "Found A Match!";
+  loadingText: string = 'Matching A Game...';
+  foundText: string = 'Found A Match!';
   loadingInnerHTML: string = '';
   found = false;
   pair: any;
@@ -19,17 +19,19 @@ export class GameMatchingLobbyComponent {
   timer = '';
   lobbyTimer = '';
   errorCode = {
-    unaccepted: "The player matched left because you did not accept. <br>Returning to lobby...",
-    unmatched: "The other player did not accept the match. <br>Returning to lobby...",
+    unaccepted:
+      'The player matched left because you did not accept. <br>Returning to lobby...',
+    unmatched:
+      'The other player did not accept the match. <br>Returning to lobby...',
   };
-  error = "";
+  error = '';
   timerInterval: number | ReturnType<typeof setTimeout> = 0;
-  
+
   constructor(
     private api: ApiService,
     private router: Router,
     private socket: Socket,
-    private game: GameService
+    private game: GameService,
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +41,7 @@ export class GameMatchingLobbyComponent {
     this.socket.on('matched', (matchedPair: any, accessToken: any) => {
       this.foundMatch();
       this.pair = matchedPair;
-    })
+    });
   }
 
   foundMatch() {
@@ -54,7 +56,7 @@ export class GameMatchingLobbyComponent {
         this.loadingInnerHTML = this.foundText;
         clearInterval(interval);
       } else if (this.loadingInnerHTML.length < lim) {
-          this.loadingInnerHTML += this.loadingText[this.loadingInnerHTML.length];
+        this.loadingInnerHTML += this.loadingText[this.loadingInnerHTML.length];
       } else {
         this.loadingInnerHTML = '';
       }
@@ -71,19 +73,19 @@ export class GameMatchingLobbyComponent {
         this.updateOnFailAccept();
         if (!this.game.status || !this.accepted) {
           this.found = false;
-          var t = 5
+          var t = 5;
           this.lobbyTimer = '' + t;
           const lobbyInterval = setInterval(() => {
             if (t <= 0) {
               this.error = '';
               if (!this.game.status) {
-                this.router.navigate(['/'])
+                this.router.navigate(['/']);
               }
               clearInterval(lobbyInterval);
             } else {
               this.lobbyTimer = '' + t--;
             }
-          }, 1000)
+          }, 1000);
         }
         if (!this.game.status && this.accepted) {
           this.error = this.errorCode.unmatched;
@@ -94,17 +96,21 @@ export class GameMatchingLobbyComponent {
         this.timer = '' + timeLeft--;
       }
     }, 1000);
-  }
+  };
 
   updateOnFailAccept = () => {
     this.socket.emit('failedAccept', this.pair);
-  }
+  };
 
   waitForAccept() {
     this.accepted = true;
-    this.socket.emit('accepted', this.pair, localStorage.getItem('accessToken'));
+    this.socket.emit(
+      'accepted',
+      this.pair,
+      localStorage.getItem('accessToken'),
+    );
 
-    this.socket.on('start', (roomId:number, accessToken:string) => {
+    this.socket.on('start', (roomId: number, accessToken: string) => {
       this.game.updateStatus(true);
       clearInterval(this.timerInterval);
       this.router.navigate(['/game-room'], { queryParams: { roomId: roomId } });

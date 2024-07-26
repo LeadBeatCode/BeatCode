@@ -8,11 +8,9 @@ import { Socket } from 'ngx-socket-io';
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
-  styleUrl: './sign-in.component.css'
+  styleUrl: './sign-in.component.css',
 })
-
-export class SignInComponent implements OnInit  {
-
+export class SignInComponent implements OnInit {
   isAuthenticated = false;
   userData: any;
   socketId: string = '';
@@ -27,46 +25,49 @@ export class SignInComponent implements OnInit  {
   }
   private readonly oidcSecurityService = inject(OidcSecurityService);
 
-
-
-  ngOnInit(){
+  ngOnInit() {
     this.oidcSecurityService
-    .checkAuth()
-    .subscribe(({ isAuthenticated, userData, accessToken }) => {
-      //console.log('app authenticated', isAuthenticated);
-      //console.log(userData.access_token);
-      this.isAuthenticated = isAuthenticated;
-      this.userData = userData;
-      if (isAuthenticated) {
-        this.api.signIn(userData, this.socketId, accessToken).subscribe({
-          next: (data) => {
-            localStorage.setItem('accessToken', accessToken);
-            this.router.navigate(['/dashboard'], { state: { userData: userData, socketId: this.socketId} });
-          },
-          error: (err) => {
-            if (err.status === 404) {
-              console.log('User not found, creating user');
-              this.api.signUp(userData, this.socketId, accessToken).subscribe({
-                next: (data) => {
-                  console.log(data);
-                  localStorage.setItem('accessToken', accessToken);
-                  this.router.navigate(['/dashboard'], { state: { userData: userData, socketId: this.socketId } });
-                },
-                error: (err) => {
-                  console.log(err);
-                }
+      .checkAuth()
+      .subscribe(({ isAuthenticated, userData, accessToken }) => {
+        //console.log('app authenticated', isAuthenticated);
+        //console.log(userData.access_token);
+        this.isAuthenticated = isAuthenticated;
+        this.userData = userData;
+        if (isAuthenticated) {
+          this.api.signIn(userData, this.socketId, accessToken).subscribe({
+            next: () => {
+              localStorage.setItem('accessToken', accessToken);
+              this.router.navigate(['/dashboard'], {
+                state: { userData: userData, socketId: this.socketId },
               });
-            }
-          }
-        });
+            },
+            error: (err) => {
+              if (err.status === 404) {
+                console.log('User not found, creating user');
+                this.api
+                  .signUp(userData, this.socketId, accessToken)
+                  .subscribe({
+                    next: (data) => {
+                      console.log(data);
+                      localStorage.setItem('accessToken', accessToken);
+                      this.router.navigate(['/dashboard'], {
+                        state: { userData: userData, socketId: this.socketId },
+                      });
+                    },
+                    error: (err) => {
+                      console.log(err);
+                    },
+                  });
+              }
+            },
+          });
         }
-      console.log(userData);
-      
-      this.oidcSecurityService.getAccessToken().subscribe((token) => {
-        console.log(token);
-      }
-      );
-    });
+        console.log(userData);
+
+        this.oidcSecurityService.getAccessToken().subscribe((token) => {
+          console.log(token);
+        });
+      });
   }
 
   afterSignIn(userId: string, accessToken: string) {
@@ -82,16 +83,14 @@ export class SignInComponent implements OnInit  {
                 // Send online notification to friend
                 this.socket.emit('online', userId, friend.socket);
               }
-            }
+            },
           });
-          
         }
       },
       error: (err) => {
         console.log(err);
-      }
+      },
     });
-    
   }
 
   loginUser() {
@@ -105,7 +104,8 @@ export class SignInComponent implements OnInit  {
   }
 
   randomString(length: number) {
-    const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const chars =
+      '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
     for (let i = length; i > 0; --i) {
       result += chars[Math.floor(Math.random() * chars.length)];

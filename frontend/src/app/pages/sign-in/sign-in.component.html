@@ -1,16 +1,16 @@
 <div class="sign-in-container">
-    <!-- <div class="options">
+  <!-- <div class="options">
         <div class="sign-in active">Sign In</div>
         <div class="sign-up">Sign Up</div>
     </div> -->
-    <div *ngIf="isAuthenticated; else login" class="options">
-        <h1>Welcome, {{ userData?.name }}</h1>
-        <button (click)="logout()">Logout</button>
-        <div (click)="enterLobby()" class="btn">JOIN</div>
+  <div *ngIf="isAuthenticated; else login" class="options">
+    <h1>Welcome, {{ userData?.name }}</h1>
+    <button (click)="logout()">Logout</button>
+    <div (click)="enterLobby()" class="btn">JOIN</div>
+  </div>
+  <ng-template #login>
+    <div class="options">
+      <button (click)="loginUser()">Login</button>
     </div>
-    <ng-template #login>
-        <div class="options">
-            <button (click)="loginUser()">Login</button>
-        </div>
-    </ng-template>
+  </ng-template>
 </div>

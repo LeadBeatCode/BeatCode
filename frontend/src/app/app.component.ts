@@ -6,8 +6,7 @@ import { ApiService } from './services/apiService/api.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-
-export class AppComponent{
+export class AppComponent {
   constructor(private api: ApiService) {}
   title = 'frontend';
 }

@@ -6,19 +6,18 @@ import { Socket } from 'ngx-socket-io';
 @Component({
   selector: 'app-friend-request',
   templateUrl: './friend-request.component.html',
-  styleUrl: './friend-request.component.css'
+  styleUrl: './friend-request.component.css',
 })
 export class FriendRequestComponent {
-
   @Input() requesterId: string = '';
   @Input() requesterName: string = '';
   @Input() requesterProfilePic: string = '';
   @Input() requesterRank: string = '';
   constructor(
-    private api: ApiService, 
+    private api: ApiService,
     private router: Router,
     private socket: Socket,
-  ) { }
+  ) {}
 
   acceptRequest() {
     console.log('accept friend request');
@@ -40,15 +39,18 @@ export class FriendRequestComponent {
                 if (friendSocketId !== null) {
                   console.log('friendSocketId', friendSocketId);
                   console.log('friend.friendID', friend.user1);
-                  this.socket.emit('new friend', {friendId: friend.user1, friendSocketId: friendSocketId});
+                  this.socket.emit('new friend', {
+                    friendId: friend.user1,
+                    friendSocketId: friendSocketId,
+                  });
                 }
-              }
+              },
             });
           }
         },
         error: (err) => {
           console.log(err);
-        }
+        },
       });
     }
     // Call the API to accept the friend request

@@ -26,7 +26,10 @@ import { AuthInterceptor } from './services/auth.intercepter';
 import { FriendComponent } from './components/friend/friend.component';
 import { FriendRequestComponent } from './components/friend-request/friend-request.component';
 
-const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
+const socketIoConfig: SocketIoConfig = {
+  url: 'http://localhost:3001',
+  options: {},
+};
 
 @NgModule({
   declarations: [
@@ -56,7 +59,8 @@ const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: 
         silentRenew: true,
         useRefreshToken: true,
         logLevel: LogLevel.Debug,
-      },}),
+      },
+    }),
 
     BrowserModule,
     FormsModule,
@@ -66,7 +70,7 @@ const socketIoConfig: SocketIoConfig = { url: 'http://localhost:3001', options: 
     AppRoutingModule,
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

@@ -8,9 +8,8 @@ describe('GameMatchingLobbyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GameMatchingLobbyComponent]
-    })
-    .compileComponents();
+      declarations: [GameMatchingLobbyComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(GameMatchingLobbyComponent);
     component = fixture.componentInstance;
