@@ -100,6 +100,7 @@ export class GameMatchingLobbyComponent {
 
   updateOnFailAccept = () => {
     this.socket.emit('failedAccept', this.pair);
+    this.game.updateStatus(false);
   };
 
   waitForAccept() {
