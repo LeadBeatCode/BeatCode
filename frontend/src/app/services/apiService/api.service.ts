@@ -85,29 +85,6 @@ export class ApiService {
     return this.http.get(this.endpoint + '/api/queue');
   }
 
-  pairUser(
-    userId1: number,
-    userId2: number,
-    socketId1: string,
-    socketId2: string,
-  ): Observable<any> {
-    return this.http.post(this.endpoint + '/api/pairs', {
-      userId1,
-      userId2,
-      status: 'paired',
-      socketId1,
-      socketId2,
-    });
-  }
-
-  getPairedUser(pairId: number): Observable<any> {
-    return this.http.get(this.endpoint + '/api/pairs/' + pairId);
-  }
-
-  deletePair(pairId: number): Observable<any> {
-    return this.http.delete(this.endpoint + '/api/pairs/' + pairId);
-  }
-
   // createRoom(userId1: number, userId2: number): Observable<any> {
   //   return this.http.post(this.endpoint + '/api/rooms', {
   //     status: 'live',
@@ -120,14 +97,10 @@ export class ApiService {
     status: string,
     token1: string,
     token2: string,
-    socketId1: string,
-    socketId2: string,
     isPve: boolean,
   ): Observable<any> {
     return this.http.post(this.endpoint + '/api/rooms', {
       status,
-      socketId1,
-      socketId2,
       isPve,
     },
     {

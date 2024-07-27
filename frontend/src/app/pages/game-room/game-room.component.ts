@@ -399,7 +399,7 @@ displayResponseLineByLine(response: string) {
                 clearInterval(intervalId);
                 this.runCode(true);
             }
-        }, 500);
+        }, delay);
 }
 
 chooseLanguage(language: string) {

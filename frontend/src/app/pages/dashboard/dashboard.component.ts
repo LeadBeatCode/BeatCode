@@ -144,7 +144,7 @@ export class DashboardComponent implements OnInit {
       next: (data) => {
         console.log('user data', data);
         this.api
-      .createRoom('live', token, 'PveGame', data.socketId, '', true)
+      .createRoom('live', token, 'PveGame', true)
       .subscribe({
         next: (data) => {
           console.log('room created', data);

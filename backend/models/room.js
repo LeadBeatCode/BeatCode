@@ -6,24 +6,36 @@ export const Room = sequelize.define("Room", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  token1: {
-    type: DataTypes.STRING(1000),
-    allowNull: false,
-  },
-  token2: {
-    type: DataTypes.STRING(1000),
-    allowNull: false,
-  },
-  socketId1: {
+  userId1: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  socketId2: {
+  userId2: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   isPve: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
+  },
+  problemId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  user1Attempts: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  user2Attempts: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  user1Status: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  user2Status: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 });

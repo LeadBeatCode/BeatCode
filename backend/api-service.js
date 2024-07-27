@@ -57,26 +57,10 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.createPair = function (token1, token2, socketId1, socketId2) {
-    return fetch("http://localhost:3000/api/pairs", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization1: `Bearer ${token1}`,
-        authorization2: `Bearer ${token2}`,
-      },
-      body: JSON.stringify({ socketId1, socketId2 }),
-    }).then((res) => res.json());
-  };
 
-  module.getPair = function (id) {
-    return fetch(`http://localhost:3000/api/pairs/${id}`).then((res) =>
-      res.json(),
-    );
-  };
 
   module.setPlayerStatus = function (id, status, token) {
-    return fetch(`http://localhost:3000/api/pairs/${id}`, {
+    return fetch(`http://localhost:3000/api/rooms/${id}/playerStatus`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -86,18 +70,10 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.deletePair = function (id) {
-    return fetch(`http://localhost:3000/api/pairs/${id}`, {
-      method: "DELETE",
-    }).then((res) => res.json());
-  };
-
   module.createRoom = function (
     status,
     token1,
     token2,
-    socketId1,
-    socketId2,
     isPve,
   ) {
     return fetch("http://localhost:3000/api/rooms", {
@@ -107,7 +83,15 @@ export const apiService = (function () {
         authorization1: `Bearer ${token1}`,
         authorization2: `Bearer ${token2}`,
       },
-      body: JSON.stringify({ status, socketId1, socketId2, isPve }),
+      body: JSON.stringify({ status, isPve }),
+    }).then((res) => res.json());
+  };
+
+  module.getRoom = function (id, token) {
+    return fetch(`http://localhost:3000/api/rooms/${id}`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
     }).then((res) => res.json());
   };
 

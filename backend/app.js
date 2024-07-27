@@ -8,7 +8,6 @@ import { sequelize } from "./datasource.js";
 
 import { userRouter } from "./routers/user_router.js";
 import { queueRouter } from "./routers/queue_router.js";
-import { pairRouter } from "./routers/pair_router.js";
 import { roomRouter } from "./routers/room_router.js";
 import { problemRouter } from "./routers/problem_router.js";
 import { leetcodeRouter } from "./routers/leetcode_router.js";
@@ -45,7 +44,6 @@ app.use(function (req, res, next) {
 
 app.use("/api/users", userRouter);
 app.use("/api/queues", queueRouter);
-app.use("/api/pairs", pairRouter);
 app.use("/api/rooms", roomRouter);
 app.use("/api/leetcode", leetcodeRouter);
 app.use("/api/friends", friendRouter);
@@ -117,11 +115,11 @@ io.on("connection", (socket) => {
             queueRes.queue[i + 1].socketId,
           );
           //player2.title = "player2"
-          const pair = await apiService.createPair(
+          const pair = await apiService.createRoom(
+            'pending',
             player1.accessToken,
             player2.accessToken,
-            player1.socketId,
-            player2.socketId,
+            false,
           );
           io.to(player1.socketId).emit("matched", pair, player1);
           io.to(player2.socketId).emit("matched", pair, player2);
@@ -141,9 +139,9 @@ io.on("connection", (socket) => {
   });
   socket.on("accepted", function (data, token) {
     //console.log('accepted', data, userId);
-    apiService.setPlayerStatus(data.id, true, token).then((res) => {
+    apiService.setPlayerStatus(data.id, 'accepted', token).then((res) => {
       console.log("accepted");
-      apiService.getPair(data.id).then((pair) => {
+      apiService.getRoom(data.id, token).then((pair) => {
         io.fetchSockets().then((data) => {
           const socketIds = data.map((socket) => socket.id);
           console.log("socketIds", socketIds);
@@ -158,22 +156,10 @@ io.on("connection", (socket) => {
             socketIds.includes(pair.socketId1) &&
             socketIds.includes(pair.socketId2)
           ) {
-            if (pair.p1status && pair.p2status) {
+            if (pair.user1Status === 'accepted' && pair.user2Status === 'accepted') {
               console.log("both accepted and in socketIds");
-              apiService
-                .createRoom(
-                  'live',
-                  pair.token1,
-                  pair.token2,
-                  pair.socketId1,
-                  pair.socketId2,
-                  false,
-                )
-                .then((res) => {
-                  console.log("room", res.id);
-                  io.to(pair.socketId1).emit("start", res.id, pair.token1, 'p1');
-                  io.to(pair.socketId2).emit("start", res.id, pair.token2, 'p2');
-                });
+              io.to(pair.socketId1).emit("start", pair.id, pair.userId1, 'p1');
+              io.to(pair.socketId2).emit("start", pair.id, pair.userId2, 'p2');
             }
           } else {
             const tempSocketIds = pair.socketId1;
