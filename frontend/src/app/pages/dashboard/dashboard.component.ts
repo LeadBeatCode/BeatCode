@@ -92,6 +92,10 @@ export class DashboardComponent implements OnInit {
     this.loadFriendList = !this.loadFriendList;
   }
 
+  get changeLoadUserPerformanceFunc() {
+        return this.changeLoadUserPerformance.bind(this);
+    }
+
   changeLoadUserPerformance(value: boolean) {
     this.loadUserPerformance = value;
   }

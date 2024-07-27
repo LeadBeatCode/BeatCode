@@ -7,6 +7,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
 import { GameService } from '../../services/gameService/game.service';
 import { switchMap } from 'rxjs';
+import moment from 'moment';
 
 @Component({
   // selector: 'app-root',
@@ -44,6 +45,8 @@ export class GameRoomComponent implements OnInit {
   player1HeartCount: number[] = Array(10).fill(1);
   player2HeartCount: number[] = Array(10).fill(1);
   isPve: boolean = false;
+  now: string = "00:00:00";
+  dateStart: any = moment();
 
   constructor(
     private api: ApiService,
@@ -85,6 +88,11 @@ export class GameRoomComponent implements OnInit {
         this.router.navigate(['/']);
       }
 
+      setInterval(() => {
+        // this.now = new Date();
+        this.now = moment.utc(moment(moment()).diff(this.dateStart)).format("HH:mm:ss");
+      }, 1000);
+
     });
   }
 
@@ -99,6 +107,7 @@ export class GameRoomComponent implements OnInit {
     //     clearInterval(getQuestionInterval);
     //   }
     this.getProblem();
+    this.dateStart = moment();
     // }, 5000);
   }
 
@@ -114,6 +123,11 @@ export class GameRoomComponent implements OnInit {
     }, 1000);
   }
 
+  exitGameRoom() {
+    clearInterval(this.timeInterval);
+    this.router.navigate(['/dashboard']);
+  }
+  
   transform(value: number): string {
     const minutes: number = Math.floor(value / 60);
     return minutes + ':' + (value - minutes * 60);

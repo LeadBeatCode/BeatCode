@@ -25,11 +25,53 @@
   flex: 1;
 }
 
+.game-room-exit-btn {
+  background-image: url(../../../assets/exit_btn.png);
+  width: 36px;
+  height: 36px;
+  background-size: contain;
+  margin-right: 2px;
+}
+
+.game-room-exit-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 18px;
+  letter-spacing: 1px;
+  opacity: 0.8;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.game-room-exit-container:hover {
+  opacity: 1;
+}
+
 .header-container {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   margin: 16px 20px;
+  font-family: 'Saira';
+}
+
+.game-room-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  margin-left: -85px;
+}
+
+.time-elapsed {
+  color: rgb(192, 192, 192);
+  letter-spacing: 1px;
+  margin-left: 25px;
 }
 
 .header-container .submit-btn {
@@ -41,10 +83,6 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 50%;
-  margin-left: -25px;
 }
 
 .header-container .submit-btn:hover {
