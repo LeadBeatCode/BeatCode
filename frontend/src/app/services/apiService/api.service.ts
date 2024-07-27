@@ -11,6 +11,7 @@ export class ApiService {
   endpoint = environment.apiEndpoint;
   judege0Token = environment.judge0Token;
   judege0Url = environment.judge0Url;
+  
 
   leetcodeApiEndpoint = 'http://localhost:3000/api/leetcode';
 
@@ -23,13 +24,28 @@ export class ApiService {
    * @returns
    */
 
-  submitCode(content: string): Observable<any> {
-    const languageId = 71;
+  submitCode(content: string, language: string): Observable<any> {
+    let languageId = 71;
+    if (language === 'python3') {
+      languageId = 71;
+    } else if (language === 'C') {
+      languageId = 50;
+    } else if (language === 'C++') {
+      languageId = 54;
+    } else if (language === 'Java') {
+      languageId = 62;
+    } else if (language === 'python') {
+      languageId = 70;
+    }
+    const base64Content = btoa(content);
+    console.log('languageId', languageId);
+    console.log('content', content);
+    console.log('base64Content', base64Content);
     const data = {
-      source_code: content,
+      source_code: base64Content,
       language_id: languageId,
     };
-    return this.http.post(`${this.judege0Url}/submissions`, data, {
+    return this.http.post(`${this.judege0Url}/submissions/?base64_encoded=true&wait=false`, data, {
       headers: {
         'Content-Type': 'application/json',
         'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
@@ -39,7 +55,7 @@ export class ApiService {
   }
 
   getSubmission(submissionId: string): Observable<any> {
-    return this.http.get(`${this.judege0Url}/submissions/${submissionId}`, {
+    return this.http.get(`${this.judege0Url}/submissions/${submissionId}?base64_encoded=true`, {
       headers: {
         'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
         'x-rapidapi-key': this.judege0Token,
@@ -109,16 +125,20 @@ export class ApiService {
     isPve: boolean,
   ): Observable<any> {
     return this.http.post(this.endpoint + '/api/rooms', {
-      headers: {
-        Authorization1: `Bearer ${token1}`,
-        Authorization2: `Bearer ${token2}`,
-      },
       status,
       socketId1,
       socketId2,
       isPve,
-    });
+    },
+    {
+      headers: {
+        Authorization1: `Bearer ${token1}`,
+        Authorization2: `Bearer ${token2}`,
+      },
+    }
+  );
   }
+
 
   getRoom(roomId: number, accessToken: string): Observable<any> {
     return this.http.get(this.endpoint + '/api/rooms/' + roomId, {
@@ -161,6 +181,14 @@ export class ApiService {
       },
       userData,
       socketId,
+    });
+  }
+
+  logOut(accessToken: string): Observable<any> {
+    return this.http.post(this.endpoint + '/api/users/logout', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
   }
 
@@ -213,6 +241,10 @@ export class ApiService {
 
   getRandomPveProblem(): Observable<any> {
     return this.http.get(this.endpoint + '/api/problems/random');
+  }
+
+  getPveProblem(problemId: number): Observable<any> {
+    return this.http.get(this.endpoint + '/api/problems/' + problemId);
   }
 
   /* Leetcode API */

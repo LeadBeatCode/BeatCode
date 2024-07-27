@@ -64,9 +64,9 @@ export const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
-  apiService.createProblem('Longest Substring Without Repeating Characters', 'Given a string s, find the length of the longest substring without repeating characters.', { 'subInput1':'abcabcbb'  }, {  "subOutput1": 3 }, { 'subInput1':'bbbbb'  }, {  "subOutput1": 1 }, { 'subInput1':'pwwkew'  }, {  "subOutput1": 3 }).then((res) => {
-    console.log('problem', res);
-  });
+  // apiService.createProblem('Longest Substring Without Repeating Characters', 'Given a string s, find the length of the longest substring without repeating characters.', { 'subInput1':'abcabcbb'  }, {  "subOutput1": 3 }, { 'subInput1':'bbbbb'  }, {  "subOutput1": 1 }, { 'subInput1':'pwwkew'  }, {  "subOutput1": 3 }).then((res) => {
+  //   console.log('problem', res);
+  // });
 
   socket.on("online", function (data) {
     const { userId, friendSocketId } = data;
@@ -84,6 +84,12 @@ io.on("connection", (socket) => {
     const { targetSocketId, code } = data;
     // Using 'to' to emit to a specific socket by its ID
     io.to(targetSocketId).emit("editor", { code });
+  });
+
+  socket.on("change language", function (data) {
+    const { targetSocketId, language } = data;
+    console.log("change language", targetSocketId, language);
+    io.to(targetSocketId).emit("opponent change language", { language });
   });
 
   socket.on("matching", async function (accessToken) {
@@ -156,7 +162,7 @@ io.on("connection", (socket) => {
               console.log("both accepted and in socketIds");
               apiService
                 .createRoom(
-                  true,
+                  'live',
                   pair.token1,
                   pair.token2,
                   pair.socketId1,
@@ -165,8 +171,8 @@ io.on("connection", (socket) => {
                 )
                 .then((res) => {
                   console.log("room", res.id);
-                  io.to(pair.socketId1).emit("start", res.id, pair.token1);
-                  io.to(pair.socketId2).emit("start", res.id, pair.token2);
+                  io.to(pair.socketId1).emit("start", res.id, pair.token1, 'p1');
+                  io.to(pair.socketId2).emit("start", res.id, pair.token2, 'p2');
                 });
             }
           } else {

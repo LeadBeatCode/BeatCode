@@ -103,3 +103,22 @@ userRouter.put("/socket", async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 });
+
+userRouter.post("/logout", async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const user = await User.findOne({
+            where: {
+                accessToken: token,
+            },
+        });
+        if (!user) return res.status(404).json({ error: "User not found" });
+        user.set("socketId", '');
+        user.set("accessToken", '');
+        await user.save();
+        return res.json(user);
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+
+    });

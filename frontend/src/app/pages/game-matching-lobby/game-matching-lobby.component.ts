@@ -110,10 +110,11 @@ export class GameMatchingLobbyComponent {
       localStorage.getItem('accessToken'),
     );
 
-    this.socket.on('start', (roomId: number, accessToken: string) => {
+    this.socket.on('start', (roomId: number, accessToken: string, playerTitle: string) => {
       this.game.updateStatus(true);
       clearInterval(this.timerInterval);
-      this.router.navigate(['/game-room'], { queryParams: { roomId: roomId } });
+      console.log('start game', playerTitle);
+      this.router.navigate(['/game-room'], { queryParams: { roomId: roomId } , state: {playerTitle: playerTitle}} );
     });
   }
 }

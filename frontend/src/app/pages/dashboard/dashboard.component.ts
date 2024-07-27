@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/apiService/api.service';
 import { Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
-import { GptService } from '../../services/gptService/gpt.service';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
     private api: ApiService,
     private router: Router,
     private socket: Socket,
-    private gptService: GptService,
+    private oidcSecurityService: OidcSecurityService,
   ) {
     const navigation = this.router.getCurrentNavigation();
     console.log('navigation', navigation);
@@ -28,15 +28,7 @@ export class DashboardComponent implements OnInit {
       this.userData = navigation.extras.state['userData'];
       console.log('userData in dashboard', this.userData);
     }
-  }
-
-  ngOnInit() {
-    // this.gptService.getResponse('hello').then((response) => {
-    //   console.log('response', response);
-    // });
-    //console.log('response', response);
     const token = localStorage.getItem('accessToken');
-
     if (!token) {
       console.log('Please sign in');
       this.router.navigate(['/']);
@@ -54,6 +46,20 @@ export class DashboardComponent implements OnInit {
           },
         });
       });
+    }
+  }
+
+  ngOnInit() {
+    // this.gptService.getResponse('hello').then((response) => {
+    //   console.log('response', response);
+    // });
+    //console.log('response', response);
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+      console.log('Please sign in');
+      this.router.navigate(['/']);
+      return;
     }
     console.log('userData', this.userData.id);
     this.api.getFriends(token).subscribe({
@@ -105,6 +111,28 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/matching-lobby']);
   }
 
+  logOut() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.log('Please sign in');
+      this.router.navigate(['/']);
+      return;
+    }
+    this.api.logOut(token).subscribe({
+      next: (data) => {
+        console.log('log out', data);
+        localStorage.removeItem('accessToken');
+        this.oidcSecurityService.logoff().subscribe((result) => {
+          console.log(result);
+          this.router.navigate(['/']);
+        });
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+    
+  }
   startPveGame() {
     const token = localStorage.getItem('accessToken');
     if (!token) {
@@ -112,18 +140,27 @@ export class DashboardComponent implements OnInit {
       this.router.navigate(['/']);
       return;
     }
-    this.api
-      .createRoom('open', token, 'PveGame', this.socketId, '', true)
+    this.api.getUserById(this.userData.sub).subscribe({
+      next: (data) => {
+        console.log('user data', data);
+        this.api
+      .createRoom('live', token, 'PveGame', data.socketId, '', true)
       .subscribe({
         next: (data) => {
           console.log('room created', data);
           this.router.navigate(['/game-room'], {
-            queryParams: { roomId: data.roomId },
+            queryParams: { roomId: data.id },
           });
         },
         error: (err) => {
           console.log(err);
         },
       });
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+    
   }
 }

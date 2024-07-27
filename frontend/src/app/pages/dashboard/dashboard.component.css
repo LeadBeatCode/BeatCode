@@ -62,6 +62,19 @@
   color: rgb(150, 255, 150);
 }
 
+.logOut-btn {
+  text-align: center;
+  margin-right: 30px;
+  font-size: 16px;
+  width: 150px;
+  cursor: pointer;
+  border: 1px solid white;
+  padding: 2px;
+  border-radius: 15px;
+  border: 1px solid rgba(5, 7, 5, 0.781);
+  color: rgb(216, 36, 13);
+}
+
 .play-game-btn:hover {
   border: 1px solid rgb(6, 255, 6);
   color: rgb(6, 255, 6);
