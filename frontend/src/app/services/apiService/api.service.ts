@@ -184,6 +184,14 @@ export class ApiService {
     });
   }
 
+  logOut(accessToken: string): Observable<any> {
+    return this.http.post(this.endpoint + '/api/users/logout', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
   getUserById(userId: string): Observable<any> {
     return this.http.get(this.endpoint + '/api/users/' + userId);
   }

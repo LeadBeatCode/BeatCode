@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/apiService/api.service';
 import { Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
-import { GptService } from '../../services/gptService/gpt.service';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
     private api: ApiService,
     private router: Router,
     private socket: Socket,
-    private gptService: GptService,
+    private oidcSecurityService: OidcSecurityService,
   ) {
     const navigation = this.router.getCurrentNavigation();
     console.log('navigation', navigation);
@@ -111,6 +111,28 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/matching-lobby']);
   }
 
+  logOut() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.log('Please sign in');
+      this.router.navigate(['/']);
+      return;
+    }
+    this.api.logOut(token).subscribe({
+      next: (data) => {
+        console.log('log out', data);
+        localStorage.removeItem('accessToken');
+        this.oidcSecurityService.logoff().subscribe((result) => {
+          console.log(result);
+          this.router.navigate(['/']);
+        });
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+    
+  }
   startPveGame() {
     const token = localStorage.getItem('accessToken');
     if (!token) {
