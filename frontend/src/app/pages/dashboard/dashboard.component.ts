@@ -28,15 +28,7 @@ export class DashboardComponent implements OnInit {
       this.userData = navigation.extras.state['userData'];
       console.log('userData in dashboard', this.userData);
     }
-  }
-
-  ngOnInit() {
-    // this.gptService.getResponse('hello').then((response) => {
-    //   console.log('response', response);
-    // });
-    //console.log('response', response);
     const token = localStorage.getItem('accessToken');
-
     if (!token) {
       console.log('Please sign in');
       this.router.navigate(['/']);
@@ -54,6 +46,20 @@ export class DashboardComponent implements OnInit {
           },
         });
       });
+    }
+  }
+
+  ngOnInit() {
+    // this.gptService.getResponse('hello').then((response) => {
+    //   console.log('response', response);
+    // });
+    //console.log('response', response);
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+      console.log('Please sign in');
+      this.router.navigate(['/']);
+      return;
     }
     console.log('userData', this.userData.id);
     this.api.getFriends(token).subscribe({
@@ -108,18 +114,27 @@ export class DashboardComponent implements OnInit {
       this.router.navigate(['/']);
       return;
     }
-    this.api
-      .createRoom('open', token, 'PveGame', this.socketId, '', true)
+    this.api.getUserById(this.userData.sub).subscribe({
+      next: (data) => {
+        console.log('user data', data);
+        this.api
+      .createRoom('live', token, 'PveGame', data.socketId, '', true)
       .subscribe({
         next: (data) => {
           console.log('room created', data);
           this.router.navigate(['/game-room'], {
-            queryParams: { roomId: data.roomId },
+            queryParams: { roomId: data.id },
           });
         },
         error: (err) => {
           console.log(err);
         },
       });
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+    
   }
 }

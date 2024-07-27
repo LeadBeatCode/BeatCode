@@ -48,7 +48,9 @@
           Match History
         </div>
       </div>
+      <div class="play-game-btn" (click)="startPveGame()">Start PVE Game</div>
       <div class="play-game-btn" (click)="enterLobby()">Start Game</div>
+      
     </div>
     <app-user-performance *ngIf="loadUserPerformance"></app-user-performance>
     <app-match-history *ngIf="!loadUserPerformance"></app-match-history>
