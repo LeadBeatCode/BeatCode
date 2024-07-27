@@ -8,26 +8,35 @@
       <div class="overview">number of wins/lose</div>
     </div>
     <div class="game-history-container">
-      <div class="game-history-contents">
-        <div class="title-container">
-          <div class="title">Last Match</div>
-          <div class="game-history-btn">view all history</div>
-        </div>
-        <div class="contents-container">
-          <div class="match-history-container">
-            <div class="date">TODAY</div>
-            <div class="match-container">
-              <div class="match-info"></div>
-              <div class="match-info"></div>
-              <div class="match-info"></div>
-            </div>
+      <div class="game-history-contents-container">
+        <div class="game-history-contents">
+          <div class="title-container">
+            <div class="title">Last Match</div>
+            <div class="game-history-btn" (click)="changeLoadUserPerformance()">View All Matches</div>
           </div>
-          <div class="match-history-container">
-            <div class="date">2 / 1</div>
-            <div class="match-container">
-              <div class="match-info"></div>
-              <div class="match-info"></div>
-              <div class="match-info"></div>
+          <div class="contents-container">
+            <div class="match-history-container">
+              <div class="bullet-point-container">
+                <div class="bullet-point"></div>
+                <div class="date">TODAY</div>
+              </div>
+              <div class="match-container">
+                <app-quick-match-history-element></app-quick-match-history-element>
+                <app-quick-match-history-element></app-quick-match-history-element>
+                <app-quick-match-history-element></app-quick-match-history-element>
+                <app-quick-match-history-element></app-quick-match-history-element>
+              </div>
+            </div>
+            <div class="match-history-container">
+              <div class="bullet-point-container">
+                <div class="bullet-point"></div>
+                <div class="date">2 / 1</div>
+              </div>
+              <div class="match-container">
+                <app-quick-match-history-element></app-quick-match-history-element>
+                <app-quick-match-history-element></app-quick-match-history-element>
+                <app-quick-match-history-element></app-quick-match-history-element>
+              </div>
             </div>
           </div>
         </div>

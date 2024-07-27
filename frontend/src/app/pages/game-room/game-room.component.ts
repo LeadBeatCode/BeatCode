@@ -5,6 +5,7 @@ import { Socket } from 'ngx-socket-io';
 import { GameService } from '../../services/gameService/game.service';
 import { GptService } from '../../services/gptService/gpt.service';
 import { switchMap } from 'rxjs';
+import moment from 'moment';
 
 
 @Component({
@@ -46,6 +47,8 @@ export class GameRoomComponent implements OnInit {
   pveProblemId: number = 1;
   opponentLanguage: string = 'Python3';
   editor: any;
+  now: string = "00:00:00";
+  dateStart: any = moment();
 
   constructor(
     private api: ApiService,
@@ -95,6 +98,11 @@ export class GameRoomComponent implements OnInit {
         this.router.navigate(['/']);
       }
 
+      setInterval(() => {
+        // this.now = new Date();
+        this.now = moment.utc(moment(moment()).diff(this.dateStart)).format("HH:mm:ss");
+      }, 1000);
+
     });
   }
 
@@ -108,8 +116,8 @@ export class GameRoomComponent implements OnInit {
     //   if (this.problemText) {
     //     clearInterval(getQuestionInterval);
     //   }
-    
-
+    this.getProblem();
+    this.dateStart = moment();
     // }, 5000);
 
     const langElement = document.querySelector('.lang-selector');
@@ -132,6 +140,11 @@ export class GameRoomComponent implements OnInit {
     }, 1000);
   }
 
+  exitGameRoom() {
+    clearInterval(this.timeInterval);
+    this.router.navigate(['/dashboard']);
+  }
+  
   transform(value: number): string {
     const minutes: number = Math.floor(value / 60);
     return minutes + ':' + (value - minutes * 60);

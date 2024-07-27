@@ -1,10 +1,16 @@
 <div class="header-container">
   <app-header></app-header>
-  <!-- <div class="displayTime">Time used: {{displayTime }}</div>  -->
-  <button class="submit-btn" (click)="runCode(false)">
-    <span class="material-symbols-outlined"> play_arrow </span>
-    Run Code
-  </button>
+  <div class="game-room-header-container">
+    <button class="submit-btn" (click)="runCode(false)">
+      <span class="material-symbols-outlined"> play_arrow </span>
+      Run Code
+    </button>
+    <div class="time-elapsed">{{ now }}</div> 
+  </div>
+  <div class="game-room-exit-container">
+    <div class="game-room-exit-btn" (click)="exitGameRoom()"></div>
+    Exit
+  </div>
 </div>
 <app-problem
   [problemTitle]="problemTitle"
