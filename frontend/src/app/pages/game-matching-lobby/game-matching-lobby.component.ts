@@ -136,7 +136,7 @@ export class GameMatchingLobbyComponent {
         clearInterval(this.timerInterval);
         console.log('start game', playerTitle);
         this.router.navigate(['/game-room'], {
-          queryParams: { roomId: roomId },
+          queryParams: { roomId: roomId, gameType: 'normal' },
           state: { playerTitle: playerTitle },
         });
       },

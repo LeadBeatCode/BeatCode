@@ -1,5 +1,6 @@
 import { Router, response } from "express";
 import axios from "axios";
+import { User } from "../models/user.js";
 
 export const leetcodeRouter = Router();
 
@@ -305,52 +306,41 @@ leetcodeRouter.get("/problems", async (req, res) => {
   }
 });
 
-leetcodeRouter.get("/problems/submit/:titleSlug", async (req, res) => {
+// leetcodeRouter.post("/problems/submit/:titleSlug", async (req, res) => {
+// });
 
+leetcodeRouter.post("/problems/:titleSlug/submit/:userId", async (req, res) => {
   const titleSlug = req.params.titleSlug;
+  const userId = req.params.userId;
   
   body = "{\"lang\":\"python\",\"question_id\":\"12\",\"typed_code\":\"class Solution(object):\\n    def intToRoman(self, num):\\n        \\\"\\\"\\\"\\n        :type num: int\\n        :rtype: str\\n        \\\"\\\"\\\"\\n        \"}"
-  csrftoken = "0UZryTfxOwRw8fBA9GPYwGanz7NDJy5plkyKAbMVR72ZPM7IGIuVMCxOlH5SapsY"
-  const LEETCODE_SESSION = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfYXV0aF91c2VyX2lkIjoiNTM3NTM4MyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImFsbGF1dGguYWNjb3VudC5hdXRoX2JhY2tlbmRzLkF1dGhlbnRpY2F0aW9uQmFja2VuZCIsIl9hdXRoX3VzZXJfaGFzaCI6IjkwYzE2OThhZjdlNDViNTZlNjcxOTZhY2M4ZjJjYzMwNmU0NDUxNzFlMDUwODFmMjllNzBiN2NhYmJlODcwMGYiLCJpZCI6NTM3NTM4MywiZW1haWwiOiJzb212ZWx5YTk5QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiU3ZlbDk5IiwidXNlcl9zbHVnIjoiU3ZlbDk5IiwiYXZhdGFyIjoiaHR0cHM6Ly9hc3NldHMubGVldGNvZGUuY29tL3VzZXJzL2F2YXRhcnMvYXZhdGFyXzE2Mzg5MDI4MTYucG5nIiwicmVmcmVzaGVkX2F0IjoxNzIyMDYyMzg0LCJpcCI6Ijc2LjY5LjExNS4xNTgiLCJpZGVudGl0eSI6IjEwZjkyODdkZWFmNjA5ZWUzNmZiMzc3ODNmMmI4OWMwIiwic2Vzc2lvbl9pZCI6NjcyMTU5OTUsImRldmljZV93aXRoX2lwIjpbImUwYTdhNWNjYzRhOWZhYTAzMTM1Zjk4ZjBlNjY2OGVjIiwiNzYuNjkuMTE1LjE1OCJdfQ.kADfuCnVECyXHY0uW2VxIwLBDYzaE4bx1JYzuy3sSZQ; Domain=.leetcode.com; expires=Sat, 10 Aug 2024 20:10:06 GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax; Secure"
-
-  // const body = req.body.body;
-  // const csrftoken = req.body.csrftoken;
-  // const leetcode_session = req.body.leetcode_session;
-
+  
   try {
-   fetch(`https://leetcode.com/problems/${titleSlug}/submit/`, {
-    "headers": {
-        "x-csrftoken": csrftoken,
-        "cookie": `csrftoken=${csrftoken}; LEETCODE_SESSION=${LEETCODE_SESSION}`,
-        "Referer": `https://leetcode.com/problems/${titleSlug}/`,
-    },
-    "body": JSON.stringify(body),
-    "method": "POST"
-    }).then((response) => {
-        console.log(response.status)
-        if (response.status !== 200) {
-            return res.status(400).json({ error: "Leetcode submission failed" })
-        }
-        return response.json();
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const csrftoken = req.body.cookie.split("csrftoken=")[1].split(";")[0];
+    const data = JSON.stringify({body});
+
+    const config = {
+      method: 'post',
+      url: `https://leetcode.com/problems/${titleSlug}/submit/`,
+      headers: {
+        'x-csrftoken': csrftoken,
+        'cookie': cookie,
+        'Referer': 'https://leetcode.com/problems/string-to-integer-atoi/description/',
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+    axios(config)
+    .then(function (response) {
+      return res.json(response.data);
     })
-    // axios
-    //   .get(`https://leetcode.com/problems/${titleSlug}/submit/`, {
-    //     query: `query questionContent($titleSlug: String!) {
-    //                 question(titleSlug: $titleSlug) {
-    //                 content
-    //                 mysqlSchemas
-    //                 dataSchemas
-    //                 }
-    //             }`,
-    //     variables: {
-    //       titleSlug: req.query.titleSlug,
-    //     },
-    //   })
-    //   .then((response) => {
-    //     return res.json(response.data);
-    //   });
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
+    .catch(function (error) {
+    return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
+    });
+  }catch (error) {
+    return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
   }
 });
 
