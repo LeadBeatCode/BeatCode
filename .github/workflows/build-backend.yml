@@ -1,4 +1,4 @@
-name: Publish Angular Skeleton to GHCR
+name: Publish backend to GHCR
 
 on:
   push:
@@ -7,11 +7,11 @@ on:
       - main
     # Only run this workflow if the commit has modified files from frontend
     paths:
-      - frontend/**
-      - .github/workflows/build-frontend.yml
+      - backend/**
+      - .github/workflows/build-backend.yml
 
 env:
-  IMAGE_NAME: frontend-project-cyj
+  IMAGE_NAME: backend-project-cyj
 
 jobs:
   # Push image to GitHub Packages.
@@ -21,7 +21,7 @@ jobs:
     if: github.event_name == 'push'
     defaults:
       run:
-        working-directory: frontend
+        working-directory: backend
 
     steps:
       - uses: actions/checkout@v2
@@ -49,14 +49,14 @@ jobs:
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
-      - name: executing remote ssh commands using ssh key in frontend
+      - name: executing remote ssh commands using ssh key in backend
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker stop project-frontend
-            docker rm project-frontend
-            docker pull ghcr.io/utsc-cscc09-programming-on-the-web/frontend-project-cyj
-            docker run -d -p 80:80 --name project-frontend ghcr.io/utsc-cscc09-programming-on-the-web/frontend-project-cyj
+            docker stop project-backend
+            docker rm project-backend
+            docker pull ghcr.io/utsc-cscc09-programming-on-the-web/backend-project-cyj
+            docker run -d -p 3000:3000 --name project-backend ghcr.io/utsc-cscc09-programming-on-the-web/backend-project-cyj
