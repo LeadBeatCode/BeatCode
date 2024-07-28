@@ -139,6 +139,22 @@ export class ApiService {
   );
   }
 
+  runCode(gameType: string, problemData: any, language: string, code: string): Observable<any> {
+    if (gameType === 'leetcode') {
+      console.log(problemData.titleSlug);
+      return this.http.post(this.endpoint + `/api/problems/submit/${problemData.titleSlug}`, {
+        problemData,
+        language,
+        body: {"lang":"python3","question_id":"5","typed_code":"class Solution:\n    def longestPalindrome(self, s: str) -> str:\n        Max_Len=1\n        Max_Str=s[0]\n        for i in range(len(s)-1):\n            for j in range(i+1,len(s)):\n                if j-i+1 > Max_Len and s[i:j+1] == s[i:j+1][::-1]:\n                    Max_Len = j-i+1\n                    Max_Str = s[i:j+1]\n        return Max_Str\n"}//{"lang":"python3", "question_id":"5","typed_code":code}
+      });
+    } else {
+      return this.http.post(this.endpoint + '/api/problems/test', {
+        problemData,
+        language,
+        code,
+      });
+    }
+  }
 
   getRoom(roomId: number, accessToken: string): Observable<any> {
     return this.http.get(this.endpoint + '/api/rooms/' + roomId, {
@@ -247,6 +263,10 @@ export class ApiService {
     return this.http.get(this.endpoint + '/api/problems/' + problemId);
   }
 
+  getLeetcodeProblem(problemId: number): Observable<any> {
+    return this.http.get(this.endpoint + '/api/problems/' + problemId);
+  }
+
   /* Leetcode API */
   getLeetcodeProblems(): Observable<any> {
     return this.http.get(this.leetcodeApiEndpoint + '/problems');
@@ -258,13 +278,26 @@ export class ApiService {
     );
   }
 
-  
-
   getRandomProblem(): Observable<any> {
     return this.http.get(this.leetcodeApiEndpoint + '/random-problem');
   }
 
-  getProblemStartCode(): Observable<any> {
-    return this.http.get(this.leetcodeApiEndpoint + '/startcode/two-sum');
+  getProblemStartCode(titleSlug: string): Observable<any> {
+    return this.http.get(this.leetcodeApiEndpoint + `/startcode/${titleSlug}`);
+  }
+
+  checkUserLeetcodeCookie(cookie: string): Observable<any> {
+    return this.http.post(this.leetcodeApiEndpoint + '/checkCookie', {
+      cookie
+    });
+  }
+
+  updateUserLeetcodeCookie(accessToken: string, cookie: string): Observable<any> {
+    return this.http.put(this.endpoint + '/api/users/leetcodecookie', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cookie
+    });
   }
 }

@@ -5,11 +5,11 @@ import { Socket } from 'ngx-socket-io';
 import { GameService } from '../../services/gameService/game.service';
 
 @Component({
-  selector: 'app-game-matching-lobby',
-  templateUrl: './game-matching-lobby.component.html',
-  styleUrl: './game-matching-lobby.component.css',
+  selector: 'app-leetcode-game-matching-lobby',
+  templateUrl: './leetcode-game-matching-lobby.component.html',
+  styleUrl: './leetcode-game-matching-lobby.component.css'
 })
-export class GameMatchingLobbyComponent {
+export class LeetcodeGameMatchingLobbyComponent {
   loadingText: string = 'Matching A Game...';
   foundText: string = 'Found A Match!';
   loadingInnerHTML: string = '';

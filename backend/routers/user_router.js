@@ -87,6 +87,23 @@ userRouter.put("/clearSocket", async (req, res) => {
   }
 });
 
+userRouter.get("/:nickname/socket", async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        nickname: req.params.nickname,
+      },
+    });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    return res.json({
+      nickname: user.nickname,
+      socketId: user.socketId
+    });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});
+
 userRouter.put("/socket", async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
@@ -97,6 +114,25 @@ userRouter.put("/socket", async (req, res) => {
     });
     if (!user) return res.status(404).json({ error: "User not found" });
     user.set("socketId", req.body.socketId);
+    await user.save();
+    return res.json(user);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});
+
+userRouter.put("/leetcodecookie", async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const cookie = req.body.cookie;
+    console.log("cookie", cookie);
+    const user = await User.findOne({
+      where: {
+        accessToken: token,
+      },
+    });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    user.set("leetcodeCookie", cookie);
     await user.save();
     return res.json(user);
   } catch (error) {

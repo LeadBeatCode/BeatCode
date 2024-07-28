@@ -64,6 +64,15 @@ export const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
+  socket.on("connected", function (nickname) {
+    apiService.getUserSocketId(nickname).then((res) => {
+      console.log("getUserSocketId", res.data.socketId);
+      apiService.setUserSocket(res.data.socketId,socket.id).then((res) => {
+        //console.log('setUserSocket', res);
+      });
+    });
+  });
+
   // apiService.createProblem('Longest Substring Without Repeating Characters', 'Given a string s, find the length of the longest substring without repeating characters.', { 'subInput1':'abcabcbb'  }, {  "subOutput1": 3 }, { 'subInput1':'bbbbb'  }, {  "subOutput1": 1 }, { 'subInput1':'pwwkew'  }, {  "subOutput1": 3 }).then((res) => {
   //   console.log('problem', res);
   // });
@@ -239,10 +248,12 @@ io.on("connection", (socket) => {
 
     apiService.setUserSocket(socket.id, "").then((res) => {
       apiService.getFriendsById(res.id).then((friends) => {
-        console.log("friends", friends);
-        friends.forEach((friend) => {
-          io.to(friend.socketId).emit("friend offline", res.id);
-        });
+        if (!friends.error) {
+          console.log("friends", friends);
+          friends.forEach((friend) => {
+            io.to(friend.socketId).emit("friend offline", res.id);
+          });
+        }
       });
     });
   });

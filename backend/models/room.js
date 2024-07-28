@@ -26,4 +26,16 @@ export const Room = sequelize.define("Room", {
     type: DataTypes.BOOLEAN,
     allowNull: false,
   },
+  gameType: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  questionTitleSlug: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  timeElapsed: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
