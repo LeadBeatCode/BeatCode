@@ -80,7 +80,7 @@ export class WinRateRadialbarComponent implements OnChanges {
 
   updateChart() {
     const totalGames = this.wins + this.losses;
-    const winRate = totalGames > 0 ? (this.wins / totalGames) * 100 : 0;
+    const winRate = (totalGames > 0 ? (this.wins / totalGames) * 100 : 0).toFixed(2);
     this.chartOptions.series = [winRate];
   }
 }

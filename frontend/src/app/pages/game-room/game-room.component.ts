@@ -83,6 +83,7 @@ export class GameRoomComponent implements OnInit {
             console.log(data);
             this.isPve = data.isPve;
             this.titleSlug = data.questionTitleSlug;
+            this.gameType = data.gameType;
             if(!this.isPve){
               this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
               if (this.playerTitle === 'p1') {
@@ -118,6 +119,12 @@ export class GameRoomComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.socket.on('connect', () => {
+      this.socket.on('game won by opponent', (data: any) => {
+        console.log(data);
+        this.router.navigate(['/']);
+      });
+    });
     console.log('game room init');
     // this.startTimer();    
     // this.api.getLeetcodeOfficialSolution().subscribe(data => {
@@ -330,6 +337,17 @@ export class GameRoomComponent implements OnInit {
           } else {
             console.log('Game Over');
             clearInterval(this.timeInterval);
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+              console.log('Please sign in');
+              this.router.navigate(['/']);
+              return;
+            }
+            this.api.roomGameOver(parseInt(this.currentRoom), token, this.playerTitle === 'p1' ? 'p1' : 'p2' ).subscribe((data) => {
+              console.log(data);
+              this.router.navigate(['/']);
+              this.socket.emit('game over', {roomId: this.currentRoom, token: token});
+            });
           }
           this.showResult(
             `Input: ${input}\n

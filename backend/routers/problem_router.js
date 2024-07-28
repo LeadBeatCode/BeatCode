@@ -7,7 +7,7 @@ problemRouter.post("/", async (req, res) => {
   try {
     const problem = await Problem.create({
       title: req.body.title,
-      description: req.body.description,
+      titleSlug: req.body.titleSlug,
       input1: req.body.input1,
       expectedOutput1: req.body.output1,
       input2: req.body.input2,

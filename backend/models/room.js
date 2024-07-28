@@ -50,4 +50,8 @@ export const Room = sequelize.define("Room", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  winner: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });

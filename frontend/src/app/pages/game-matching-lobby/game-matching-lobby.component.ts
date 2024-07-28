@@ -52,6 +52,7 @@ export class GameMatchingLobbyComponent {
       'matching',
       this.userId,
       localStorage.getItem('accessToken'),
+      'normal',
     );
     this.socket.on('matched', (matchedPair: any, accessToken: any) => {
       this.foundMatch();

@@ -79,6 +79,7 @@ export class ApiService {
     token: string,
     isPve: boolean,
     // questionTitleSlug: string,
+    gameType: string,
   ): Observable<any> {
     return this.http.post(
       this.endpoint + '/api/rooms',
@@ -88,6 +89,7 @@ export class ApiService {
         userId1,
         userId2,
         // questionTitleSlug,
+        gameType,
       },
       {
         headers: {
@@ -106,6 +108,8 @@ export class ApiService {
         body: {"lang":"python3","question_id":"5","typed_code":"class Solution:\n    def longestPalindrome(self, s: str) -> str:\n        Max_Len=1\n        Max_Str=s[0]\n        for i in range(len(s)-1):\n            for j in range(i+1,len(s)):\n                if j-i+1 > Max_Len and s[i:j+1] == s[i:j+1][::-1]:\n                    Max_Len = j-i+1\n                    Max_Str = s[i:j+1]\n        return Max_Str\n"}//{"lang":"python3", "question_id":"5","typed_code":code}
       });
     } else {
+      console.log(problemData);
+      
       return this.http.post(this.endpoint + '/api/problems/test', {
         problemData,
         language,
@@ -203,6 +207,20 @@ export class ApiService {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+  }
+
+  roomGameOver(roomId: number, accessToken: string, winner: string): Observable<any> {
+    return this.http.put(this.endpoint + '/api/rooms/gameover', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      roomId,
+      winner,
+    });
+  }
+
+  getPerformance(userId: string): Observable<any> {
+    return this.http.get(this.endpoint + '/api/users/performance/' + userId);
   }
 
   setUserSocketId(

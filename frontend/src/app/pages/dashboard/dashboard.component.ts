@@ -216,7 +216,7 @@ export class DashboardComponent implements OnInit {
       next: (data) => {
         console.log('user data', data);
         this.api
-          .createRoom('live', this.userData.sub, 'Gpt', token, true)
+          .createRoom('live', this.userData.sub, 'Gpt', token, true, 'pve')
           .subscribe({
             next: (data) => {
               console.log('room created', data);

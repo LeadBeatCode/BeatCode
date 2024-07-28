@@ -29,11 +29,8 @@
               <div class="bullet-point"></div>
               <div class="date">TODAY</div>
             </div>
-            <div class="match-container">
-              <app-quick-match-history-element></app-quick-match-history-element>
-              <app-quick-match-history-element></app-quick-match-history-element>
-              <app-quick-match-history-element></app-quick-match-history-element>
-              <app-quick-match-history-element></app-quick-match-history-element>
+            <div class="match-container" *ngFor = "let game of history" >
+              <app-quick-match-history-element [nickname]="nickname" [result]="showResults(game)" [opponent]="showOpponent(game)"  [image] = "showImage(game, true)" [opponentImage]="showImage(game, false)"></app-quick-match-history-element>
             </div>
           </div>
           <div class="match-history-container">

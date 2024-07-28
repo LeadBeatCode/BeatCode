@@ -28,7 +28,7 @@ export const isAuthorized = async (req, res, next) => {
     if (!user)
       return res.status(401).json({ error: "Unauthenticated, please log in" });
     if (user.id !== req.params.id && user.id !== req.body.userId) {
-      console.log("not authorized", user.id);
+      console.log("not authorized", user.id, req.params.id, req.body.userId, req.body);
       return res.status(403).json({ error: "User not authorized" });
     }
     next();
@@ -70,4 +70,26 @@ export const isAuthorizedRoom = async (req, res, next) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
+};
+
+export const isAuthenticatedRoom = async (req, res, next) => {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const user = await User.findOne({
+            where: {
+                accessToken: token,
+            },
+        });
+        if (!user){
+            return res.status(401).json({ error: "Unauthenticated, please log in" });
+        }
+            
+        if (user.id !== req.body.userId1 && user.id !== req.body.userId2 && user.id !== req.params.id) {
+            return res.status(403).json({ error: "Unauthorized" });
+        }
+            
+        next();
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
 };

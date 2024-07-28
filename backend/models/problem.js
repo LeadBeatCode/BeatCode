@@ -6,8 +6,8 @@ export const Problem = sequelize.define("Problem", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  description: {
-    type: DataTypes.STRING(2048),
+  titleSlug: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
   input1: {
