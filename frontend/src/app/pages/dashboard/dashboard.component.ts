@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../services/apiService/api.service';
 import { Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
@@ -12,15 +13,20 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 export class DashboardComponent implements OnInit {
   userData: any;
   loadFriendList: boolean = true;
-  loadUserPerformance: boolean = true;
+  loadMenu: string = 'performance'; //performance, history, rankers
   onlineFriends: any[] = [];
   socketId: string = '';
+  showLobbyValue: boolean = false;
+  showLeetcodeSessionValue: boolean = false;
+  leetcodeCookieForm: any = '';
+  showLeetcodeSessionFormError: string = '';
 
   constructor(
     private api: ApiService,
     private router: Router,
     private socket: Socket,
     private oidcSecurityService: OidcSecurityService,
+    private fb: FormBuilder
   ) {
     const navigation = this.router.getCurrentNavigation();
     console.log('navigation', navigation);
@@ -49,6 +55,14 @@ export class DashboardComponent implements OnInit {
           });
       });
     }
+
+    this.leetcodeCookieForm = this.fb.group({
+      /**
+       * In Angular we can easily define a form field with validators, without installing 9 billion more
+       * packages.
+       */
+      cookie: ['', Validators.required],
+    });
   }
 
   ngOnInit() {
@@ -100,12 +114,12 @@ export class DashboardComponent implements OnInit {
     this.loadFriendList = !this.loadFriendList;
   }
 
-  get changeLoadUserPerformanceFunc() {
-    return this.changeLoadUserPerformance.bind(this);
+  get changeLoadMenuFunc() {
+      return this.changeLoadMenu.bind(this);
   }
 
-  changeLoadUserPerformance(value: boolean) {
-    this.loadUserPerformance = value;
+  changeLoadMenu(value: string) {
+    this.loadMenu = value;
   }
 
   enterLobby() {
@@ -114,6 +128,53 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/matching-lobby'], {
       state: { userId: this.userData.sub },
     });
+  }
+
+  enterLeetcodeLobby() {
+    console.log('enterLobby');
+    this.router.navigate(['/leetcode-matching-lobby']);
+  }
+
+  checkLeetcodeSession() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.log('Please sign in');
+      this.router.navigate(['/']);
+      return;
+    }
+    this.api.checkUserLeetcodeCookie(this.leetcodeCookieForm.value.cookie).subscribe({
+      next: (res) => {
+        this.api.updateUserLeetcodeCookie(token, this.leetcodeCookieForm.value.cookie).subscribe({
+          next: (data) => {
+            console.log('checkLeetcodeSession', data);
+            if (data) {
+              this.enterLeetcodeLobby();
+            }
+          },
+          error: (err) => {
+            this.showLeetcodeSessionFormError = 'You have a valid cookie but we could not update it';
+          },
+        });
+      },
+      error: (err) => {
+            this.showLeetcodeSessionFormError = 'Invalid cookie';
+      },
+    });
+    console.log('checkLeetcodeSession');
+  }
+
+  closeLeetcodeSession() {
+    this.showLeetcodeSessionValue = false;
+    this.showLeetcodeSessionFormError = '';
+  }
+
+  showLeetcodeSession() {
+    this.showLobbyValue = false;
+    this.showLeetcodeSessionValue = !this.showLeetcodeSessionValue;
+  }
+
+  showLobby() {
+    this.showLobbyValue = !this.showLobbyValue;
   }
 
   logOut() {

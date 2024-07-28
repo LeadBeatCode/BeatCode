@@ -61,6 +61,15 @@ io.on("connection", (socket) => {
   console.log("a user connected");
   console.log("socket.handshake.headers", socket.handshake.headers);
 
+  socket.on("connected", function (nickname) {
+    apiService.getUserSocketId(nickname).then((res) => {
+      console.log("getUserSocketId", res.data.socketId);
+      apiService.setUserSocket(res.data.socketId,socket.id).then((res) => {
+        //console.log('setUserSocket', res);
+      });
+    });
+  });
+
   // apiService.createProblem('Longest Substring Without Repeating Characters', 'Given a string s, find the length of the longest substring without repeating characters.', { 'subInput1':'abcabcbb'  }, {  "subOutput1": 3 }, { 'subInput1':'bbbbb'  }, {  "subOutput1": 1 }, { 'subInput1':'pwwkew'  }, {  "subOutput1": 3 }).then((res) => {
   //   console.log('problem', res);
   // });

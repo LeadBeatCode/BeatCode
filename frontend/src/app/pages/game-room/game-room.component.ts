@@ -19,10 +19,10 @@ export class GameRoomComponent implements OnInit {
   title = 'frontend';
   editorOptions = { theme: 'vs-dark', language: 'python' };
   opponentEditorOptions = { theme: 'hc-black', language: 'python' };
-  player1Code: string =
-    '# Welcome to BeatCode!\n# Write down your code here.\n';
-  player2Code: string =
-    '# Welcome to BeatCode!\n# Write down your code here.\n';
+  player1Code: string = ''
+    // '# Welcome to BeatCode!\n# Write down your code here.\n';
+  player2Code: string = ''
+    // '# Welcome to BeatCode!\n# Write down your code here.\n';
   expectedOutput: string = '4\n';
   result: string = '';
   stdout: string = '';
@@ -37,6 +37,13 @@ export class GameRoomComponent implements OnInit {
   displayTime: string = '';
   timeInterval: any;
   opponentSocketId: string = '';
+  problemData: any = {}
+  problemInitialCode: any = {}
+  //   title: '',
+  //   text: '',
+  //   slug: '',
+  // }
+  problemSlug: string = '';
   problemTitle: string = '';
   problemText: string = '';
   player1HeartCount: number[] = Array(10).fill(1);
@@ -48,6 +55,7 @@ export class GameRoomComponent implements OnInit {
   editor: any;
   now: string = '00:00:00';
   dateStart: any = moment();
+  gameType: string = 'leetcode'; // pve or normal or leetcode
 
   constructor(
     private api: ApiService,
@@ -56,6 +64,7 @@ export class GameRoomComponent implements OnInit {
     private game: GameService,
     private router: Router,
     private gptService: GptService,
+    private gameService: GameService,
   ) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras.state) {
@@ -109,7 +118,6 @@ export class GameRoomComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.startTimer();
     // this.api.getLeetcodeOfficialSolution().subscribe(data => {
     //   console.log(data.data.allPlaygroundCodes)
     //   this.player1Code = '\n' + data.data.allPlaygroundCodes[6].code;
@@ -130,26 +138,21 @@ export class GameRoomComponent implements OnInit {
     }
   }
 
-  startTimer() {
-    console.log('=====>');
-    this.timeInterval = setInterval(() => {
-      if (this.time === 0) {
-        this.time++;
-      } else {
-        this.time++;
-      }
-      this.displayTime = this.transform(this.time);
-    }, 1000);
-  }
+  // startTimer() {
+  //   console.log('=====>');
+  //   this.timeInterval = setInterval(() => {
+  //     if (this.time === 0) {
+  //       this.time++;
+  //     } else {
+  //       this.time++;
+  //     }
+  //     this.displayTime = this.transform(this.time);
+  //   }, 1000);
+  // }
 
   exitGameRoom() {
     clearInterval(this.timeInterval);
     this.router.navigate(['/dashboard']);
-  }
-
-  transform(value: number): string {
-    const minutes: number = Math.floor(value / 60);
-    return minutes + ':' + (value - minutes * 60);
   }
 
   editorInit(editor: any) {
@@ -213,7 +216,32 @@ export class GameRoomComponent implements OnInit {
     }
   }
 
+  getUserSocket() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.log('Please sign in');
+      this.router.navigate(['/']);
+      return;
+    }
+    this.gameService.getUserSocket(token).subscribe({
+      next: (data) => {
+        console.log('log out', data);
+        localStorage.removeItem('accessToken');
+        this.gameService.getUserSocket('need to do it').subscribe((result) => {
+          console.log(result);
+        });
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+    
+  }
+
   runCode(isGptResponse: boolean) {
+    this.api.runCode(this.gameType, this.problemData, this.language, this.playerTitle === 'p1' ? this.player1Code : this.player2Code).subscribe((data) => {
+      console.log(data);
+    })
     if (this.isPve) {
       const expectedOutputs: any[] = [];
       const expectedInputs: any[] = [];
@@ -286,6 +314,19 @@ export class GameRoomComponent implements OnInit {
         console.log(expectedOutputs);
       });
     } else {
+
+      // var code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
+      // console.log(this.playerTitle);
+      // //code = this.import + code;
+      // //code = this.player2Code + 'print(solution(' + JSON.stringify(expectedInputs[0].subInput1) + '))';
+      // //code += 'print(solution("aaabb"))';
+      // console.log(code);
+      // this.api.submitCode(code, this.language).subscribe((data) => {
+      
+      //   this.checkSubmission(data.token, isGptResponse, this.expectedOutput, 'aaabb');
+      // });
+    
+  }
       var code =
         this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
       console.log(this.playerTitle);
@@ -394,6 +435,7 @@ export class GameRoomComponent implements OnInit {
       this.api.getRandomPveProblem().subscribe((data) => {
         console.log(data.title);
         this.problemTitle = data.title;
+        this.problemSlug = data.slug;
         this.problemText =
           data.description +
           '<p>\ninput1: ' +
@@ -416,6 +458,29 @@ export class GameRoomComponent implements OnInit {
       });
     } else {
       this.api.getRandomProblem().subscribe((data) => {
+        this.problemData = data;
+        console.log(data);
+        console.log(this.problemData)
+        console.log(data.question.title);
+        this.problemTitle = data.question.title;
+        this.problemSlug = data.slug;
+        console.log(JSON.stringify(data.question.content));
+        this.problemText = data.question.content;
+        if (this.gameType === 'leetcode') {
+          this.api.getProblemStartCode(data.question.titleSlug).subscribe((data) => {
+            this.problemInitialCode = data;
+            console.log(data);
+            if (this.playerTitle === 'p1') {
+              this.player1Code += data[this.language];
+            } else {
+              this.player2Code += data[this.language];
+            }
+            console.log(this.player1Code);
+          });
+        }
+        console.log(data.question);
+      });
+      
         console.log(data.question.title);
         this.problemTitle = data.question.title;
         console.log(JSON.stringify(data.question.content));
@@ -476,26 +541,32 @@ export class GameRoomComponent implements OnInit {
         });
       }
     }
+
     if (this.playerTitle === 'p1') {
-      if (language === 'Python3' || language === 'Python') {
-        this.editorOptions = { theme: 'hc-black', language: 'python' };
-      } else if (language === 'C') {
-        this.editorOptions = { theme: 'hc-black', language: 'c' };
-      } else if (language === 'C++') {
-        this.editorOptions = { theme: 'hc-black', language: 'cpp' };
-      } else if (language === 'Java') {
-        this.editorOptions = { theme: 'hc-black', language: 'java' };
-      }
-    } else {
-      if (language === 'Python3' || language === 'Python') {
-        this.opponentEditorOptions = { theme: 'hc-black', language: 'python' };
-      } else if (language === 'C') {
-        this.opponentEditorOptions = { theme: 'hc-black', language: 'c' };
-      } else if (language === 'C++') {
-        this.opponentEditorOptions = { theme: 'hc-black', language: 'cpp' };
-      } else if (language === 'Java') {
-        this.opponentEditorOptions = { theme: 'hc-black', language: 'java' };
-      }
+    if (language === 'Python3' || language === 'Python') {
+      this.editorOptions = { theme: 'hc-black', language: 'python' };
+    } else if (language === 'C') {
+      this.editorOptions = { theme: 'hc-black', language: 'c' };
+    } else if (language === 'C++') {
+      this.editorOptions = { theme: 'hc-black', language: 'cpp' };
+    } else if (language === 'Java') {
+      this.editorOptions = { theme: 'hc-black', language: 'java' };
     }
+
+    if (language)
+      this.player1Code = this.problemInitialCode[language] + '\n' //+ this.player1Code;
+  } else {
+    if (language === 'Python3' || language === 'Python') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'python' };
+    } else if (language === 'C') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'c' };
+    } else if (language === 'C++') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'cpp' };
+    } else if (language === 'Java') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'java' };
+    }
+
+    if (language)
+      this.player2Code = this.problemInitialCode[language] + '\n' //+ this.player2Code;
   }
 }

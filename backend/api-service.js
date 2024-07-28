@@ -143,5 +143,11 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
+  module.getUserSocketId = function (nickname) {
+    return fetch(`http://localhost:3000/api/users/${nickname}/socket`).then(
+      (res) => res.json(),
+    );
+  };
+  
   return module;
 })();

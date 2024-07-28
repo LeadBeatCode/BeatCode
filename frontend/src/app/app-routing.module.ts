@@ -4,6 +4,7 @@ import { GameRoomComponent } from './pages/game-room/game-room.component';
 import { GameMatchingLobbyComponent } from './pages/game-matching-lobby/game-matching-lobby.component';
 import { SignInComponent } from './pages/sign-in/sign-in.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { LeetcodeGameMatchingLobbyComponent } from './pages/leetcode-game-matching-lobby/leetcode-game-matching-lobby.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: 'matching-lobby',
     component: GameMatchingLobbyComponent,
+  },
+  {
+    path: 'leetcode-matching-lobby',
+    component: LeetcodeGameMatchingLobbyComponent,
   },
   {
     path: '**',

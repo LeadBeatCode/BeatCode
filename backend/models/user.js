@@ -16,8 +16,14 @@ export const User = sequelize.define("User", {
     allowNull: true,
   },
   rank: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: "Silver I",
+  },
+  BP: {
     type: DataTypes.INTEGER,
     allowNull: true,
+    defaultValue: 0,
   },
   nickname: {
     type: DataTypes.STRING,
@@ -29,6 +35,10 @@ export const User = sequelize.define("User", {
   },
   picture: {
     type: DataTypes.STRING(1000),
+    allowNull: true,
+  },
+  leetcodeCookie: {
+    type: DataTypes.STRING(5000),
     allowNull: true,
   },
 });
