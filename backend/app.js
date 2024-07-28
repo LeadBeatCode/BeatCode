@@ -33,7 +33,7 @@ try {
 }
 
 const corsOptions = {
-  origin: "http://localhost:4200",
+  origin: "http://35.203.10.88:4200",
   credentials: true, //allows cookies and HTTP authentication information to be included in the requests sent to the server
 };
 app.use(cors(corsOptions));
@@ -320,7 +320,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: process.env.SECRET,
-  baseURL: "http://localhost:3000",
+  baseURL: "http://35.203.10.88:3000",
   clientID: "Kmosk0ISBss1diEABRcTzKJwNceZpSqn",
   issuerBaseURL: "https://dev-jqe0hc4zidat2q1z.us.auth0.com",
 };
@@ -337,9 +337,9 @@ app.get("/connect", (req, res) => res.oidc.login({ returnTo: "/sign-in" }));
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);
-  else console.log("HTTP server on http://localhost:%s", PORT);
+  else console.log("HTTP server on http://35.203.10.88:%s", PORT);
 });
 
 httpServer.listen(socketPort, () => {
-  console.log("Socket server on http://localhost:%s", socketPort);
+  console.log("Socket server on http://35.203.10.88:%s", socketPort);
 });
