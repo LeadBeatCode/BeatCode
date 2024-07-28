@@ -11,7 +11,6 @@ export class ApiService {
   endpoint = environment.apiEndpoint;
   judege0Token = environment.judge0Token;
   judege0Url = environment.judge0Url;
-  
 
   leetcodeApiEndpoint = 'http://localhost:3000/api/leetcode';
 
@@ -45,73 +44,56 @@ export class ApiService {
       source_code: base64Content,
       language_id: languageId,
     };
-    return this.http.post(`${this.judege0Url}/submissions/?base64_encoded=true&wait=false`, data, {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
-        'x-rapidapi-key': this.judege0Token,
+    return this.http.post(
+      `${this.judege0Url}/submissions/?base64_encoded=true&wait=false`,
+      data,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+          'x-rapidapi-key': this.judege0Token,
+        },
       },
-    });
+    );
   }
 
   getSubmission(submissionId: string): Observable<any> {
-    return this.http.get(`${this.judege0Url}/submissions/${submissionId}?base64_encoded=true`, {
-      headers: {
-        'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
-        'x-rapidapi-key': this.judege0Token,
+    return this.http.get(
+      `${this.judege0Url}/submissions/${submissionId}?base64_encoded=true`,
+      {
+        headers: {
+          'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+          'x-rapidapi-key': this.judege0Token,
+        },
       },
-    });
+    );
   }
   getRoomSocketIds(roomId: string): Observable<any> {
     return this.http.get(this.endpoint + '/api/rooms/' + roomId + '/sockets');
   }
 
-  enterQueue(token: number, socketId: number): Observable<any> {
-    return this.http.post(this.endpoint + '/api/queues/enqueue', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      socketId,
-    });
-  }
-
-  leaveQueue(socketId: number): Observable<any> {
-    return this.http.post(this.endpoint + '/api/queues/dequeue', {
-      socketId,
-    });
-  }
-
-  getQueue(): Observable<any> {
-    return this.http.get(this.endpoint + '/api/queue');
-  }
-
-  // createRoom(userId1: number, userId2: number): Observable<any> {
-  //   return this.http.post(this.endpoint + '/api/rooms', {
-  //     status: 'live',
-  //     userId1,
-  //     userId2,
-  //   });
-  // }
-
   createRoom(
     status: string,
-    token1: string,
-    token2: string,
+    userId1: string,
+    userId2: string,
+    token: string,
     isPve: boolean,
   ): Observable<any> {
-    return this.http.post(this.endpoint + '/api/rooms', {
-      status,
-      isPve,
-    },
-    {
-      headers: {
-        Authorization1: `Bearer ${token1}`,
-        Authorization2: `Bearer ${token2}`,
+    return this.http.post(
+      this.endpoint + '/api/rooms',
+      {
+        status,
+        isPve,
+        userId1,
+        userId2,
       },
-    }
-  );
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
   }
-
 
   getRoom(roomId: number, accessToken: string): Observable<any> {
     return this.http.get(this.endpoint + '/api/rooms/' + roomId, {
@@ -143,12 +125,12 @@ export class ApiService {
     });
   }
 
-  signIn(
+  connect(
     userData: JSON,
     socketId: string,
     accessToken: string,
   ): Observable<any> {
-    return this.http.post(this.endpoint + '/api/users/login', {
+    return this.http.post(this.endpoint + '/api/users/connect', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -157,11 +139,12 @@ export class ApiService {
     });
   }
 
-  logOut(accessToken: string): Observable<any> {
-    return this.http.post(this.endpoint + '/api/users/logout', {
+  logOut(accessToken: string, userId: string): Observable<any> {
+    return this.http.post(this.endpoint + '/api/users/logout/', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
+      userId,
     });
   }
 
@@ -203,12 +186,17 @@ export class ApiService {
     });
   }
 
-  setUserSocketId(accessToken: string, socketId: string): Observable<any> {
+  setUserSocketId(
+    accessToken: string,
+    socketId: string,
+    userId: string,
+  ): Observable<any> {
     return this.http.put(this.endpoint + '/api/users/socket/', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
       socketId,
+      userId,
     });
   }
 
@@ -230,8 +218,6 @@ export class ApiService {
       this.leetcodeApiEndpoint + '/official-solution/two-sum',
     );
   }
-
-  
 
   getRandomProblem(): Observable<any> {
     return this.http.get(this.leetcodeApiEndpoint + '/random-problem');

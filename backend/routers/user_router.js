@@ -1,5 +1,7 @@
 import { User } from "../models/user.js";
 import { Router } from "express";
+import { isAuthenticated } from "../middleware/helper.js";
+import { isAuthorized } from "../middleware/helper.js";
 
 export const userRouter = Router();
 
@@ -14,14 +16,13 @@ userRouter.post("/signup", async (req, res) => {
       picture: userData.picture,
       accessToken: token,
     });
-    console.log("logging user", user);
     return res.json(user);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
 });
 
-userRouter.post("/login", async (req, res) => {
+userRouter.post("/connect", async (req, res) => {
   try {
     const user = await User.findOne({
       where: {
@@ -29,7 +30,9 @@ userRouter.post("/login", async (req, res) => {
       },
     });
     if (user) {
-      user.set("socketId", req.body.socketId);
+      if (req.body.socketId) {
+        user.set("socketId", req.body.socketId);
+      }
       user.set("nickname", req.body.userData.nickname);
       user.set("accessToken", req.headers.authorization.split(" ")[1]);
       user.set("picture", req.body.userData.picture);
@@ -57,7 +60,7 @@ userRouter.get("/:id", async (req, res) => {
   }
 });
 
-userRouter.put("/rank/:id", async (req, res) => {
+userRouter.put("/rank/:id", isAuthorized, async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
@@ -69,33 +72,16 @@ userRouter.put("/rank/:id", async (req, res) => {
   }
 });
 
-userRouter.put("/clearSocket", async (req, res) => {
-  try {
-    //console.log("clearUserSocket", req.body.socketId);
-    const user = await User.findOne({
-      where: {
-        socketId: req.body.socketId,
-      },
-    });
-    if (!user) return res.status(404).json({ error: "User not found" });
-    console.log("clearUserSocket in router", user);
-    user.set("socketId", req.body.newSocketId);
-    await user.save();
-    return res.json(user);
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
-  }
-});
-
-userRouter.put("/socket", async (req, res) => {
+userRouter.put("/socket", isAuthorized, async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const user = await User.findOne({
       where: {
-        accessToken: token,
+        id: req.body.userId,
       },
     });
     if (!user) return res.status(404).json({ error: "User not found" });
+    console.log("put socket was called", req.body.socketId);
     user.set("socketId", req.body.socketId);
     await user.save();
     return res.json(user);
@@ -104,21 +90,37 @@ userRouter.put("/socket", async (req, res) => {
   }
 });
 
-userRouter.post("/logout", async (req, res) => {
-    try {
-        const token = req.headers.authorization.split(" ")[1];
-        const user = await User.findOne({
-            where: {
-                accessToken: token,
-            },
-        });
-        if (!user) return res.status(404).json({ error: "User not found" });
-        user.set("socketId", '');
-        user.set("accessToken", '');
-        await user.save();
-        return res.json(user);
-    } catch (error) {
-        return res.status(400).json({ error: error.message });
-    }
-
+userRouter.put("/clearSocket", async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const user = await User.findOne({
+      where: {
+        socketId: req.body.socketId,
+      },
     });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    console.log("clear socket was called", req.body.socketId);
+    user.set("socketId", "");
+    await user.save();
+    return res.json(user);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});
+
+userRouter.post("/logout", isAuthorized, async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const user = await User.findOne({
+      where: {
+        id: req.body.userId,
+      },
+    });
+    user.set("socketId", "");
+    user.set("accessToken", "");
+    await user.save();
+    return res.json(user);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});

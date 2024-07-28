@@ -3,6 +3,7 @@ import { ApiService } from '../../services/apiService/api.service';
 import { Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
 import { GameService } from '../../services/gameService/game.service';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
   selector: 'app-game-matching-lobby',
@@ -26,23 +27,39 @@ export class GameMatchingLobbyComponent {
   };
   error = '';
   timerInterval: number | ReturnType<typeof setTimeout> = 0;
+  userId: any;
 
   constructor(
     private api: ApiService,
     private router: Router,
     private socket: Socket,
     private game: GameService,
-  ) {}
-
-  ngOnInit(): void {
+  ) {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.log('Please sign in');
+      this.router.navigate(['/']);
+      return;
+    }
     this.loading();
-
-    this.socket.emit('matching', localStorage.getItem('accessToken'));
+    const navigation = this.router.getCurrentNavigation();
+    console.log('navigation', navigation);
+    //console.log('navigation.extras.state', navigation.extras.state);
+    if (navigation && navigation.extras.state) {
+      this.userId = navigation.extras.state['userId'];
+    }
+    this.socket.emit(
+      'matching',
+      this.userId,
+      localStorage.getItem('accessToken'),
+    );
     this.socket.on('matched', (matchedPair: any, accessToken: any) => {
       this.foundMatch();
       this.pair = matchedPair;
     });
   }
+
+  ngOnInit(): void {}
 
   foundMatch() {
     this.found = true;
@@ -108,14 +125,21 @@ export class GameMatchingLobbyComponent {
     this.socket.emit(
       'accepted',
       this.pair,
+      this.userId,
       localStorage.getItem('accessToken'),
     );
 
-    this.socket.on('start', (roomId: number, accessToken: string, playerTitle: string) => {
-      this.game.updateStatus(true);
-      clearInterval(this.timerInterval);
-      console.log('start game', playerTitle);
-      this.router.navigate(['/game-room'], { queryParams: { roomId: roomId } , state: {playerTitle: playerTitle}} );
-    });
+    this.socket.on(
+      'start',
+      (roomId: number, accessToken: string, playerTitle: string) => {
+        this.game.updateStatus(true);
+        clearInterval(this.timerInterval);
+        console.log('start game', playerTitle);
+        this.router.navigate(['/game-room'], {
+          queryParams: { roomId: roomId },
+          state: { playerTitle: playerTitle },
+        });
+      },
+    );
   }
 }

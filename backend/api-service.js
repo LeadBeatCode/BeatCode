@@ -2,8 +2,22 @@ export const apiService = (function () {
   "use strict";
   const module = {};
 
-  module.enqueue = function (accessToken, socketId) {
+  module.enqueue = function (userId, accessToken, socketId) {
+    console.log("userId in enqueue", userId);
+    console.log("accessToken", accessToken);
+    console.log("socketId", socketId);
     return fetch("http://localhost:3000/api/queues/enqueue", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + accessToken,
+      },
+      body: JSON.stringify({ userId, socketId }),
+    }).then((res) => res.json());
+  };
+
+  module.dequeue = function (socketId, accessToken) {
+    return fetch("http://localhost:3000/api/queues/dequeue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -13,21 +27,12 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.dequeue = function (socketId) {
-    return fetch("http://localhost:3000/api/queues/dequeue", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ socketId }),
-    }).then((res) => res.json());
-  };
-
-  module.deleteQueue = function (socketId) {
+  module.deleteQueue = function (socketId, token) {
     return fetch("http://localhost:3000/api/queues", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ socketId }),
     }).then((res) => res.json());
@@ -47,8 +52,8 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.login = function (username, password) {
-    return fetch("http://localhost:3000/api/users/login", {
+  module.connect = function (username, password) {
+    return fetch("http://localhost:3000/api/users/connect", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,8 +61,6 @@ export const apiService = (function () {
       body: JSON.stringify({ username, password }),
     }).then((res) => res.json());
   };
-
-
 
   module.setPlayerStatus = function (id, status, token) {
     return fetch(`http://localhost:3000/api/rooms/${id}/playerStatus`, {
@@ -70,20 +73,14 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.createRoom = function (
-    status,
-    token1,
-    token2,
-    isPve,
-  ) {
+  module.createRoom = function (status, userId1, userId2, token, isPve) {
     return fetch("http://localhost:3000/api/rooms", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        authorization1: `Bearer ${token1}`,
-        authorization2: `Bearer ${token2}`,
+        authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ status, isPve }),
+      body: JSON.stringify({ status, isPve, userId1, userId2 }),
     }).then((res) => res.json());
   };
 
@@ -101,13 +98,14 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.setUserSocket = function (socketId, newSocketId) {
+  module.clearUserSocket = function (socketId, token) {
     return fetch(`http://localhost:3000/api/users/clearSocket`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ socketId: socketId, newSocketId: newSocketId }),
+      body: JSON.stringify({ socketId: socketId }),
     }).then((res) => res.json());
   };
 
@@ -117,13 +115,31 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.createProblem = function (title, description, input1, output1, input2, output2, input3, output3) {
+  module.createProblem = function (
+    title,
+    description,
+    input1,
+    output1,
+    input2,
+    output2,
+    input3,
+    output3,
+  ) {
     return fetch("http://localhost:3000/api/problems", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ title, description, input1, output1, input2, output2, input3, output3 }),
+      body: JSON.stringify({
+        title,
+        description,
+        input1,
+        output1,
+        input2,
+        output2,
+        input3,
+        output3,
+      }),
     }).then((res) => res.json());
   };
 

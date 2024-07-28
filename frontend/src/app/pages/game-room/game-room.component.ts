@@ -7,7 +7,6 @@ import { GptService } from '../../services/gptService/gpt.service';
 import { switchMap } from 'rxjs';
 import moment from 'moment';
 
-
 @Component({
   // selector: 'app-root',
   // templateUrl: './app.component.html',
@@ -47,7 +46,7 @@ export class GameRoomComponent implements OnInit {
   pveProblemId: number = 1;
   opponentLanguage: string = 'Python3';
   editor: any;
-  now: string = "00:00:00";
+  now: string = '00:00:00';
   dateStart: any = moment();
 
   constructor(
@@ -73,13 +72,15 @@ export class GameRoomComponent implements OnInit {
           next: (data) => {
             console.log(data);
             this.isPve = data.isPve;
-            if(!this.isPve){this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
-              if (this.playerTitle === 'p1') {
-                this.opponentSocketId = data.socketId2;
-              } else {
-                this.opponentSocketId = data.socketId1;
-              }
-            });}
+            if (!this.isPve) {
+              this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
+                if (this.playerTitle === 'p1') {
+                  this.opponentSocketId = data.socketId2;
+                } else {
+                  this.opponentSocketId = data.socketId1;
+                }
+              });
+            }
             this.getProblem();
           },
           error: (err) => {
@@ -100,14 +101,15 @@ export class GameRoomComponent implements OnInit {
 
       setInterval(() => {
         // this.now = new Date();
-        this.now = moment.utc(moment(moment()).diff(this.dateStart)).format("HH:mm:ss");
+        this.now = moment
+          .utc(moment(moment()).diff(this.dateStart))
+          .format('HH:mm:ss');
       }, 1000);
-
     });
   }
 
   ngOnInit() {
-    this.startTimer();    
+    this.startTimer();
     // this.api.getLeetcodeOfficialSolution().subscribe(data => {
     //   console.log(data.data.allPlaygroundCodes)
     //   this.player1Code = '\n' + data.data.allPlaygroundCodes[6].code;
@@ -116,7 +118,7 @@ export class GameRoomComponent implements OnInit {
     //   if (this.problemText) {
     //     clearInterval(getQuestionInterval);
     //   }
-    this.getProblem();
+    // this.getProblem();
     this.dateStart = moment();
     // }, 5000);
 
@@ -144,7 +146,7 @@ export class GameRoomComponent implements OnInit {
     clearInterval(this.timeInterval);
     this.router.navigate(['/dashboard']);
   }
-  
+
   transform(value: number): string {
     const minutes: number = Math.floor(value / 60);
     return minutes + ':' + (value - minutes * 60);
@@ -158,26 +160,28 @@ export class GameRoomComponent implements OnInit {
       renderLineHighlight: 'none',
     });
 
-    if (!this.isPve) {if (this.playerTitle === 'p2') {
-      editor.updateOptions({ readOnly: true });
-      this.socket.on('editor', (data: any) => {
-        editor.setValue(data.code);
-      });
-    } else {
-      editor.updateOptions({ readOnly: false });
-      editor.onDidChangeModelContent((event: any) => {
-        //connect to socket
-        console.log(
-          'editor content changed',
-          this.opponentSocketId,
-          editor.getValue(),
-        );
-        this.socket.emit('editor', {
-          targetSocketId: this.opponentSocketId,
-          code: editor.getValue(),
+    if (!this.isPve) {
+      if (this.playerTitle === 'p2') {
+        editor.updateOptions({ readOnly: true });
+        this.socket.on('editor', (data: any) => {
+          editor.setValue(data.code);
         });
-      });
-    }}
+      } else {
+        editor.updateOptions({ readOnly: false });
+        editor.onDidChangeModelContent((event: any) => {
+          //connect to socket
+          console.log(
+            'editor content changed',
+            this.opponentSocketId,
+            editor.getValue(),
+          );
+          this.socket.emit('editor', {
+            targetSocketId: this.opponentSocketId,
+            code: editor.getValue(),
+          });
+        });
+      }
+    }
   }
 
   opponentEditorInit(editor: any) {
@@ -188,30 +192,31 @@ export class GameRoomComponent implements OnInit {
       scrollBeyondLastLine: false,
       renderLineHighlight: 'none',
     });
-    if(!this.isPve) {if (this.playerTitle === 'p1') {
-      editor.updateOptions({ readOnly: true });
-      this.socket.on('editor', (data: any) => {
-        console.log('opponent editor content changed', data.code);
-        editor.setValue(data.code);
-      });
-    } else {
-      editor.updateOptions({ readOnly: false });
-      editor.onDidChangeModelContent((event: any) => {
-        this.socket.emit('editor', {
-          targetSocketId: this.opponentSocketId,
-          code: editor.getValue(),
+    if (!this.isPve) {
+      if (this.playerTitle === 'p1') {
+        editor.updateOptions({ readOnly: true });
+        this.socket.on('editor', (data: any) => {
+          console.log('opponent editor content changed', data.code);
+          editor.setValue(data.code);
         });
-      });
-    }} else {
+      } else {
+        editor.updateOptions({ readOnly: false });
+        editor.onDidChangeModelContent((event: any) => {
+          this.socket.emit('editor', {
+            targetSocketId: this.opponentSocketId,
+            code: editor.getValue(),
+          });
+        });
+      }
+    } else {
       editor.updateOptions({ readOnly: true });
     }
   }
 
   runCode(isGptResponse: boolean) {
-    
     if (this.isPve) {
-      const expectedOutputs: any [] = [];
-      const expectedInputs : any [] = [];
+      const expectedOutputs: any[] = [];
+      const expectedInputs: any[] = [];
       this.api.getPveProblem(this.pveProblemId).subscribe((data) => {
         expectedInputs.push(data.input1);
         expectedInputs.push(data.input2);
@@ -221,56 +226,90 @@ export class GameRoomComponent implements OnInit {
         expectedOutputs.push(data.expectedOutput3);
         for (let i = 0; i < expectedInputs.length; i++) {
           if (isGptResponse) {
-            let code = this.player2Code + '\nprint(solution(' + JSON.stringify(expectedInputs[i].subInput1) + '))';
+            let code =
+              this.player2Code +
+              '\nprint(solution(' +
+              JSON.stringify(expectedInputs[i].subInput1) +
+              '))';
             this.api.submitCode(code, 'python3').subscribe((data) => {
-            this.checkSubmission(data.token, isGptResponse, expectedOutputs[i].subOutput1, expectedInputs[i].subInput1);
-            
-          });
+              this.checkSubmission(
+                data.token,
+                isGptResponse,
+                expectedOutputs[i].subOutput1,
+                expectedInputs[i].subInput1,
+              );
+            });
           } else {
             console.log(expectedInputs[0]);
-          console.log(expectedInputs[0].subInput1);
-          var code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
-          console.log(this.playerTitle);
-          code = this.import + code;
-          if (this.language === 'python3' || this.language === 'python') {
-          code = this.player1Code + '\nprint(solution(' + JSON.stringify(expectedInputs[i].subInput1) + '))';
-          } else if (this.language === 'C') {
-            code = this.player1Code + '\n int main(){printf("%d", solution(' + JSON.stringify(expectedInputs[i].subInput1) + '))}';
-          } else if (this.language === 'C++') {
-            code = this.player1Code + '\nstd::cout << solution(' + JSON.stringify(expectedInputs[i].subInput1) + ') << std::endl';
-          } else if (this.language === 'Java') {
-            code = this.player1Code + '\nSystem.out.println(solution(' + JSON.stringify(expectedInputs[i].subInput1) + '));';
-          }
+            console.log(expectedInputs[0].subInput1);
+            var code =
+              this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
+            console.log(this.playerTitle);
+            code = this.import + code;
+            if (this.language === 'python3' || this.language === 'python') {
+              code =
+                this.player1Code +
+                '\nprint(solution(' +
+                JSON.stringify(expectedInputs[i].subInput1) +
+                '))';
+            } else if (this.language === 'C') {
+              code =
+                this.player1Code +
+                '\n int main(){printf("%d", solution(' +
+                JSON.stringify(expectedInputs[i].subInput1) +
+                '))}';
+            } else if (this.language === 'C++') {
+              code =
+                this.player1Code +
+                '\nstd::cout << solution(' +
+                JSON.stringify(expectedInputs[i].subInput1) +
+                ') << std::endl';
+            } else if (this.language === 'Java') {
+              code =
+                this.player1Code +
+                '\nSystem.out.println(solution(' +
+                JSON.stringify(expectedInputs[i].subInput1) +
+                '));';
+            }
 
-          this.api.submitCode(code, this.language).subscribe((data) => {
-          
-            this.checkSubmission(data.token, isGptResponse, expectedOutputs[i].subOutput1, expectedInputs[i].subInput1);
-          });
-        }
+            this.api.submitCode(code, this.language).subscribe((data) => {
+              this.checkSubmission(
+                data.token,
+                isGptResponse,
+                expectedOutputs[i].subOutput1,
+                expectedInputs[i].subInput1,
+              );
+            });
+          }
         }
         console.log(expectedInputs);
         console.log(expectedOutputs);
-        
-
       });
     } else {
-
-      var code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
+      var code =
+        this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
       console.log(this.playerTitle);
       //code = this.import + code;
       //code = this.player2Code + 'print(solution(' + JSON.stringify(expectedInputs[0].subInput1) + '))';
       //code += 'print(solution("aaabb"))';
       console.log(code);
       this.api.submitCode(code, this.language).subscribe((data) => {
-      
-        this.checkSubmission(data.token, isGptResponse, this.expectedOutput, 'aaabb');
+        this.checkSubmission(
+          data.token,
+          isGptResponse,
+          this.expectedOutput,
+          'aaabb',
+        );
       });
-    
-  }
+    }
   }
 
-  checkSubmission(submissionToken: string, isGptResponse: boolean, expectedOutput: string, input: string) {
-    
+  checkSubmission(
+    submissionToken: string,
+    isGptResponse: boolean,
+    expectedOutput: string,
+    input: string,
+  ) {
     this.api.getSubmission(submissionToken).subscribe((data) => {
       console.log(data);
       if (data.stderr) {
@@ -279,7 +318,7 @@ export class GameRoomComponent implements OnInit {
       }
       if (data.status.id === 3) {
         const output = atob(data.stdout);
-        if (output === expectedOutput+'\n') {
+        if (output === expectedOutput + '\n') {
           if (isGptResponse) {
             this.showResult(
               `Input: ${input}\nOutput: ${output}`,
@@ -287,12 +326,12 @@ export class GameRoomComponent implements OnInit {
               this.numAttempts,
             );
           } else {
-          this.showResult(
-            `Input: ${input}\nOutput: ${output}`,
-            'Correct answer!',
-            this.numAttempts,
-          );
-        }
+            this.showResult(
+              `Input: ${input}\nOutput: ${output}`,
+              'Correct answer!',
+              this.numAttempts,
+            );
+          }
         } else {
           if (this.playerTitle === 'p1') {
             this.player1HeartCount[this.numAttempts] = 0;
@@ -318,7 +357,12 @@ export class GameRoomComponent implements OnInit {
         }
       } else if (data.status.id === 1 || data.status.id === 2) {
         setTimeout(() => {
-          this.checkSubmission(submissionToken, isGptResponse, expectedOutput, input);
+          this.checkSubmission(
+            submissionToken,
+            isGptResponse,
+            expectedOutput,
+            input,
+          );
         }, 1000);
       } else {
         this.showError('Error: ' + data.status.description);
@@ -345,11 +389,19 @@ export class GameRoomComponent implements OnInit {
   }
 
   getProblem() {
-    if(this.isPve) {
+    console.log('get problem', this.isPve);
+    if (this.isPve) {
       this.api.getRandomPveProblem().subscribe((data) => {
         console.log(data.title);
         this.problemTitle = data.title;
-        this.problemText = data.description + '<p>\ninput1: ' + data.input1.subInput1 + '</p><p>\ninput2: ' + data.input2.subInput1 + '</p>\ninput3: ' + data.input3.subInput1;
+        this.problemText =
+          data.description +
+          '<p>\ninput1: ' +
+          data.input1.subInput1 +
+          '</p><p>\ninput2: ' +
+          data.input2.subInput1 +
+          '</p>\ninput3: ' +
+          data.input3.subInput1;
         this.pveProblemId = data.id;
         // this.gptService.getResponse(data.description + 'write the solution in python 3 and a method called solution. Do not include anything other than the method itself').then((response) => {
         //   console.log(response);
@@ -358,90 +410,92 @@ export class GameRoomComponent implements OnInit {
         //   if (response){
         //     this.displayResponseLineByLine(response);
         //   }
-          
+
         // });
         console.log(data.question);
       });
     } else {
-    this.api.getRandomProblem().subscribe((data) => {
-      console.log(data.question.title);
-      this.problemTitle = data.question.title;
-      console.log(JSON.stringify(data.question.content));
-      this.problemText = data.question.content;
-      this.api.getProblemStartCode().subscribe((data) => {
-        this.player1Code += data[this.language];
-        console.log(this.player1Code);
+      this.api.getRandomProblem().subscribe((data) => {
+        console.log(data.question.title);
+        this.problemTitle = data.question.title;
+        console.log(JSON.stringify(data.question.content));
+        this.problemText = data.question.content;
+        this.api.getProblemStartCode().subscribe((data) => {
+          this.player1Code += data[this.language];
+          console.log(this.player1Code);
+        });
+        console.log(data.question);
       });
-      console.log(data.question);
-    });
-  }
-}
-
-displayResponseLineByLine(response: string) {
-  // const lines = response.split('\n');
-  // let currentLineIndex = 0;
-
-  // const intervalId = setInterval(() => {
-  //   if (currentLineIndex < lines.length) {
-  //     this.player2Code += lines[currentLineIndex] + '\n';
-  //     currentLineIndex++;
-  //   } else {
-  //     clearInterval(intervalId);
-  //   }
-  // }, 5000); // Adjust the interval time as needed (1000ms = 1 second)
-  let index = 0;
-  const delay = Math.floor(Math.random() * 900) + 100;
-        const intervalId = setInterval(() => {
-            if (index < response.length) {
-                this.player2Code += response[index];
-                index++;
-            } else {
-                clearInterval(intervalId);
-                this.runCode(true);
-            }
-        }, delay);
-}
-
-chooseLanguage(language: string) {
-  
-  
-  const langListElement = document.querySelector('.lang-list.' + this.playerTitle);
-  console.log(this.playerTitle);
-  console.log(langListElement);
-  if (langListElement) {
-    langListElement.classList.toggle('hidden');
-  }
-  console.log(language);
-  if (language !== 'choose') {
-    this.language = language;
-    console.log(this.editor);
-    //this.editor.setLanguageConfiguration(language);
-    //monaco.editor.setModelLanguage(this.editor.getModel(), language);
-    if (!this.isPve) {
-      this.socket.emit('change language', {language: language, targetSocketId: this.opponentSocketId});
-    }
-  }
-  if (this.playerTitle === 'p1') {
-    if (language === 'Python3' || language === 'Python') {
-      this.editorOptions = { theme: 'hc-black', language: 'python' };
-    } else if (language === 'C') {
-      this.editorOptions = { theme: 'hc-black', language: 'c' };
-    } else if (language === 'C++') {
-      this.editorOptions = { theme: 'hc-black', language: 'cpp' };
-    } else if (language === 'Java') {
-      this.editorOptions = { theme: 'hc-black', language: 'java' };
-    }
-  } else {
-    if (language === 'Python3' || language === 'Python') {
-      this.opponentEditorOptions = { theme: 'hc-black', language: 'python' };
-    } else if (language === 'C') {
-      this.opponentEditorOptions = { theme: 'hc-black', language: 'c' };
-    } else if (language === 'C++') {
-      this.opponentEditorOptions = { theme: 'hc-black', language: 'cpp' };
-    } else if (language === 'Java') {
-      this.opponentEditorOptions = { theme: 'hc-black', language: 'java' };
     }
   }
 
-}
+  displayResponseLineByLine(response: string) {
+    // const lines = response.split('\n');
+    // let currentLineIndex = 0;
+
+    // const intervalId = setInterval(() => {
+    //   if (currentLineIndex < lines.length) {
+    //     this.player2Code += lines[currentLineIndex] + '\n';
+    //     currentLineIndex++;
+    //   } else {
+    //     clearInterval(intervalId);
+    //   }
+    // }, 5000); // Adjust the interval time as needed (1000ms = 1 second)
+    let index = 0;
+    const delay = Math.floor(Math.random() * 900) + 100;
+    const intervalId = setInterval(() => {
+      if (index < response.length) {
+        this.player2Code += response[index];
+        index++;
+      } else {
+        clearInterval(intervalId);
+        this.runCode(true);
+      }
+    }, delay);
+  }
+
+  chooseLanguage(language: string) {
+    const langListElement = document.querySelector(
+      '.lang-list.' + this.playerTitle,
+    );
+    console.log(this.playerTitle);
+    console.log(langListElement);
+    if (langListElement) {
+      langListElement.classList.toggle('hidden');
+    }
+    console.log(language);
+    if (language !== 'choose') {
+      this.language = language;
+      console.log(this.editor);
+      //this.editor.setLanguageConfiguration(language);
+      //monaco.editor.setModelLanguage(this.editor.getModel(), language);
+      if (!this.isPve) {
+        this.socket.emit('change language', {
+          language: language,
+          targetSocketId: this.opponentSocketId,
+        });
+      }
+    }
+    if (this.playerTitle === 'p1') {
+      if (language === 'Python3' || language === 'Python') {
+        this.editorOptions = { theme: 'hc-black', language: 'python' };
+      } else if (language === 'C') {
+        this.editorOptions = { theme: 'hc-black', language: 'c' };
+      } else if (language === 'C++') {
+        this.editorOptions = { theme: 'hc-black', language: 'cpp' };
+      } else if (language === 'Java') {
+        this.editorOptions = { theme: 'hc-black', language: 'java' };
+      }
+    } else {
+      if (language === 'Python3' || language === 'Python') {
+        this.opponentEditorOptions = { theme: 'hc-black', language: 'python' };
+      } else if (language === 'C') {
+        this.opponentEditorOptions = { theme: 'hc-black', language: 'c' };
+      } else if (language === 'C++') {
+        this.opponentEditorOptions = { theme: 'hc-black', language: 'cpp' };
+      } else if (language === 'Java') {
+        this.opponentEditorOptions = { theme: 'hc-black', language: 'java' };
+      }
+    }
+  }
 }

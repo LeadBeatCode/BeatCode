@@ -3,7 +3,6 @@ import { ApiService } from '../../services/apiService/api.service';
 import { Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
 
-
 @Component({
   selector: 'app-friend-list',
   templateUrl: './friend-list.component.html',
@@ -20,7 +19,6 @@ export class FriendListComponent implements OnInit {
     private socket: Socket,
     private cdr: ChangeDetectorRef,
   ) {}
-
 
   ngOnInit(): void {
     const accessToken = localStorage.getItem('accessToken');
@@ -53,9 +51,7 @@ export class FriendListComponent implements OnInit {
 
     this.socket.on('friend offline', (friendId: any) => {
       console.log('friend offline', friendId);
-      this.onlineFriends = this.onlineFriends.filter(
-        (id) => id !== friendId.id,
-      );
+      this.onlineFriends = this.onlineFriends.filter((id) => id !== friendId);
     });
   }
 

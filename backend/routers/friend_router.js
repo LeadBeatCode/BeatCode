@@ -8,9 +8,10 @@ export const friendRouter = Router();
 friendRouter.post("/request", async (req, res) => {
   try {
     const accessToken = req.headers.authorization.split(" ")[1];
+    const senderId = req.body.senderId;
     const user1 = await User.findOne({
       where: {
-        accessToken: accessToken,
+        id: senderId,
       },
     });
     const friendCheck = await Friend.findOne({

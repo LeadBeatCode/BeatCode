@@ -53,7 +53,7 @@
   align-items: center;
   justify-content: space-between;
   margin: 16px 20px;
-  font-family: 'Saira';
+  font-family: "Saira";
 }
 
 .game-room-header-container {
@@ -209,4 +209,3 @@
 .lang.active .dropdown-menu {
   display: block;
 }
-
