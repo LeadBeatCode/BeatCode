@@ -33,7 +33,7 @@ import { RankersComponent } from './components/rankers/rankers.component';
 import { WinRateRadialbarComponent } from './components/win-rate-radialbar/win-rate-radialbar.component';
 
 const socketIoConfig: SocketIoConfig = {
-  url: 'http://localhost:3001',
+  url: 'http://35.203.10.88:3001',
   options: {},
 };
 
