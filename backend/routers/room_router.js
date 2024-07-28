@@ -23,6 +23,7 @@ roomRouter.post("/", isAuthenticated, async (req, res) => {
       isPve: isPve,
       user1Status: isPve ? "pve" : "pending",
       user2Status: isPve ? "pve" : "pending",
+      questionTitleSlug: req.body.questionTitleSlug,
     });
     console.log("logging room", room);
     return res.json(room);
@@ -62,6 +63,7 @@ roomRouter.get("/:id", async (req, res) => {
         playerTitle: "p1",
         user1Status: room.user1Status,
         user2Status: room.user2Status,
+        questionTitleSlug: room.questionTitleSlug,
       });
     }
     console.log("logging room", room);
@@ -79,6 +81,7 @@ roomRouter.get("/:id", async (req, res) => {
       playerTitle: "p2",
       user1Status: room.user1Status,
       user2Status: room.user2Status,
+      questionTitleSlug: room.questionTitleSlug,
     });
   } catch (error) {
     return res.status(400).json({ error: error.message });

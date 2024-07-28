@@ -73,14 +73,14 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.createRoom = function (status, userId1, userId2, token, isPve) {
+  module.createRoom = function (status, userId1, userId2, token, isPve, questionTitleSlug) {
     return fetch("http://localhost:3000/api/rooms", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ status, isPve, userId1, userId2 }),
+      body: JSON.stringify({ status, isPve, userId1, userId2, questionTitleSlug }),
     }).then((res) => res.json());
   };
 
@@ -146,6 +146,12 @@ export const apiService = (function () {
   module.getUserSocketId = function (nickname) {
     return fetch(`http://localhost:3000/api/users/${nickname}/socket`).then(
       (res) => res.json(),
+    );
+  };
+
+  module.getRandomProblem = function () {
+    return fetch("http://localhost:3000/api/leetcode/random-problem").then((res) =>
+      res.json(),
     );
   };
   

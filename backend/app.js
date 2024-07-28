@@ -58,6 +58,7 @@ export const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
+  
   console.log("a user connected");
   console.log("socket.handshake.headers", socket.handshake.headers);
 
@@ -125,12 +126,15 @@ io.on("connection", (socket) => {
             accessToken,
           );
           //player2.title = "player2"
+          const problem = await apiService.getRandomProblem();
+          
           const pair = await apiService.createRoom(
             "pending",
             player1.userId,
             player2.userId,
             accessToken,
             false,
+            problem.question.titleSlug,
           );
           io.to(player1.socketId).emit("matched", pair, player1);
           io.to(player2.socketId).emit("matched", pair, player2);

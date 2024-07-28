@@ -55,6 +55,7 @@ export class GameRoomComponent implements OnInit {
   now: string = "00:00:00";
   dateStart: any = moment();
   gameType: string = 'leetcode'; // pve or normal or leetcode
+  titleSlug: string = '';
 
   constructor(
     private api: ApiService,
@@ -65,6 +66,7 @@ export class GameRoomComponent implements OnInit {
     private gptService: GptService,
     private gameService: GameService,
   ) {
+    console.log('game room');
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras.state) {
       console.log(navigation.extras.state);
@@ -80,6 +82,7 @@ export class GameRoomComponent implements OnInit {
           next: (data) => {
             console.log(data);
             this.isPve = data.isPve;
+            this.titleSlug = data.questionTitleSlug;
             if(!this.isPve){
               this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
               if (this.playerTitle === 'p1') {
@@ -115,6 +118,7 @@ export class GameRoomComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('game room init');
     // this.startTimer();    
     // this.api.getLeetcodeOfficialSolution().subscribe(data => {
     //   console.log(data.data.allPlaygroundCodes)
@@ -382,17 +386,16 @@ export class GameRoomComponent implements OnInit {
         console.log(data.question);
       });
     } else {
-      this.api.getRandomProblem().subscribe((data) => {
-        this.problemData = data;
-        console.log(data);
-        console.log(this.problemData)
-        console.log(data.question.title);
-        this.problemTitle = data.question.title;
-        this.problemSlug = data.slug;
-        console.log(JSON.stringify(data.question.content));
-        this.problemText = data.question.content;
+      this.api.getProblem(this.titleSlug).subscribe((response) => {
+        this.problemData = response.data;
+        console.log(this.problemData.question.title);
+        this.problemTitle = this.formatString(this.titleSlug);
+        this.problemSlug = response.slug;
+        console.log(this.problemSlug);
+        console.log(JSON.stringify(response));
+        this.problemText = response.data.question.content;
         if (this.gameType === 'leetcode') {
-          this.api.getProblemStartCode(data.question.titleSlug).subscribe((data) => {
+          this.api.getProblemStartCode(this.titleSlug).subscribe((data) => {
             this.problemInitialCode = data;
             console.log(data);
             if (this.playerTitle === 'p1') {
@@ -403,9 +406,25 @@ export class GameRoomComponent implements OnInit {
             console.log(this.player1Code);
           });
         }
-        console.log(data.question);
       });
   }
+}
+
+formatString(input: string): string {
+  // Step 1: Replace all dashes with spaces
+  let formattedString = input.replace(/-/g, ' ');
+
+  // Step 2: Split the string into words
+  let words = formattedString.split(' ');
+
+  // Step 3: Capitalize the first letter of each word
+  words = words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+
+  // Step 4: Join the words back into a single string
+  formattedString = words.join(' ');
+
+  // Step 5: Return the formatted string
+  return formattedString;
 }
 
 displayResponseLineByLine(response: string) {

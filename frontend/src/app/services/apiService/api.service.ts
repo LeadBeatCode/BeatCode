@@ -78,6 +78,7 @@ export class ApiService {
     userId2: string,
     token: string,
     isPve: boolean,
+    // questionTitleSlug: string,
   ): Observable<any> {
     return this.http.post(
       this.endpoint + '/api/rooms',
@@ -86,6 +87,7 @@ export class ApiService {
         isPve,
         userId1,
         userId2,
+        // questionTitleSlug,
       },
       {
         headers: {
@@ -242,6 +244,10 @@ export class ApiService {
 
   getRandomProblem(): Observable<any> {
     return this.http.get(this.leetcodeApiEndpoint + '/random-problem');
+  }
+
+  getProblem(titleSlug: string): Observable<any> {
+    return this.http.get(this.leetcodeApiEndpoint + `/problems/${titleSlug}`);
   }
 
   getProblemStartCode(titleSlug: string): Observable<any> {
