@@ -3,19 +3,35 @@
     <div class="user-info-container">
       <div class="user-statistics-container">
         <div class="statistics-container">
-          <div class="win-rate">
-            <win-rate-radialbar [wins]="wins" [losses]="losses"></win-rate-radialbar>
+          <div class="title">OVERVIEW</div>
+          <div class="statistics-inner-container">
+            <div class="win-rate">
+              <win-rate-radialbar [wins]="wins" [losses]="losses"></win-rate-radialbar>
+            </div>
+            <div class="statistics">
+              <div class="total">TOTAL: {{ wins + losses }}</div>
+              <div class="wins">WINS: {{ wins }}</div>
+              <div class="losses">LOSSES: {{ losses }}</div>
+            </div>
           </div>
-          <div class="statistics">
-            <div class="wins">WINS: {{ wins }}</div>
-            <div class="losses">LOSSES: {{ losses }}</div>
+        </div>
+        <div class="ranking-container">
+          <div class="ranking-inner-container">
+            <div class="title">RANKING</div>
+            <div class="ranking-contents-container">
+              <div class="ranking-image"></div>
+              <div class="BP"></div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="ranking-container">ranking: silver point</div>
+      <div class="overview">
+        <div class="overview-inner-container">
+            <div class="title">STATISTICS</div>
+            <div class="overview-contents-container"></div>
+      </div>
+      </div>
     </div>
-    <div class="overview">number of wins/lose</div>
-  </div>
   <div class="game-history-container">
     <div class="game-history-contents-container">
       <div class="game-history-contents">
@@ -24,24 +40,13 @@
           <div class="game-history-btn" (click)="changeLoadMenu('history')">View All Matches</div>
         </div>
         <div class="contents-container">
-          <div class="match-history-container">
+          <div class="match-history-container" *ngFor = "let history of quickHistoryGames; let i = index" >
             <div class="bullet-point-container">
               <div class="bullet-point"></div>
-              <div class="date">TODAY</div>
+              <div class="date" [innerHTML] = "quickHistoryDates[i]"></div>
             </div>
             <div class="match-container" *ngFor = "let game of history" >
               <app-quick-match-history-element [nickname]="nickname" [result]="showResults(game)" [opponent]="showOpponent(game)"  [image] = "showImage(game, true)" [opponentImage]="showImage(game, false)"></app-quick-match-history-element>
-            </div>
-          </div>
-          <div class="match-history-container">
-            <div class="bullet-point-container">
-              <div class="bullet-point"></div>
-              <div class="date">2 / 1</div>
-            </div>
-            <div class="match-container">
-              <app-quick-match-history-element></app-quick-match-history-element>
-              <app-quick-match-history-element></app-quick-match-history-element>
-              <app-quick-match-history-element></app-quick-match-history-element>
             </div>
           </div>
         </div>

@@ -31,6 +31,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  min-width: 400px;
   font-family: Arial, Helvetica, sans-serif;
   color: white;
   height: 48%;
@@ -38,16 +39,55 @@
   width: 100%;
 }
 
-.user-statistics-container .statistics-container {
+.statistics-inner-container {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+  height: 80%;
+}
+
+.user-statistics-container .title {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding-top: 25px;
+}
+
+.statistics-container .title {
+  margin-left: 40px;
+}
+
+.ranking-container .title {
+}
+
+.overview .title {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding-top: 25px;
+}
+.statistics .total {
+  width: 120px;
+  border-left: 10px solid;
+  border-color: rgb(241, 255, 41);
+  padding: 5px;
+  margin: 5px;
+  background-image: linear-gradient(90deg, rgba(255, 221, 27, 0.8) 0%, rgba(255, 194, 41, 0.3) 70%, rgba(216, 255, 41, 0.1) 90%,  transparent 100%);
+}
+
+.user-statistics-container .statistics-container {
+  display: flex;
+  flex-direction: column;
+  /* align-items: flex-start; */
   background-color: #0c0c18;
   font-family: "Saira";
   color: white;
   border-radius: 18px;
   height: 100%;
+  /* justify-content: flex-start; */
   margin-right: 30px;
+  letter-spacing: 1px;
   width: 58%;
   border: 1px solid rgb(31, 31, 31);
 }
@@ -88,6 +128,7 @@
   padding-left: 4px;
   display: flex;
   justify-content: center;
+  min-width: 300px;
   align-items: center;
 }
 
@@ -152,9 +193,10 @@
 
 .match-history-container .match-container {
   margin-left: 5px;
-  margin-top: 20px;
   width: 100%;
+  margin-top: -28px;
 }
+
 .match-history-container:not(:last-child) .match-container {
   margin-bottom: 80px;
 }
@@ -187,7 +229,7 @@
   border-color: rgb(41, 255, 251);
   padding: 5px;
   margin: 5px;
-  background-image: linear-gradient(90deg, rgba(25, 116, 208, 0.3) 0%, rgba(41, 255, 251, 0.3) 60%, rgba(41, 255, 251, 0.1) 90%,  transparent 100%);
+  background-image: linear-gradient(90deg, rgba(41, 255, 251, 0.8) 0%, rgba(41, 255, 251, 0.3) 60%, rgba(41, 255, 251, 0.1) 90%,  transparent 100%);
 }
 
 .losses{
@@ -195,7 +237,7 @@
   padding: 5px;
   margin: 5px;
   border-left: 10px solid;
-  border-color: rgb(111, 40, 48);
-  background-image: linear-gradient(90deg, rgba(253, 8, 61, 0.4) 0%, rgba(17, 107, 105, 0.2) 60%, rgba(61, 157, 247, 0.1) 90%,  transparent 100%);
+  border-color: rgb(236, 76, 110);
+  background-image: linear-gradient(90deg, rgba(253, 8, 61, 0.8) 0%, rgba(103, 17, 107, 0.2) 80%, rgba(171, 51, 245, 0.1) 90%,  transparent 100%);
   margin-right: 15px;
 }
