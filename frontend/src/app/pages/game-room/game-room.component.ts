@@ -54,7 +54,7 @@ export class GameRoomComponent implements OnInit {
   editor: any;
   now: string = "00:00:00";
   dateStart: any = moment();
-  gameType: string = 'leetcode'; // pve or normal or leetcode
+  gameType: string = ''; // pve or normal or leetcode
   titleSlug: string = '';
 
   constructor(
@@ -75,6 +75,8 @@ export class GameRoomComponent implements OnInit {
     console.log('player title', this.playerTitle);
     this.activatedRoute.queryParams.subscribe((params) => {
       const roomId = params['roomId'];
+      this.gameType = params['gameType'];
+      console.log(this.gameType);
       const accessToken = localStorage.getItem('accessToken');
       this.currentRoom = roomId;
       if (accessToken) {
@@ -235,7 +237,8 @@ export class GameRoomComponent implements OnInit {
   }
 
   runCode(isGptResponse: boolean) {
-    this.api.runCode(this.gameType, this.problemData, this.language, this.playerTitle === 'p1' ? this.player1Code : this.player2Code).subscribe((data) => {
+    console.log(this.problemSlug)
+    this.api.runCode(this.gameType, this.problemSlug, this.language, this.playerTitle === 'p1' ? this.player1Code : this.player2Code, '1').subscribe((data) => {
       console.log(data);
     })
     if (this.isPve) {

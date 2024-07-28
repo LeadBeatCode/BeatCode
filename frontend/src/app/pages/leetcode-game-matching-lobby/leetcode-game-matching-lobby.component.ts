@@ -96,7 +96,7 @@ export class LeetcodeGameMatchingLobbyComponent {
             if (t <= 0) {
               this.error = '';
               if (!this.game.status) {
-                this.router.navigate(['/']);
+                // this.router.navigate(['/']);
               }
               clearInterval(lobbyInterval);
             } else {
@@ -134,7 +134,7 @@ export class LeetcodeGameMatchingLobbyComponent {
       clearInterval(this.timerInterval);
       console.log('start game', playerTitle);
       this.api.getRandomProblem()
-      this.router.navigate(['/game-room'], { queryParams: { roomId: roomId } , state: {playerTitle: playerTitle}} );
+      this.router.navigate(['/game-room'], { queryParams: { roomId: roomId, gameType: 'leetcode' } , state: {playerTitle: playerTitle}} );
     });
   }
 }
