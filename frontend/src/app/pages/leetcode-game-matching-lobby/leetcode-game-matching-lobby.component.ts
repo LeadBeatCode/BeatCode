@@ -51,6 +51,7 @@ export class LeetcodeGameMatchingLobbyComponent {
       'matching',
       this.userId,
       localStorage.getItem('accessToken'),
+      'leetcode',
     );
     this.socket.on('matched', (matchedPair: any, accessToken: any) => {
       this.foundMatch();

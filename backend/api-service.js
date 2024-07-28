@@ -3,10 +3,18 @@ export const apiService = (function () {
   const module = {};
 
   module.enqueue = function (userId, accessToken, socketId) {
-    console.log("userId in enqueue", userId);
-    console.log("accessToken", accessToken);
-    console.log("socketId", socketId);
     return fetch("http://localhost:3000/api/queues/enqueue", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + accessToken,
+      },
+      body: JSON.stringify({ userId, socketId }),
+    }).then((res) => res.json());
+  };
+
+  module.leetcodeEnqueue = function (userId, accessToken, socketId) {
+    return fetch("http://localhost:3000/api/leetcodeQueues/enqueue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -27,6 +35,17 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
+  module.leetcodeDequeue = function (socketId, accessToken) {
+    return fetch("http://localhost:3000/api/leetcodeQueues/dequeue", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + accessToken,
+      },
+      body: JSON.stringify({ socketId }),
+    }).then((res) => res.json());
+  }
+
   module.deleteQueue = function (socketId, token) {
     return fetch("http://localhost:3000/api/queues", {
       method: "DELETE",
@@ -38,8 +57,23 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
+  module.deleteLeetcodeQueue = function (socketId, token) {
+    return fetch("http://localhost:3000/api/leetcodeQueues", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ socketId }),
+    }).then((res) => res.json());
+  };
+
   module.getQueue = function () {
     return fetch("http://localhost:3000/api/queues").then((res) => res.json());
+  };
+
+  module.getLeetcodeQueue = function () {
+    return fetch("http://localhost:3000/api/leetcodeQueues").then((res) => res.json());
   };
 
   module.signup = function (username, password) {
@@ -73,14 +107,14 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.createRoom = function (status, userId1, userId2, token, isPve) {
+  module.createRoom = function (status, userId1, userId2, token, isPve, questionTitleSlug, gameType) {
     return fetch("http://localhost:3000/api/rooms", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ status, isPve, userId1, userId2 }),
+      body: JSON.stringify({ status, isPve, userId1, userId2, questionTitleSlug, gameType }),
     }).then((res) => res.json());
   };
 
@@ -117,7 +151,7 @@ export const apiService = (function () {
 
   module.createProblem = function (
     title,
-    description,
+    titleSlug,
     input1,
     output1,
     input2,
@@ -132,7 +166,7 @@ export const apiService = (function () {
       },
       body: JSON.stringify({
         title,
-        description,
+        titleSlug,
         input1,
         output1,
         input2,
@@ -146,6 +180,12 @@ export const apiService = (function () {
   module.getUserSocketId = function (nickname) {
     return fetch(`http://localhost:3000/api/users/${nickname}/socket`).then(
       (res) => res.json(),
+    );
+  };
+
+  module.getRandomProblem = function () {
+    return fetch("http://localhost:3000/api/leetcode/random-problem").then((res) =>
+      res.json(),
     );
   };
   
