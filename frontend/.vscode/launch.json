@@ -7,14 +7,14 @@
       "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: start",
-      "url": "http://35.203.10.88:4200/"
+      "url": "https://beat.codes"
     },
     {
       "name": "ng test",
       "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: test",
-      "url": "http://35.203.10.88:9876/debug.html"
+      "url": "https://beat.codes:9876/debug.html"
     }
   ]
 }

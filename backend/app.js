@@ -33,7 +33,7 @@ try {
 }
 
 const corsOptions = {
-  origin: "http://35.203.10.88:4200",
+  origin: "https://beat.codes",
   credentials: true, //allows cookies and HTTP authentication information to be included in the requests sent to the server
 };
 app.use(cors(corsOptions));
@@ -53,7 +53,7 @@ app.use("/api/leetcodeQueues", leetcodeQueueRouter);
 
 export const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:4200",
+    origin: "https://beat.codes",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -320,7 +320,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: process.env.SECRET,
-  baseURL: "http://35.203.10.88:3000",
+  baseURL: "https://beat.codes:3000",
   clientID: "Kmosk0ISBss1diEABRcTzKJwNceZpSqn",
   issuerBaseURL: "https://dev-jqe0hc4zidat2q1z.us.auth0.com",
 };
@@ -337,9 +337,9 @@ app.get("/connect", (req, res) => res.oidc.login({ returnTo: "/sign-in" }));
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);
-  else console.log("HTTP server on http://35.203.10.88:%s", PORT);
+  else console.log("HTTP server on hhttps://beat.codes:%s", PORT);
 });
 
 httpServer.listen(socketPort, () => {
-  console.log("Socket server on http://35.203.10.88:%s", socketPort);
+  console.log("Socket server on https://beat.codes:%s", socketPort);
 });
