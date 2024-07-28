@@ -13,6 +13,7 @@ export class ApiService {
   judege0Url = environment.judge0Url;
 
   leetcodeApiEndpoint = 'http://localhost:3000/api/leetcode';
+  leetcodeApiEndpoint = environment.leetcodeApiEndpoint;
 
   constructor(private http: HttpClient) {}
   /**
