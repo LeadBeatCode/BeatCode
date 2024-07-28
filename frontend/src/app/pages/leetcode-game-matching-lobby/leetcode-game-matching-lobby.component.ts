@@ -26,23 +26,39 @@ export class LeetcodeGameMatchingLobbyComponent {
   };
   error = '';
   timerInterval: number | ReturnType<typeof setTimeout> = 0;
+  userId: any;
 
   constructor(
     private api: ApiService,
     private router: Router,
     private socket: Socket,
     private game: GameService,
-  ) {}
-
-  ngOnInit(): void {
+  ) {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.log('Please sign in');
+      this.router.navigate(['/']);
+      return;
+    }
     this.loading();
-
-    this.socket.emit('matching', localStorage.getItem('accessToken'));
+    const navigation = this.router.getCurrentNavigation();
+    console.log('navigation', navigation);
+    //console.log('navigation.extras.state', navigation.extras.state);
+    if (navigation && navigation.extras.state) {
+      this.userId = navigation.extras.state['userId'];
+    }
+    this.socket.emit(
+      'matching',
+      this.userId,
+      localStorage.getItem('accessToken'),
+    );
     this.socket.on('matched', (matchedPair: any, accessToken: any) => {
       this.foundMatch();
       this.pair = matchedPair;
     });
   }
+
+  ngOnInit(): void {}
 
   foundMatch() {
     this.found = true;
@@ -100,6 +116,7 @@ export class LeetcodeGameMatchingLobbyComponent {
 
   updateOnFailAccept = () => {
     this.socket.emit('failedAccept', this.pair);
+    this.game.updateStatus(false);
   };
 
   waitForAccept() {
@@ -107,6 +124,7 @@ export class LeetcodeGameMatchingLobbyComponent {
     this.socket.emit(
       'accepted',
       this.pair,
+      this.userId,
       localStorage.getItem('accessToken'),
     );
 

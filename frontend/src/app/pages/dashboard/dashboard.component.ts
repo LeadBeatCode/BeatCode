@@ -132,7 +132,11 @@ export class DashboardComponent implements OnInit {
 
   enterLeetcodeLobby() {
     console.log('enterLobby');
-    this.router.navigate(['/leetcode-matching-lobby']);
+    this.router.navigate(['/leetcode-matching-lobby'], 
+      {
+        state: { userId: this.userData.sub },
+      }
+    );
   }
 
   checkLeetcodeSession() {
