@@ -10,6 +10,7 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
 
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { NgApexchartsModule } from "ng-apexcharts"
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SignInComponent } from './pages/sign-in/sign-in.component';
@@ -29,6 +30,7 @@ import { MatchHistoryElementComponent } from './components/match-history-element
 import { QuickMatchHistoryElementComponent } from './components/quick-match-history-element/quick-match-history-element.component';
 import { LeetcodeGameMatchingLobbyComponent } from './pages/leetcode-game-matching-lobby/leetcode-game-matching-lobby.component';
 import { RankersComponent } from './components/rankers/rankers.component';
+import { WinRateRadialbarComponent } from './components/win-rate-radialbar/win-rate-radialbar.component';
 
 const socketIoConfig: SocketIoConfig = {
   url: 'http://localhost:3001',
@@ -54,6 +56,7 @@ const socketIoConfig: SocketIoConfig = {
     QuickMatchHistoryElementComponent,
     LeetcodeGameMatchingLobbyComponent,
     RankersComponent,
+    WinRateRadialbarComponent,
   ],
   imports: [
     AuthModule.forRoot({
@@ -76,7 +79,8 @@ const socketIoConfig: SocketIoConfig = {
     HttpClientModule,
     SocketIoModule.forRoot(socketIoConfig),
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgApexchartsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

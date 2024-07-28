@@ -6,5 +6,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './user-performance.component.css',
 })
 export class UserPerformanceComponent {
+  wins: number = 7;
+  losses: number = 3;
   @Input() changeLoadMenu: Function = () => {};
 }
