@@ -1,48 +1,31 @@
 import { Router } from "express";
 import { Room } from "../models/room.js";
 import { User } from "../models/user.js";
+import { isAuthorizedRoom } from "../middleware/helper.js";
+import { isAuthenticated } from "../middleware/helper.js";
 
 export const roomRouter = Router();
 
-roomRouter.post("/", async (req, res) => {
+roomRouter.post("/", isAuthenticated, async (req, res) => {
   try {
-    console.log("logging req.body", req.body);
-    console.log("logging req.headers", req.headers);
-    const token1 = req.headers.authorization1.split(" ")[1];
-    const token2 = req.headers.authorization2.split(" ")[1];
-    const isPve = req.body.isPve;
-    console.log("logging token1", token1);
-    console.log("logging token2", token2);
-    console.log("logging isPve", isPve);
-    if (!isPve && !token1 && !token2) {
-      return res.status(400).json({ error: "Unauthorized" });
-    }
-    if (isPve && !token1) {
-      return res.status(400).json({ error: "Unauthorized" });
-    }
-    const user1 = await User.findOne({
-      where: {
-        accessToken: token1,
-      },
-    });
     const user2 = await User.findOne({
       where: {
-        accessToken: token2,
+        id: req.body.userId2,
       },
     });
-    if (!isPve && (!user1 || !user2)) {
-      return res.status(400).json({ error: "Unauthorized" });
-    }
+    const isPve = req.body.isPve;
+    if (!user2 && !isPve)
+      return res.status(404).json({ error: "User not found" });
     const room = await Room.create({
       status: req.body.status,
-      token1: token1,
-      token2: token2,
-      socketId1: req.body.socketId1,
-      socketId2: req.body.socketId2,
+      userId1: req.body.userId1,
+      userId2: isPve ? "pveGame" : req.body.userId2,
       isPve: isPve,
+      user1Status: isPve ? "pve" : "pending",
+      user2Status: isPve ? "pve" : "pending",
     });
     console.log("logging room", room);
-    return res.json({id: room.id, status: room.status, isPve: room.isPve, socketId1: room.socketId1, socketId2: room.socketId2});
+    return res.json(room);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
@@ -53,15 +36,50 @@ roomRouter.get("/:id", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1];
     const room = await Room.findByPk(req.params.id);
     if (!room) return res.status(404).json({ error: "Room not found" });
-    if (room.token1 !== token && room.token2 !== token) {
+    const user = await User.findOne({
+      where: {
+        accessToken: token,
+      },
+    });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    if (user.id !== room.userId1 && user.id !== room.userId2) {
       return res.status(403).json({ error: "Unauthorized" });
     }
-    if (room.token1 === token) {
-        console.log("logging room", room);
-        return res.json({id: room.id, status: room.status, isPve: room.isPve, socketId1: room.socketId1, socketId2: room.socketId2, playerTitle: "p1"});
+    const isPve = room.isPve;
+    if (user.id === room.userId1) {
+      console.log("logging room", room);
+      const user2 = await User.findOne({
+        where: {
+          id: room.userId2,
+        },
+      });
+      return res.json({
+        id: room.id,
+        status: room.status,
+        isPve: room.isPve,
+        socketId1: user.socketId,
+        socketId2: isPve ? "pveGame" : user2.socketId,
+        playerTitle: "p1",
+        user1Status: room.user1Status,
+        user2Status: room.user2Status,
+      });
     }
     console.log("logging room", room);
-    return res.json({id: room.id, status: room.status, isPve: room.isPve, socketId1: room.socketId1, socketId2: room.socketId2, playerTitle: "p2"});
+    const user2 = await User.findOne({
+      where: {
+        id: room.userId1,
+      },
+    });
+    return res.json({
+      id: room.id,
+      status: room.status,
+      isPve: room.isPve,
+      socketId1: isPve ? "pveGame" : user2.socketId,
+      socketId2: user.socketId,
+      playerTitle: "p2",
+      user1Status: room.user1Status,
+      user2Status: room.user2Status,
+    });
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
@@ -83,7 +101,46 @@ roomRouter.delete("/:id", async (req, res) => {
 roomRouter.get("/:id/sockets", async (req, res) => {
   try {
     const room = await Room.findByPk(req.params.id);
-    return res.json({ socketId1: room.socketId1, socketId2: room.socketId2 });
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    const user1 = await User.findOne({
+      where: {
+        id: room.userId1,
+      },
+    });
+    const user2 = await User.findOne({
+      where: {
+        id: room.userId2,
+      },
+    });
+    return res.json({ socketId1: user1.socketId, socketId2: user2.socketId });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});
+
+roomRouter.put("/:id/playerStatus", async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const room = await Room.findByPk(req.params.id);
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    const user = await User.findOne({
+      where: {
+        accessToken: token,
+      },
+    });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    if (user.id !== room.userId1 && user.id !== room.userId2) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    if (user.id === room.userId1) {
+      console.log("setting user1 status", req.body.status);
+      room.user1Status = req.body.status;
+    } else {
+      console.log("setting user2 status", req.body.status);
+      room.user2Status = req.body.status;
+    }
+    await room.save();
+    return res.json(room);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }

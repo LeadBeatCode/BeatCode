@@ -8,7 +8,6 @@ import { sequelize } from "./datasource.js";
 
 import { userRouter } from "./routers/user_router.js";
 import { queueRouter } from "./routers/queue_router.js";
-import { pairRouter } from "./routers/pair_router.js";
 import { roomRouter } from "./routers/room_router.js";
 import { problemRouter } from "./routers/problem_router.js";
 import { leetcodeRouter } from "./routers/leetcode_router.js";
@@ -45,7 +44,6 @@ app.use(function (req, res, next) {
 
 app.use("/api/users", userRouter);
 app.use("/api/queues", queueRouter);
-app.use("/api/pairs", pairRouter);
 app.use("/api/rooms", roomRouter);
 app.use("/api/leetcode", leetcodeRouter);
 app.use("/api/friends", friendRouter);
@@ -59,10 +57,9 @@ export const io = new Server(httpServer, {
   },
 });
 
-
-
 io.on("connection", (socket) => {
   console.log("a user connected");
+  console.log("socket.handshake.headers", socket.handshake.headers);
 
   socket.on("connected", function (nickname) {
     apiService.getUserSocketId(nickname).then((res) => {
@@ -76,7 +73,8 @@ io.on("connection", (socket) => {
   // apiService.createProblem('Longest Substring Without Repeating Characters', 'Given a string s, find the length of the longest substring without repeating characters.', { 'subInput1':'abcabcbb'  }, {  "subOutput1": 3 }, { 'subInput1':'bbbbb'  }, {  "subOutput1": 1 }, { 'subInput1':'pwwkew'  }, {  "subOutput1": 3 }).then((res) => {
   //   console.log('problem', res);
   // });
-
+  const token = socket.handshake.query.token;
+  console.log("token at 70", socket.handshake.query);
   socket.on("online", function (data) {
     const { userId, friendSocketId } = data;
     console.log("online", userId, friendSocketId);
@@ -100,11 +98,11 @@ io.on("connection", (socket) => {
     console.log("change language", targetSocketId, language);
     io.to(targetSocketId).emit("opponent change language", { language });
   });
-
-  socket.on("matching", async function (accessToken) {
+  // const token = 'Bearer ' + socket.handshake.headers.authorization;
+  socket.on("matching", async function (userId, accessToken) {
     // Make this function async
-    console.log("matching", accessToken);
-    await apiService.enqueue(accessToken, socket.id); // Assuming you handle the response inside the enqueue function
+    console.log("matching", userId);
+    await apiService.enqueue(userId, accessToken, socket.id); // Assuming you handle the response inside the enqueue function
 
     const queueRes = await apiService.getQueue();
     console.log("queue", queueRes);
@@ -112,47 +110,53 @@ io.on("connection", (socket) => {
       for (let i = 0; i < queueRes.queue.length; i = i + 2) {
         if (
           queueRes.queue[i + 1] &&
-          queueRes.queue[i + 1].accessToken !== queueRes.queue[i].accessToken
+          queueRes.queue[i + 1].userId !== queueRes.queue[i].userId
         ) {
           // Ensure there's a pair
-          console.log("dequeue", queueRes.queue[i]);
 
-          const player1 = await apiService.dequeue(queueRes.queue[i].socketId);
+          const player1 = await apiService.dequeue(
+            queueRes.queue[i].socketId,
+            accessToken,
+          );
           //player1.title = "player1"
-          console.log("dequeue just the res", queueRes.queue);
-          console.log("dequeue, increment", queueRes.queue[i + 1], i + 1);
 
           const player2 = await apiService.dequeue(
             queueRes.queue[i + 1].socketId,
+            accessToken,
           );
           //player2.title = "player2"
-          const pair = await apiService.createPair(
-            player1.accessToken,
-            player2.accessToken,
-            player1.socketId,
-            player2.socketId,
+          const pair = await apiService.createRoom(
+            "pending",
+            player1.userId,
+            player2.userId,
+            accessToken,
+            false,
           );
           io.to(player1.socketId).emit("matched", pair, player1);
           io.to(player2.socketId).emit("matched", pair, player2);
           console.log("matched", pair);
           //socket.to(player2.socketId).emit('matched', player1, player2);
 
-          await apiService.deleteQueue(queueRes.queue[i].socketId);
-          await apiService.deleteQueue(queueRes.queue[i + 1].socketId);
+          await apiService.deleteQueue(queueRes.queue[i].socketId, token);
+          await apiService.deleteQueue(queueRes.queue[i + 1].socketId, token);
           console.log("delete", "success"); // Assuming deleteQueue works as expected
         } else {
-          const player1 = await apiService.dequeue(queueRes.queue[i].socketId);
+          const player1 = await apiService.dequeue(
+            queueRes.queue[i].socketId,
+            accessToken,
+          );
           await apiService.deleteQueue(queueRes.queue[i].socketId);
           console.log("delete", "success");
         }
       }
     }
   });
-  socket.on("accepted", function (data, token) {
+
+  socket.on("accepted", function (data, userId, token) {
     //console.log('accepted', data, userId);
-    apiService.setPlayerStatus(data.id, true, token).then((res) => {
+    apiService.setPlayerStatus(data.id, "accepted", token).then((res) => {
       console.log("accepted");
-      apiService.getPair(data.id).then((pair) => {
+      apiService.getRoom(data.id, token).then((pair) => {
         io.fetchSockets().then((data) => {
           const socketIds = data.map((socket) => socket.id);
           console.log("socketIds", socketIds);
@@ -167,30 +171,21 @@ io.on("connection", (socket) => {
             socketIds.includes(pair.socketId1) &&
             socketIds.includes(pair.socketId2)
           ) {
-            if (pair.p1status && pair.p2status) {
+            if (
+              pair.user1Status === "accepted" &&
+              pair.user2Status === "accepted"
+            ) {
               console.log("both accepted and in socketIds");
-              apiService
-                .createRoom(
-                  'live',
-                  pair.token1,
-                  pair.token2,
-                  pair.socketId1,
-                  pair.socketId2,
-                  false,
-                )
-                .then((res) => {
-                  console.log("room", res.id);
-                  io.to(pair.socketId1).emit("start", res.id, pair.token1, 'p1');
-                  io.to(pair.socketId2).emit("start", res.id, pair.token2, 'p2');
-                });
+              io.to(pair.socketId1).emit("start", pair.id, pair.userId1, "p1");
+              io.to(pair.socketId2).emit("start", pair.id, pair.userId2, "p2");
             }
           } else {
             const tempSocketIds = pair.socketId1;
             console.log("tempSocketIds", tempSocketIds);
             if (pair.socketId1 in socketIds) {
-              apiService.enqueue(data, pair.socketId1);
+              apiService.enqueue(pair.userId1, token, pair.socketId1);
             } else {
-              apiService.enqueue(data, pair.socketId2);
+              apiService.enqueue(pair.userId2, token, pair.socketId2);
             }
           }
         });
@@ -198,62 +193,32 @@ io.on("connection", (socket) => {
     });
   });
 
-  // socket.on('matching', async function(data) {
-  //   console.log('matching', data);
-  //   await apiService.enqueue(data, socket.id).then((res) => {
-  //     console.log('enqueue', res);
-  //     await apiService.getQueue().then((queueRes) => {
-  //       console.log('queue', queueRes);
-  //       if (queueRes.count >= 2) {
-  //         let count = queueRes.count;
-  //         let increment = 0;
-  //         // while (count >= 2) {
-  //         for (let i = 0; i < queueRes.queue.length; i = i+2) {
-  //           console.log('dequeue', queueRes.queue[i]);
-  //           const socketId2 = queueRes.queue[i+1].socketId;
-  //           await apiService.dequeue(queueRes.queue[i].socketId).then((player1Res) => {
-  //             const player1 = player1Res;
-  //             player1.title = "player1"
-  //             console.log('dequeue just the res', queueRes.queue);
-  //             console.log('dequeue, increment', queueRes.queue[i+1], i+1);
-  //             apiService.dequeue(queueRes.socketId2).then((player2Res) => {
-  //               const player2 = player2Res;
-  //               player2.title = "player2"
-  //               apiService.createPair(player1.userId, player2.userId).then((res) => {
-  //                 socket.to(player1.socketId).emit('matched', player1, player2);
-  //                 socket.to(player2.socketId).emit('matched', player1, player2);
-  //               });
+  socket.on("logout", async function (data) {
+    console.log("logout", data);
+    const id = data;
+    apiService.getFriendsById(id).then((friends) => {
+      friends.forEach((friend) => {
+        console.log("friend", friend.socketId);
+        io.to(friend.socketId).emit("friend offline", id);
+      });
+    });
+  });
 
-  //               apiService.deleteQueue(queueRes.queue[i].socketId).then((res) => {
-  //                 console.log('delete', res);
-  //               });
-  //               apiService.deleteQueue(queueRes.socketId2).then((res) => {
-  //                 console.log('delete', res);
-  //               });
-  //             });
-  //           });
-  //           count = count - 2;
-  //           increment = increment + 2;
-  //         }
-  //       }
-  //     });
-  //   });
-
-  //   });
+  // const userId = socket.handshake.headers.userId;
+  console.log("token at 231", token);
   socket.on("disconnect", () => {
     console.log("user disconnected");
-    apiService.deleteQueue(socket.id).then((res) => {
+    apiService.deleteQueue(socket.id, token).then((res) => {
       console.log("deleteQueue", res);
     });
-
-    apiService.setUserSocket(socket.id, "").then((res) => {
+    console.log("setUserSocket", socket.id);
+    apiService.clearUserSocket(socket.id, token).then((res) => {
       apiService.getFriendsById(res.id).then((friends) => {
-        if (!friends.error) {
-          console.log("friends", friends);
-          friends.forEach((friend) => {
-            io.to(friend.socketId).emit("friend offline", res.id);
-          });
-        }
+        console.log("friends", friends);
+        friends.forEach((friend) => {
+          console.log("friend", friend.socketId);
+          io.to(friend.socketId).emit("friend offline", res.id);
+        });
       });
     });
   });
@@ -281,18 +246,7 @@ app.get("/profile", (req, res) => {
   );
 });
 
-app.get("/login", (req, res) => res.oidc.login({ returnTo: "/sign-in" }));
-
-function generateRandomString(length) {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
+app.get("/connect", (req, res) => res.oidc.login({ returnTo: "/sign-in" }));
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);

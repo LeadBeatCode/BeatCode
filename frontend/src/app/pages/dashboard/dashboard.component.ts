@@ -43,14 +43,16 @@ export class DashboardComponent implements OnInit {
       this.socket.on('connect', () => {
         this.socketId = this.socket.ioSocket.id;
         console.log('socket id', this.socketId);
-        this.api.setUserSocketId(token, this.socketId).subscribe({
-          next: (data) => {
-            console.log('socket id set');
-          },
-          error: (err) => {
-            console.log(err);
-          },
-        });
+        this.api
+          .setUserSocketId(token, this.socketId, this.userData.sub)
+          .subscribe({
+            next: (data) => {
+              console.log('socket id set');
+            },
+            error: (err) => {
+              console.log(err);
+            },
+          });
       });
     }
 
@@ -75,7 +77,7 @@ export class DashboardComponent implements OnInit {
       this.router.navigate(['/']);
       return;
     }
-    console.log('userData', this.userData.id);
+    console.log('userData', this.userData.sub);
     this.api.getFriends(token).subscribe({
       next: (friends) => {
         for (const friend of friends) {
@@ -113,8 +115,8 @@ export class DashboardComponent implements OnInit {
   }
 
   get changeLoadMenuFunc() {
-        return this.changeLoadMenu.bind(this);
-    }
+      return this.changeLoadMenu.bind(this);
+  }
 
   changeLoadMenu(value: string) {
     this.loadMenu = value;
@@ -122,7 +124,10 @@ export class DashboardComponent implements OnInit {
 
   enterLobby() {
     console.log('enterLobby');
-    this.router.navigate(['/matching-lobby']);
+    console.log('userData', this.userData);
+    this.router.navigate(['/matching-lobby'], {
+      state: { userId: this.userData.sub },
+    });
   }
 
   enterLeetcodeLobby() {
@@ -173,13 +178,15 @@ export class DashboardComponent implements OnInit {
   }
 
   logOut() {
+    console.log('log out', this.userData.sub);
     const token = localStorage.getItem('accessToken');
     if (!token) {
       console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     }
-    this.api.logOut(token).subscribe({
+
+    this.api.logOut(token, this.userData.sub).subscribe({
       next: (data) => {
         console.log('log out', data);
         localStorage.removeItem('accessToken');
@@ -187,12 +194,12 @@ export class DashboardComponent implements OnInit {
           console.log(result);
           this.router.navigate(['/']);
         });
+        this.socket.emit('logout', this.userData.sub);
       },
       error: (err) => {
         console.log(err);
       },
     });
-    
   }
   startPveGame() {
     const token = localStorage.getItem('accessToken');
@@ -205,23 +212,22 @@ export class DashboardComponent implements OnInit {
       next: (data) => {
         console.log('user data', data);
         this.api
-      .createRoom('live', token, 'PveGame', data.socketId, '', true)
-      .subscribe({
-        next: (data) => {
-          console.log('room created', data);
-          this.router.navigate(['/game-room'], {
-            queryParams: { roomId: data.id },
+          .createRoom('live', this.userData.sub, 'Gpt', token, true)
+          .subscribe({
+            next: (data) => {
+              console.log('room created', data);
+              this.router.navigate(['/game-room'], {
+                queryParams: { roomId: data.id },
+              });
+            },
+            error: (err) => {
+              console.log(err);
+            },
           });
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
       },
       error: (err) => {
         console.log(err);
       },
     });
-    
   }
 }

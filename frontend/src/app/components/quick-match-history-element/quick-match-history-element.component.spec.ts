@@ -8,9 +8,8 @@ describe('QuickMatchHistoryElementComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [QuickMatchHistoryElementComponent]
-    })
-    .compileComponents();
+      declarations: [QuickMatchHistoryElementComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(QuickMatchHistoryElementComponent);
     component = fixture.componentInstance;

@@ -1,25 +1,22 @@
 import { Queue } from "../models/queue.js";
 import { Router } from "express";
+import { isAuthenticated, isAuthorized } from "../middleware/helper.js";
 
 export const queueRouter = Router();
 
-queueRouter.post("/enqueue", async (req, res) => {
+queueRouter.post("/enqueue", isAuthorized, async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    console.log("token", token);
-    console.log("socketId", req.body.socketId);
     const queue = await Queue.create({
-      accessToken: req.headers.authorization.split(" ")[1],
+      userId: req.body.userId,
       socketId: req.body.socketId,
     });
-    console.log("enqueue", queue);
     return res.json(queue);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
 });
 
-queueRouter.post("/dequeue", async (req, res) => {
+queueRouter.post("/dequeue", isAuthenticated, async (req, res) => {
   try {
     const queue = await Queue.findOne({
       where: {

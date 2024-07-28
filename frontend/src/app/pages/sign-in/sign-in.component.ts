@@ -26,6 +26,7 @@ export class SignInComponent implements OnInit {
   private readonly oidcSecurityService = inject(OidcSecurityService);
 
   ngOnInit() {
+    this.socketId = this.socket.ioSocket.id;
     this.oidcSecurityService
       .checkAuth()
       .subscribe(({ isAuthenticated, userData, accessToken }) => {
@@ -34,7 +35,7 @@ export class SignInComponent implements OnInit {
         this.isAuthenticated = isAuthenticated;
         this.userData = userData;
         if (isAuthenticated) {
-          this.api.signIn(userData, this.socketId, accessToken).subscribe({
+          this.api.connect(userData, this.socketId, accessToken).subscribe({
             next: () => {
               localStorage.setItem('accessToken', accessToken);
               this.router.navigate(['/dashboard'], {
@@ -70,28 +71,28 @@ export class SignInComponent implements OnInit {
       });
   }
 
-  afterSignIn(userId: string, accessToken: string) {
-    // Loop through friends list
-    this.api.getFriends(this.userData.id).subscribe({
-      next: (friends) => {
-        for (const friend of friends) {
-          // Check if friend's socket is not null
-          this.api.getUserById(friend.id).subscribe({
-            next: (data) => {
-              const friendSocketId = data.socketId;
-              if (friend.socketId !== null) {
-                // Send online notification to friend
-                this.socket.emit('online', userId, friend.socket);
-              }
-            },
-          });
-        }
-      },
-      error: (err) => {
-        console.log(err);
-      },
-    });
-  }
+  // afterSignIn(userId: string, accessToken: string) {
+  //   // Loop through friends list
+  //   this.api.getFriends(this.userData.id).subscribe({
+  //     next: (friends) => {
+  //       for (const friend of friends) {
+  //         // Check if friend's socket is not null
+  //         this.api.getUserById(friend.id).subscribe({
+  //           next: (data) => {
+  //             const friendSocketId = data.socketId;
+  //             if (friend.socketId !== null) {
+  //               // Send online notification to friend
+  //               this.socket.emit('online', userId, friend.socket);
+  //             }
+  //           },
+  //         });
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.log(err);
+  //     },
+  //   });
+  // }
 
   loginUser() {
     this.oidcSecurityService.authorize();
@@ -102,5 +103,4 @@ export class SignInComponent implements OnInit {
       .logoff()
       .subscribe((result) => console.log(result));
   }
-
 }

@@ -115,8 +115,8 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-.game-history-contents::-webkit-scrollbar { 
-    display: none;
+.game-history-contents::-webkit-scrollbar {
+  display: none;
 }
 
 .game-history-contents .title-container {
@@ -156,9 +156,9 @@
   width: 100%;
 }
 .match-history-container:not(:last-child) .match-container {
-  margin-bottom: 80px
+  margin-bottom: 80px;
 }
- 
+
 .contents-container .bullet-point-container {
   margin-top: -38px;
   display: flex;
