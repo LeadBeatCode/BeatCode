@@ -20,15 +20,15 @@ export const Room = sequelize.define("Room", {
   },
   gameType: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   questionTitleSlug: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   timeElapsed: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   problemId: {
     type: DataTypes.STRING,
