@@ -51,20 +51,17 @@ export const apiService = (function () {
     return fetch(process.env.BASE_URL + `/api/queues/${socketId}` , {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
     }).then((res) => res.json());
   };
 
   module.deleteLeetcodeQueue = function (socketId, token) {
-    return fetch(process.env.BASE_URL + "/api/leetcodeQueues", {
+    return fetch(process.env.BASE_URL + `/api/leetcodeQueues/${socketId}`, {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ socketId }),
     }).then((res) => res.json());
   };
 

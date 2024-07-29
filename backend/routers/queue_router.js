@@ -29,11 +29,11 @@ queueRouter.post("/dequeue", isAuthenticated, async (req, res) => {
   }
 });
 
-queueRouter.delete("/", async (req, res) => {
+queueRouter.delete("/:id", async (req, res) => {
   try {
     const queue = await Queue.destroy({
       where: {
-        socketId: req.params.socketId,
+        socketId: req.params.id,
       },
     });
     return res.json(queue);

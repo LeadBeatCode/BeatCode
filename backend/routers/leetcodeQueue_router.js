@@ -29,11 +29,11 @@ leetcodeQueueRouter.post("/dequeue", isAuthenticated, async (req, res) => {
   }
 });
 
-leetcodeQueueRouter.delete("/", async (req, res) => {
+leetcodeQueueRouter.delete("/:id", async (req, res) => {
   try {
     const queue = await LeetcodeQueue.destroy({
       where: {
-        socketId: req.body.socketId,
+        socketId: req.params.id,
       },
     });
     return res.json(queue);
