@@ -33,7 +33,7 @@ queueRouter.delete("/", async (req, res) => {
   try {
     const queue = await Queue.destroy({
       where: {
-        socketId: req.body.socketId,
+        socketId: req.params.socketId,
       },
     });
     return res.json(queue);

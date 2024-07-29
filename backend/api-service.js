@@ -48,13 +48,12 @@ export const apiService = (function () {
   }
 
   module.deleteQueue = function (socketId, token) {
-    return fetch(process.env.BASE_URL + "/api/queues", {
+    return fetch(process.env.BASE_URL + `/api/queues/${socketId}` , {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ socketId }),
     }).then((res) => res.json());
   };
 
