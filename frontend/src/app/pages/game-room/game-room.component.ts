@@ -234,6 +234,7 @@ export class GameRoomComponent implements OnInit {
         this.player1HeartCount[this.opponentNumAttempts] = 0;
         this.player1HeartCount = [...this.player1HeartCount];
       }
+      this.opponentNumAttempts += 1;
     })
     console.log('game room init');
 
