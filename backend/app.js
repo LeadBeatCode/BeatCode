@@ -297,16 +297,16 @@ io.on("connection", (socket) => {
     // apiService.deleteLeetcodeQueue(socket.id, token).then((res) => {
     //   console.log("deleteLeetcodeQueue", res);
     // });
-    console.log("setUserSocket", socket.id);
-    apiService.clearUserSocket(socket.id, token).then((res) => {
-      apiService.getFriendsById(res.id).then((friends) => {
-        console.log("friends", friends);
-        friends.forEach((friend) => {
-          console.log("friend", friend.socketId);
-          io.to(friend.socketId).emit("friend offline", res.id);
-        });
-      });
-    });
+    // console.log("setUserSocket", socket.id);
+    // apiService.clearUserSocket(socket.id, token).then((res) => {
+    //   apiService.getFriendsById(res.id).then((friends) => {
+    //     console.log("friends", friends);
+    //     friends.forEach((friend) => {
+    //       console.log("friend", friend.socketId);
+    //       io.to(friend.socketId).emit("friend offline", res.id);
+    //     });
+    //   });
+    // });
   });
 });
 
