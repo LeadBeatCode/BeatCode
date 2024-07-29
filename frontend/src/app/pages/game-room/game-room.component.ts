@@ -614,18 +614,17 @@ export class GameRoomComponent implements OnInit {
       this.api.getRandomPveProblem().subscribe((data) => {
         console.log(data.title);
         this.problemTitle = data.title;
-        this.problemSlug = data.slug;
         this.problemText = data.description + '<p>\ninput1: ' + data.input1.subInput1 + '</p><p>\ninput2: ' + data.input2.subInput1 + '</p>\ninput3: ' + data.input3.subInput1;
         this.pveProblemId = data.id;
-        // this.gptService.getResponse(data.description + 'write the solution in python 3 and a method called solution. Do not include anything other than the method itself').then((response) => {
-        //   console.log(response);
-        //   this.gptResponse += response;
-        //   console.log(this.player2Code);
-        //   if (response){
-        //     this.displayResponseLineByLine(response);
-        //   }
+        this.gptService.getResponse(data.description + 'write the solution in python 3 and a method called solution. Do not include anything other than the method itself').then((response) => {
+          console.log(response);
+          this.gptResponse += response;
+          console.log(this.player2Code);
+          if (response){
+            this.displayResponseLineByLine(response);
+          }
           
-        // });
+        });
         console.log(data.question);
       });
     } else {

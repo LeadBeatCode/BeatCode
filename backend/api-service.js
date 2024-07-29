@@ -148,7 +148,7 @@ export const apiService = (function () {
 
   module.createProblem = function (
     title,
-    titleSlug,
+    description,
     input1,
     output1,
     input2,
@@ -163,7 +163,7 @@ export const apiService = (function () {
       },
       body: JSON.stringify({
         title,
-        titleSlug,
+        description,
         input1,
         output1,
         input2,
