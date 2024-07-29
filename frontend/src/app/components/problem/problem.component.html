@@ -22,15 +22,14 @@
   <div class="test-result content" *ngIf="testResult">
     <div class="result-container">
       <div class="testcases">
-        <span class="correct" [innerHTML]="correct_testcases">2</span> / 
-        <span class="total" [innerHTML]="total_testcases">2</span>
+        <span class="correct" [innerHTML]="correct_testcases" *ngIf="!stderr"></span>
+        <span class="total" [innerHTML]="total_testcases" *ngIf="!stderr"></span>
       </div>
-      <div class="stdout" [innerHTML]="stdout"></div>
-      <div class="last_testcase" [innerHTML]="last_testcase"></div>
-      <div class="expected_output" [innerHTML]="expected_output"></div>
-      <div [ngClass]="[resultStyle]" [innerHTML]="result"></div>
-      <div class="numAttemptsText" [innerHTML]="numAttemptsText"></div>
-      <div class="stderr" [innerHTML]="stderr"></div>
+      <div class="last_testcase" [innerHTML]="last_testcase" *ngIf="!stderr"></div>
+      <div class="stdout" [innerHTML]="stdout" *ngIf="!stderr"></div>
+      <div class="expected_output" [innerHTML]="expected_output" *ngIf="!stderr"></div>
+      <div [ngClass]="[resultStyle]" [innerHTML]="result" *ngIf="!stderr"></div>
+      <div class="stderr" [innerHTML]="stderr" *ngIf="stderr"></div>
     </div>
   </div>
   <div class="resize-icon"></div>

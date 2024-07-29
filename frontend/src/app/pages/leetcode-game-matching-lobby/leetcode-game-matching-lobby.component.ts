@@ -136,7 +136,7 @@ export class LeetcodeGameMatchingLobbyComponent {
         clearInterval(this.timerInterval);
         console.log('start game', playerTitle);
         this.router.navigate(['/game-room'], {
-          queryParams: { roomId: roomId, gameType: 'leetcode' },
+          queryParams: { roomId: roomId },
           state: { playerTitle: playerTitle },
         });
       },
