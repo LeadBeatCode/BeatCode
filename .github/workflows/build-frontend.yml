@@ -49,14 +49,14 @@ jobs:
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
-      - name: executing remote ssh commands using ssh key in frontend
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            docker stop project-frontend
-            docker rm project-frontend
-            docker pull ghcr.io/utsc-cscc09-programming-on-the-web/frontend-project-cyj
-            docker run -d -p 80:80 --name project-frontend ghcr.io/utsc-cscc09-programming-on-the-web/frontend-project-cyj
+      # - name: executing remote ssh commands using ssh key in frontend
+      #   uses: appleboy/ssh-action@v1.0.3
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     key: ${{ secrets.SSH_KEY }}
+      #     script: |
+      #       docker stop project-frontend
+      #       docker rm project-frontend
+      #       docker pull ghcr.io/utsc-cscc09-programming-on-the-web/frontend-project-cyj
+      #       docker run -d -p 80:80 --name project-frontend ghcr.io/utsc-cscc09-programming-on-the-web/frontend-project-cyj
