@@ -140,7 +140,7 @@ userRouter.put("/clearSocket", async (req, res) => {
     console.log("clear socket was called", req.body.socketId);
     user.set("socketId", "");
     await user.save();
-    return res.json(user);
+    return res.status(200).json(user);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
