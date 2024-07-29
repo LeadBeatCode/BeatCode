@@ -64,7 +64,6 @@ export const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   
   console.log("a user connected");
-  console.log("socket.handshake.headers", socket.handshake.headers);
 
   socket.on("connected", function (nickname) {
     apiService.getUserSocketId(nickname).then((res) => {
@@ -320,7 +319,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: process.env.SECRET,
-  baseURL: "beat.codes/api.beat.codes",
+  baseURL: "",
   clientID: "Kmosk0ISBss1diEABRcTzKJwNceZpSqn",
   issuerBaseURL: "https://dev-jqe0hc4zidat2q1z.us.auth0.com",
 };
