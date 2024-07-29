@@ -68,7 +68,7 @@ const socketIoConfig: SocketIoConfig = {
         scope: 'openid profile email',
         responseType: 'code',
         silentRenew: true,
-        useRefreshToken: false,
+        useRefreshToken: true,
         logLevel: LogLevel.Debug,
       },
     }),
