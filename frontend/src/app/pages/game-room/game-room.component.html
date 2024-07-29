@@ -48,10 +48,10 @@
     </button>
     <div class="time-elapsed">{{ timeElapsed }}</div>
   </div>
-  <div class="game-room-exit-container">
+  <!-- <div class="game-room-exit-container">
     <div class="game-room-exit-btn" (click)="exitGameRoom()"></div>
     Exit
-  </div>
+  </div> -->
 </div>
 <app-problem
   [problemTitle]="problemTitle"
@@ -65,14 +65,14 @@
 ></app-problem>
 <div class="editors-container" [ngClass]="{ reverse: playerTitle === 'p2' }">
   <div class="editor-contaier-left">
-    <div class="editor-header-container">
+    <div class="editor-header-container" *ngIf="showEditor">
       <ng-container *ngIf="playerTitle === 'p1'; else noAction">
         <div class="lang on" (click)="chooseLanguage('choose')">
           {{ language }}
         </div>
       </ng-container>
       <ng-template #noAction>
-        <div class="lang">{{ opponentLanguage }}</div>
+        <div class="lang" (change)="changeOpponentLanguage()">{{ opponentLanguage }}</div>
       </ng-template>
       <div class="lang-list hidden p1">
         <div
@@ -125,6 +125,7 @@
       </div>
     </div>
     <ngx-monaco-editor
+      style="min-height: 300px; max-height: 400px;"
       [options]="editorOptions"
       [(ngModel)]="player1Code"
       class="editor-left"
@@ -192,6 +193,7 @@
       </div>
     </div>
     <ngx-monaco-editor
+      style="min-height: 300px; max-height: 400px;"
       [options]="opponentEditorOptions"
       [(ngModel)]="player2Code"
       class="editor-right"

@@ -26,6 +26,7 @@ export class GameRoomComponent implements OnInit {
   result: string = '';
   stdout: string = '';
   stderr: string = '';
+  showEditor: boolean = true;
   playerTitle: string = '';
   currentRoom: string = '';
   language: string = 'Python3';
@@ -35,6 +36,7 @@ export class GameRoomComponent implements OnInit {
   time: number = 0;
   displayTime: string = '';
   timeInterval: any;
+  socketId: string = '';
   opponentSocketId: string = '';
   problemData: any = {}
   problemInitialCode: any = {}
@@ -62,6 +64,8 @@ export class GameRoomComponent implements OnInit {
   username2: string = '';
   userrank1: string = '';
   userrank2: string = '';
+  userId1: string = '';
+  userId2: string = '';
 
   rankImage: any = {
     Silver: '../../../assets/rank1.png',
@@ -100,17 +104,86 @@ export class GameRoomComponent implements OnInit {
             this.username2 = data.user2Nickname;
             this.userrank1 = this.rankImage[data.user1rank];
             this.userrank2 = this.rankImage[data.user2rank];
-            this.submissionData.gameType = "leetcode";data.gameType;
+            this.userId1 = data.userId1;
+            this.userId2 = data.userId2;
+            this.submissionData.gameType = data.gameType;
             this.submissionData.titleSlug = data.questionTitleSlug;
             this.submissionData.id = data.playerTitle === 'p1' ? data.userId1 : data.userId2;
             this.isPve = data.isPve;
             this.titleSlug = data.questionTitleSlug;
+            console.log(data)
+            // this.dateStart = data.timeElapsed
+            this.timeElapsed = data.timeElapsed;
+            console.log(this.timeElapsed);
+
+            this.timeElapsedInterval = setInterval(() => {
+              this.timeElapsed = moment(this.timeElapsed, 'HH:mm:ss').add(1, 'second').format("HH:mm:ss");
+              if (this.timeElapsed !== "Invalid date") {
+                // this.api.updateRoomTimeElapsed(parseInt(this.currentRoom), accessToken, this.timeElapsed).subscribe((data) => {
+                // })
+              }
+            }, 1000);
+
             if(!this.isPve){
               this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
-              if (this.playerTitle === 'p1') {
-                this.opponentSocketId = data.socketId2;
-              } else {
-                this.opponentSocketId = data.socketId1;
+                console.log(data);
+                var socketOpponentUpdated = false;
+                this.socket.on("opponent_reconnected", (title: string, socketId: string, roomId: string, toSocketId: string) => {
+                  console.log("opponent_reconnected", title, socketId, toSocketId);
+                  if (this.playerTitle !== title) {
+                    this.opponentSocketId = socketId;
+                  }
+                })
+                if (this.playerTitle === 'p1') {
+                  if (data.socketId1 === "") {
+                    this.socket.emit('reconnected', this.userId1, localStorage.getItem('accessToken'));
+                  
+                    this.socket.on('reconnected', (userId: string, socketId: string) => {
+                      console.log("reconnecting", userId, socketId)
+                      this.api.setUserSocketId(accessToken, socketId, this.userId1)
+                        .subscribe({
+                          next: (data) => {
+                            console.log('socket id set');
+                          },
+                          error: (err) => {
+                            console.log(err);
+                          },
+                        });
+                        this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
+                          this.opponentSocketId = data.socketId2;
+                          this.socket.emit('opponent_reconnected', this.currentRoom, this.playerTitle, socketId, this.opponentSocketId, accessToken)
+                          socketOpponentUpdated = true;
+                          console.log('opponent socket id', this.opponentSocketId);
+                        });
+                      })
+                  } else {
+                    this.opponentSocketId = data.socketId2;
+                  }
+                } else {
+                  if (data.socketId2 === "") {
+                    this.socket.emit('reconnected', this.userId2, localStorage.getItem('accessToken'));
+                  
+                    this.socket.on('reconnected', (userId: string, socketId: string) => {
+                      console.log("reconnecting", userId, socketId)
+                      this.api.setUserSocketId(accessToken, socketId, this.userId2)
+                        .subscribe({
+                          next: (data) => {
+                            console.log('socket id set');
+                          },
+                          error: (err) => {
+                            console.log(err);
+                          },
+                        });
+                        this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
+                          this.opponentSocketId = data.socketId1;
+                          this.socket.emit('opponent_reconnected', this.currentRoom, this.playerTitle, socketId, this.opponentSocketId, accessToken)
+                          socketOpponentUpdated = true;
+                          console.log('opponent socket id', this.opponentSocketId);
+                        });
+                      })
+                  } else {
+                    this.opponentSocketId = data.socketId1;
+                  }
               }
             });}
             this.getProblem();
@@ -119,7 +192,7 @@ export class GameRoomComponent implements OnInit {
             console.log(err);
             if (err.status === 401) {
               console.log('Please sign in');
-              this.router.navigate(['/']);
+              // this.router.navigate(['/']);
             } else if (err.status === 403) {
               console.log('You are not authorized to access this page');
               this.router.navigate(['/']);
@@ -128,29 +201,26 @@ export class GameRoomComponent implements OnInit {
         });
       } else {
         console.log('Please sign in');
-        this.router.navigate(['/']);
+        // this.router.navigate(['/']);
       }
 
-      this.timeElapsedInterval = setInterval(() => {
-        this.timeElapsed = moment.utc(moment(moment()).diff(this.dateStart)).format("HH:mm:ss");
-        // UPDATE DB WITH TIME
-      }, 1000);
-
+    
     });
   }
 
   ngOnInit() {
-    this.socket.on('connect', () => {
-      this.socket.on('game won by opponent', (data: any) => {
-        console.log(data);
-        this.router.navigate(['/']);
-      });
-    });
     this.socket.on("game won by opponent", () => {
       console.log('game won by opponent');
       this.showGameSummary();
     })
     console.log('game room init');
+
+    // this.socket.on("opponent_reconnected", (title: string, socketId: string, roomId: string) => {
+    //   console.log("opponent_reconnected", title, socketId);
+    //   if (this.playerTitle !== title) {
+    //     this.opponentSocketId = socketId;
+    //   }
+    // })
     // this.startTimer();    
     // this.api.getLeetcodeOfficialSolution().subscribe(data => {
     //   console.log(data.data.allPlaygroundCodes)
@@ -246,7 +316,7 @@ export class GameRoomComponent implements OnInit {
     const token = localStorage.getItem('accessToken');
     if (!token) {
       console.log('Please sign in');
-      this.router.navigate(['/']);
+      // this.router.navigate(['/']);
       return;
     }
     this.gameService.getUserSocket(token).subscribe({
@@ -298,7 +368,7 @@ export class GameRoomComponent implements OnInit {
       const token = localStorage.getItem('accessToken');
       if (!token) {
         console.log('Please sign in');
-        this.router.navigate(['/']);
+        // this.router.navigate(['/']);
         return;
       }
       this.api.roomGameOver(parseInt(this.currentRoom), token, this.playerTitle === 'p1' ? 'p1' : 'p2' ).subscribe((data) => {
@@ -335,8 +405,8 @@ export class GameRoomComponent implements OnInit {
                     this.showResult(this.submissionDetails.codeOutput, this.submissionDetails.expectedOutput, this.numAttempts);
                     this.showLeetcodeResult(this.submissionDetails.lastTestcase, this.submissionDetails.totalCorrect, this.submissionDetails.totalTestcases);
                   }
-                  this.reduceHeartCount();
                 }
+                this.reduceHeartCount();
 
                 // this.showResult(stdOutput, JSON.stringify(lastTestcase), this.numAttempts);
               }
@@ -406,7 +476,25 @@ export class GameRoomComponent implements OnInit {
   }
   }
 
+  getWinner = (user1Attempts: number, user2Attempts: number, user1Result: number, user2Result: number) => {
+    console.log(user1Attempts, user2Attempts, user1Result, user2Result);
+    if (user1Attempts < user2Attempts) {
+      console.log('User 1 wins');
+      // this.api.updateUserRank(this.submissionData.id, 'win').subscribe((data) => {
+      //   console.log(data);
+      // });
+    } else if (user1Attempts > user2Attempts) {
+      console.log('User 2 wins');
+      // this.api.updateUserRank(this.submissionData.id, 'lose').subscribe((data) => {
+      //   console.log(data);
+      // });
+    } else {
+      console.log('Tie');
+    }
+  }
+
   reduceHeartCount() {
+    console.log("reduceHeartCount");
     if (this.playerTitle === 'p1') {
       this.player1HeartCount[this.numAttempts] = 0;
       this.player1HeartCount = [...this.player1HeartCount];
@@ -416,21 +504,30 @@ export class GameRoomComponent implements OnInit {
       this.player2HeartCount = [...this.player2HeartCount];
       console.log(this.player2HeartCount);
     }
-    if (this.numAttempts < this.HEART_COUNT) {
+    console.log(this.numAttempts, this.HEART_COUNT)
+    if (this.numAttempts < this.HEART_COUNT - 1) {
       this.numAttempts += 1;
     } else {
       console.log('Game Over');
       clearInterval(this.timeInterval);
+      clearInterval(this.timeElapsedInterval);
       const token = localStorage.getItem('accessToken');
       if (!token) {
         console.log('Please sign in');
-        this.router.navigate(['/']);
+        // this.router.navigate(['/']);
         return;
       }
-      this.api.roomGameOver(parseInt(this.currentRoom), token, this.playerTitle === 'p1' ? 'p1' : 'p2' ).subscribe((data) => {
-        console.log(data);
-        this.router.navigate(['/']);
-        this.socket.emit('game over', {roomId: this.currentRoom, token: token});
+      this.api.getRoom(parseInt(this.currentRoom), token).subscribe({
+        next: (room_data) => {
+          this.getWinner(room_data.user1Attempts, room_data.user2Attempts, room_data.user1Result, room_data.user2Result);
+          this.api.roomGameOver(parseInt(this.currentRoom), token, this.playerTitle === 'p1' ? 'p1' : 'p2' ).subscribe((data) => {
+            this.socket.emit('game over', {roomId: this.currentRoom, token: token});
+            this.showGameSummary();
+          });
+        },
+        error: (err) => {
+          console.log(err);
+        }
       });
     }
   }
@@ -522,9 +619,9 @@ export class GameRoomComponent implements OnInit {
         this.submissionData.questionId = response.data.question.questionId;
         console.log(this.problemData.title);
         this.problemTitle = this.formatString(this.titleSlug);
-        this.problemSlug = response.slug;
-        console.log(this.problemSlug);
-        console.log(JSON.stringify(response));
+        // this.problemSlug = response.slug;
+        // console.log(this.problemSlug);
+        // console.log(JSON.stringify(response));
         this.problemText = response.data.question.content;
         if (this.submissionData.gameType === 'leetcode') {
           this.api.getProblemStartCode(this.titleSlug).subscribe((data) => {
@@ -533,10 +630,23 @@ export class GameRoomComponent implements OnInit {
             if (this.playerTitle === 'p1') {
               this.player1Code += data[this.language];
             } else {
-              this.player2Code += data[this.language];
+              this.player2Code += data[this.language] + "sdfsdfsdfsdf";
             }
             console.log(this.player1Code);
           });
+        } else {
+          this.problemInitialCode = {
+            'Python3': '# Welcome to BeatCode!\n# Write a function called "Solution" that returns the output. \n',
+            'Python': '# Welcome to BeatCode!\n# Write a function called "Solution" that returns the output. \n',
+            'C': '// Welcome to BeatCode!\n// Write a function called "Solution" that returns the output. \n',
+            'C++': '// Welcome to BeatCode!\n// Write a function called "Solution" that returns the output. \n',
+            'Java': '// Welcome to BeatCode!\n// Write a function called "Solution" that returns the output. \n',
+          };
+          if (this.playerTitle === 'p1') {
+              this.player1Code = this.problemInitialCode[this.language];
+          } else {
+            this.player2Code = this.problemInitialCode[this.language];
+          }
         }
       });
   }
@@ -613,9 +723,9 @@ chooseLanguage(language: string) {
     } else if (language === 'Java') {
       this.editorOptions = { theme: 'hc-black', language: 'java' };
     }
-
-    if (language)
-      this.player1Code = this.problemInitialCode[language] + '\n' //+ this.player1Code;
+    if (language && language !== "choose") {
+      this.player1Code = this.problemInitialCode[language] + '\n'
+    }
   } else {
     if (language === 'Python3' || language === 'Python') {
       this.opponentEditorOptions = { theme: 'hc-black', language: 'python' };
@@ -627,9 +737,34 @@ chooseLanguage(language: string) {
       this.opponentEditorOptions = { theme: 'hc-black', language: 'java' };
     }
 
-    if (language)
-      this.player2Code = this.problemInitialCode[language] + '\n' //+ this.player2Code;
+    if (language && language !== "choose") {
+      this.player2Code = this.problemInitialCode[language] + '\n'
+    }
+  }
   }
 
+changeOpponentLanguage = () => {
+  console.log('change opponent language');
+  if (this.playerTitle === 'p2') {
+    if (this.opponentLanguage === 'Python3' || this.opponentLanguage === 'Python') {
+      this.editorOptions = { theme: 'hc-black', language: 'python' };
+    } else if (this.opponentLanguage === 'C') {
+      this.editorOptions = { theme: 'hc-black', language: 'c' };
+    } else if (this.opponentLanguage === 'C++') {
+      this.editorOptions = { theme: 'hc-black', language: 'cpp' };
+    } else if (this.opponentLanguage === 'Java') {
+      this.editorOptions = { theme: 'hc-black', language: 'java' };
+    }
+  } else {
+    if (this.opponentLanguage === 'Python3' || this.opponentLanguage === 'Python') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'python' };
+    } else if (this.opponentLanguage === 'C') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'c' };
+    } else if (this.opponentLanguage === 'C++') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'cpp' };
+    } else if (this.opponentLanguage === 'Java') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'java' };
+    }
+  }
 }
 }

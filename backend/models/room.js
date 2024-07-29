@@ -29,6 +29,7 @@ export const Room = sequelize.define("Room", {
   timeElapsed: {
     type: DataTypes.STRING,
     allowNull: true,
+    defaultValue: "00:00:00",
   },
   problemId: {
     type: DataTypes.STRING,
@@ -36,11 +37,21 @@ export const Room = sequelize.define("Room", {
   },
   user1Attempts: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    defaultValue: 0,
   },
   user2Attempts: {
     type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  user1Result: {
+    type: DataTypes.INTEGER,
     allowNull: true,
+    defaultValue: 0,
+  },
+  user2Result: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    defaultValue: 0,
   },
   user1Status: {
     type: DataTypes.STRING,

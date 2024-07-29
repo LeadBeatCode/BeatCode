@@ -240,6 +240,7 @@ export class ApiService {
     socketId: string,
     userId: string,
   ): Observable<any> {
+    console.log( socketId, userId)
     return this.http.put(this.endpoint + '/api/users/socket/', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -259,6 +260,33 @@ export class ApiService {
 
   getLeetcodeProblem(problemId: number): Observable<any> {
     return this.http.get(this.endpoint + '/api/problems/' + problemId);
+  }
+
+  updateRoomAttempt(roomId: number, accessToken: string, attempt: number): Observable<any> {
+    return this.http.put(this.endpoint + `/api/rooms/${roomId}/attempt`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      attempt,
+    });
+  }
+
+  updateRoomResult(roomId: number, accessToken: string, result: number): Observable<any> {
+    return this.http.put(this.endpoint + `/api/rooms/${roomId}/result`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      result,
+    });
+  }
+
+  updateRoomTimeElapsed(roomId: number, accessToken: string, time: string): Observable<any> {
+    return this.http.put(this.endpoint + `/api/rooms/${roomId}/time`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      time,
+    });
   }
 
   /* Leetcode API */
