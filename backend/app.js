@@ -15,6 +15,7 @@ import { leetcodeQueueRouter } from "./routers/leetcodeQueue_router.js";
 import { friendRouter } from "./routers/friend_router.js";
 import { apiService } from "./api-service.js";
 import dotenv from "dotenv";
+import cors from "cors";
 
 const PORT = 3000;
 const socketPort = 3001;
