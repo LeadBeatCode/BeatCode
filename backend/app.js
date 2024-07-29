@@ -43,13 +43,13 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("api.beat.codes/api/users", userRouter);
-app.use("api.beat.codes/api/queues", queueRouter);
-app.use("api.beat.codes/api/rooms", roomRouter);
-app.use("api.beat.codes/api/leetcode", leetcodeRouter);
-app.use("api.beat.codes/api/friends", friendRouter);
-app.use("api.beat.codes/api/problems", problemRouter);
-app.use("api.beat.codes/api/leetcodeQueues", leetcodeQueueRouter);
+app.use("/api/users", userRouter);
+app.use("/api/queues", queueRouter);
+app.use("/api/rooms", roomRouter);
+app.use("/api/leetcode", leetcodeRouter);
+app.use("/api/friends", friendRouter);
+app.use("/api/problems", problemRouter);
+app.use("/api/leetcodeQueues", leetcodeQueueRouter);
 
 export const io = new Server(httpServer, {
   cors: {
