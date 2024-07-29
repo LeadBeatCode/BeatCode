@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import http from "https";
+import http from "http";
 import { auth } from "express-openid-connect";
 import { Server } from "socket.io";
 import { sequelize } from "./datasource.js";
