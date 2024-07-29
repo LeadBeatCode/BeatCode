@@ -56,6 +56,8 @@ userRouter.get("/:id", async (req, res) => {
       nickname: user.nickname,
       socketId: user.socketId,
       rank: user.rank,
+      subrank: user.subrank,
+      bp: user.BP,
     });
   } catch (error) {
     return res.status(400).json({ error: error.message });
