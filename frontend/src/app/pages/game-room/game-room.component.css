@@ -235,10 +235,11 @@
 }
 
 @media (max-width: 576px) {
-  /* .editor-left,
+  .editor-left,
   .editor-right {
     width: 240px;
-  } */
+    height: 900px;
+  }
   .editor-contaier-left,
   .editor-contaier-right {
     width: 240px;

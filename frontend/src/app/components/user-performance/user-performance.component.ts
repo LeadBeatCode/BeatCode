@@ -11,10 +11,20 @@ export class UserPerformanceComponent implements OnInit {
   losses: number = 3;
   @Input() changeLoadMenu: Function = () => {};
   @Input() userId: string = '';
+  @Input() rank: string = '';
+  @Input() subrank: string = '';
+  @Input() bp: number = 0;
   quickHistory: any[] = [];
   quickHistoryGames: any[] = [];
   quickHistoryDates: any[] = [];
   nickname: string = '';
+  rankImage: any = {
+    Silver: '../../../assets/rank1.png',
+    Emerald: '../../../assets/rank2.png',
+    Diamond: '../../../assets/rank3.png',
+    Ruby: '../../../assets/rank4.png',
+    Master: '../../../assets/rank5.png',
+  }
 
   constructor(private api:ApiService) {
     

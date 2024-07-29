@@ -180,6 +180,17 @@ export const apiService = (function () {
     );
   };
 
+  module.setUserSocket = function (socketId, nickname, userId, accessToken) {
+    return fetch(`http://localhost:3000/api/users/${nickname}/socket`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + accessToken,
+      },
+      body: JSON.stringify({ socketId, userId }),
+    }).then((res) => res.json());
+  }
+
   module.getRandomProblem = function () {
     return fetch(process.env.BASE_URL + "/api/leetcode/random-problem").then((res) =>
       res.json(),

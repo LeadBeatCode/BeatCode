@@ -19,8 +19,9 @@
           <div class="ranking-inner-container">
             <div class="title">RANKING</div>
             <div class="ranking-contents-container">
-              <div class="ranking-image"></div>
-              <div class="BP"></div>
+              <div class="ranking-image" ></div>
+              <div class="ranking-title" [ngStyle]="{'background-image': 'url(' + rankImage[rank] + ')'}">{{rank}} {{subrank}}</div>
+              <div class="BP">BP: {{bp}}</div>
             </div>
           </div>
         </div>

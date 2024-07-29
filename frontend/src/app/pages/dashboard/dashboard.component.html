@@ -86,7 +86,7 @@
       </div>
     <div class="logOut-btn" (click)="logOut()">LogOut</div>
     </div>
-    <app-user-performance *ngIf="loadMenu === 'performance'" [changeLoadMenu]="changeLoadMenuFunc" [userId]="userData.sub"></app-user-performance>
+    <app-user-performance *ngIf="loadMenu === 'performance'" [changeLoadMenu]="changeLoadMenuFunc" [rank]="userDetails.rank" [subrank]="userDetails.subrank" [bp]="userDetails.bp" [userId]="userData.sub"></app-user-performance>
     <app-match-history *ngIf="loadMenu === 'history'"></app-match-history>
     <app-rankers *ngIf="loadMenu === 'rankers'"></app-rankers>
   </div>

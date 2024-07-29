@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit {
   showLeetcodeSessionValue: boolean = false;
   leetcodeCookieForm: any = '';
   showLeetcodeSessionFormError: string = '';
+  userDetails: any = {rank: '', subrank: '', bp: 0}
 
   constructor(
     private api: ApiService,
@@ -72,12 +73,22 @@ export class DashboardComponent implements OnInit {
     //console.log('response', response);
     const token = localStorage.getItem('accessToken');
 
+    this.api.getUserById(this.userData.sub).subscribe({
+      next: (data) => {
+        this.userDetails.rank = data.rank;
+        this.userDetails.subrank = data.subrank;
+        this.userDetails.bp = data.bp;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
     if (!token) {
       console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     }
-    console.log('userData', this.userData.sub);
+    console.log('userData', this.userData);
     this.api.getFriends(token).subscribe({
       next: (friends) => {
         for (const friend of friends) {

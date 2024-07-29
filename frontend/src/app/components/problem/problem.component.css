@@ -5,10 +5,10 @@
   padding: 0 10px;
   border: 1px solid rgb(47, 46, 46);
   border-radius: 15px;
-  height: 190px;
+  height: 280px;
   overflow-y: auto;
   resize: vertical;
-  max-height: 400px;
+  max-height: 300px;
   min-height: 48px;
   position: relative;
 }
@@ -106,7 +106,7 @@ pre {
 }
 
 .contents-container .problem-title {
-  line-height: 20px;
+  line-height: 32px;
   margin-bottom: 30px;
 }
 

@@ -69,6 +69,7 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
         socketId2: isPve ? "pveGame" : user2.socketId,
         playerTitle: "p1",
         userId1: room.userId1,
+        timeElapsed: room.timeElapsed,
         userId2: room.userId2,
         questionTitleSlug: room.questionTitleSlug,
         gameType: room.gameType,
@@ -76,6 +77,8 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
         userImg2: user2.picture,
         user1Nickname: user.nickname,
         user2Nickname: user2.nickname,
+        userId1: user.id,
+        userId2: user2.id,
         user1rank: user.rank,
         user2rank: user2.rank,
         winner: room.winner,
@@ -101,15 +104,22 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
       user2Status: room.user2Status,
       questionTitleSlug: room.questionTitleSlug,
       gameType: room.gameType,
+      timeElapsed: room.timeElapsed,
       userImg1: user2.picture,
       userImg2: user.picture,
       username1: user2.nickname,
       username2: user.nickname,
       user1rank: user2.rank,
       user2rank: user.rank,
+      user1Result: room.user1Result,
+      user2Result: room.user2Result,
+      user1Attempts: room.user1Attempts,
+      user2Attempts: room.user2Attempts,
       winner: room.winner,
       user1Nickname: user2.nickname,
       user2Nickname: user.nickname,
+      userId1: user2.id,
+      userId2: user.id,
     });
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -143,6 +153,7 @@ roomRouter.get("/:id/sockets", async (req, res) => {
         id: room.userId2,
       },
     });
+    console.log("\n\n\n\n\n", user1, user2);
     return res.json({ socketId1: user1.socketId, socketId2: user2.socketId });
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -169,6 +180,80 @@ roomRouter.put("/:id/playerStatus", isAuthenticated, async (req, res) => {
     } else {
       console.log("setting user2 status", req.body.status);
       room.user2Status = req.body.status;
+    }
+    await room.save();
+    return res.json(room);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});
+
+roomRouter.put("/:id/time", isAuthenticated, async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const room = await Room.findByPk(req.params.id);
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    const user = await User.findOne({
+      where: {
+        accessToken: token,
+      },
+    });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    if (user.id !== room.userId1 && user.id !== room.userId2) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    room.timeElapsed = req.body.time;
+    await room.save();
+    return res.json(room);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});
+
+roomRouter.put("/:id/attempt", isAuthenticated, async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const room = await Room.findByPk(req.params.id);
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    const user = await User.findOne({
+      where: {
+        accessToken: token,
+      },
+    });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    if (user.id !== room.userId1 && user.id !== room.userId2) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    if (user.id === room.userId1) {
+      room.user1Attempts = req.body.attempts;
+    } else {
+      room.user2Attempts = req.body.attempts;
+    }
+    await room.save();
+    return res.json(room);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});
+
+roomRouter.put("/:id/result", isAuthenticated, async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const room = await Room.findByPk(req.params.id);
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    const user = await User.findOne({
+      where: {
+        accessToken: token,
+      },
+    });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    if (user.id !== room.userId1 && user.id !== room.userId2) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    if (user.id === room.userId1) {
+      room.user1Result = req.body.result;
+    } else {
+      room.user2Result = req.body.result;
     }
     await room.save();
     return res.json(room);

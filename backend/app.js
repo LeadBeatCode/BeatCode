@@ -65,15 +65,33 @@ export const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   
   console.log("a user connected");
+  // console.log("socket.handshake.headers", socket.handshake.headers);
 
-  socket.on("connected", function (nickname) {
-    apiService.getUserSocketId(nickname).then((res) => {
-      console.log("getUserSocketId", res.data.socketId);
-      apiService.setUserSocket(res.data.socketId,socket.id).then((res) => {
-        //console.log('setUserSocket', res);
-      });
-    });
+  socket.on("reconnected", function (userId, accessToken) {
+    // console.log(nickname, accessToken);
+    // apiService.getUserSocketId(nickname).then((res) => {
+    //   apiService.setUserSocket(socket.id, nickname, userId, accessToken).then((res) => {
+    //     console.log('setUserSocket', res);
+    //   });
+    // });
+    console.log("sdfsdf", userId)
+    socket.emit("reconnected", userId, socket.id);
   });
+  // socket.on("roomSocket", (roomId) => {
+  //   socket.emit("roomSocket", sockets)
+  // })
+
+   socket.on("opponent_reconnected", (roomId, title, socketId, toSocketId, token) => {
+    console.log("opponent_reconnected", roomId, title);
+        io.to(toSocketId).emit("opponent_reconnected", title, socketId, roomId);
+    // apiService.getRoom(roomId, token).then((res) => {
+    //   if (title === 'p1') 
+    //     socket.emit("opponent_recconected", title, res.socketId1, roomId);
+    //   else
+    //     socket.emit("opponent_recconected", title, res.socketId2, roomId);
+    // });
+  })
+  
 
   //  apiService.createProblem('Longest Substring Without Repeating Characters', 'longest-substring-without-repeating-characters', { 'subInput1':'abcabcbb'  }, {  "subOutput1": 3 }, { 'subInput1':'bbbbb'  }, {  "subOutput1": 1 }, { 'subInput1':'pwwkew'  }, {  "subOutput1": 3 }).then((res) => {
   //    console.log('problem', res);
@@ -82,13 +100,13 @@ io.on("connection", (socket) => {
   // console.log("token at 70", socket.handshake.query);
   socket.on("online", function (data) {
     const { userId, friendSocketId } = data;
-    console.log("online", userId, friendSocketId);
+    // console.log("online", userId, friendSocketId);
     io.to(friendSocketId).emit("friend online", userId);
   });
 
   socket.on("new friend", function (data) {
     const { friendId, friendSocketId } = data;
-    console.log("new friend", friendId, friendSocketId);
+    // console.log("new friend", friendId, friendSocketId);
     io.to(friendSocketId).emit("new friend added", friendId);
   });
 
@@ -110,61 +128,58 @@ io.on("connection", (socket) => {
     if (gameType === "normal") {
       await apiService.enqueue(userId, accessToken, socket.id);
       const queueRes = await apiService.getQueue();
-    console.log("queue", queueRes);
-    if (queueRes.count >= 2) {
-      for (let i = 0; i < queueRes.queue.length; i = i + 2) {
-        if (
-          queueRes.queue[i + 1] &&
-          queueRes.queue[i + 1].userId !== queueRes.queue[i].userId
-        ) {
-          // Ensure there's a pair
+      console.log("queue", queueRes);
+      if (queueRes.count >= 2) {
+        for (let i = 0; i < queueRes.queue.length; i = i + 2) {
+          if (
+            queueRes.queue[i + 1] &&
+            queueRes.queue[i + 1].userId !== queueRes.queue[i].userId
+          ) {
+            // Ensure there's a pair
 
-          const player1 = await apiService.dequeue(
-            queueRes.queue[i].socketId,
-            accessToken,
-          );
-          //player1.title = "player1"
+            const player1 = await apiService.dequeue(
+              queueRes.queue[i].socketId,
+              accessToken,
+            );
 
-          const player2 = await apiService.dequeue(
-            queueRes.queue[i + 1].socketId,
-            accessToken,
-          );
-          //player2.title = "player2"
-          console.log("player1", player1);
-          console.log("player2", player2);
-          console.log("accessToken", accessToken);
-          const problem = await apiService.getRandomProblem();
-          
-          const pair = await apiService.createRoom(
-            "created",
-            player1.userId,
-            player2.userId,
-            accessToken,
-            false,
-            problem.question.titleSlug,
+            const player2 = await apiService.dequeue(
+              queueRes.queue[i + 1].socketId,
+              accessToken,
+            );
+            const problem = await apiService.getRandomProblem();
             
-          );
-          io.to(player1.socketId).emit("matched", pair, player1);
-          io.to(player2.socketId).emit("matched", pair, player2);
-          console.log("matched", pair);
-          //socket.to(player2.socketId).emit('matched', player1, player2);
+            const pair = await apiService.createRoom(
+              "created",
+              player1.userId,
+              player2.userId,
+              accessToken,
+              false,
+              problem.question.titleSlug,
+              'normal'
+              
+            );
+            
+            io.to(player1.socketId).emit("matched", pair, player1);
+            io.to(player2.socketId).emit("matched", pair, player2);
+            console.log("matched", pair);
 
-          await apiService.deleteQueue(queueRes.queue[i].socketId, token);
-          await apiService.deleteQueue(queueRes.queue[i + 1].socketId, token);
-          console.log("delete", "success"); // Assuming deleteQueue works as expected
-        } else {
-          const player1 = await apiService.dequeue(
-            queueRes.queue[i].socketId,
-            accessToken,
-          );
-          await apiService.deleteQueue(queueRes.queue[i].socketId);
-          console.log("delete", "success");
+            await apiService.deleteQueue(queueRes.queue[i].socketId, token);
+            await apiService.deleteQueue(queueRes.queue[i + 1].socketId, token);
+            console.log("delete", "success"); // Assuming deleteQueue works as expected
+          } else {
+            const player1 = await apiService.dequeue(
+              queueRes.queue[i].socketId,
+              accessToken,
+            );
+            await apiService.deleteQueue(queueRes.queue[i].socketId);
+            console.log("delete", "success");
+          }
         }
-      }
     }
     } else {
       await apiService.leetcodeEnqueue(userId, accessToken, socket.id); // Assuming you handle the response inside the enqueue function
       const leetcodeQueueRes = await apiService.getLeetcodeQueue();
+      console.log("leetcodeQueue", leetcodeQueueRes);
       if (leetcodeQueueRes.count >= 2) {
         for (let i = 0; i < leetcodeQueueRes.queue.length; i = i + 2) {
           if (
@@ -173,19 +188,18 @@ io.on("connection", (socket) => {
           ) {
             // Ensure there's a pair
   
+            console.log("hello")
+            
             const player1 = await apiService.leetcodeDequeue(
               leetcodeQueueRes.queue[i].socketId,
               accessToken,
             );
-            //player1.title = "player1"
   
             const player2 = await apiService.leetcodeDequeue(
               leetcodeQueueRes.queue[i + 1].socketId,
               accessToken,
             );
-            //player2.title = "player2"
-            console.log("player1", player1);
-            console.log("player2", player2);
+
             console.log("accessToken", accessToken);
             const problem = await apiService.getRandomProblem();
             const pair = await apiService.createRoom(
@@ -193,14 +207,14 @@ io.on("connection", (socket) => {
               player1.userId,
               player2.userId,
               accessToken,
-              true,
+              false,
               problem.question.titleSlug,
               'leetcode',
             );
+
+            console.log(player1.socketId, player2.socketId);
             io.to(player1.socketId).emit("matched", pair, player1);
             io.to(player2.socketId).emit("matched", pair, player2);
-            console.log("matched", pair);
-            //socket.to(player2.socketId).emit('matched', player1, player2);
   
             await apiService.deleteLeetcodeQueue(leetcodeQueueRes.queue[i].socketId, token);
             await apiService.deleteLeetcodeQueue(leetcodeQueueRes.queue[i + 1].socketId, token);
