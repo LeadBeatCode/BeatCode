@@ -4,7 +4,7 @@ export const apiService = (function () {
   const module = {};
   dotenv.config();
   module.enqueue = function (userId, accessToken, socketId) {
-    return fetch( process.env.BASE_URL + "/api/queues/enqueue", {
+    return fetch( "/api/queues/enqueue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -15,7 +15,7 @@ export const apiService = (function () {
   };
 
   module.leetcodeEnqueue = function (userId, accessToken, socketId) {
-    return fetch(process.env.BASE_URL + "/api/leetcodeQueues/enqueue", {
+    return fetch("/api/leetcodeQueues/enqueue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -26,7 +26,7 @@ export const apiService = (function () {
   };
 
   module.dequeue = function (socketId, accessToken) {
-    return fetch(process.env.BASE_URL + "/api/queues/dequeue", {
+    return fetch("/api/queues/dequeue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export const apiService = (function () {
   };
 
   module.leetcodeDequeue = function (socketId, accessToken) {
-    return fetch(process.env.BASE_URL + "/api/leetcodeQueues/dequeue", {
+    return fetch("/api/leetcodeQueues/dequeue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export const apiService = (function () {
   }
 
   module.deleteQueue = function (id, token) {
-    return fetch(process.env.BASE_URL + `/api/queues/${id}` , {
+    return fetch(`/api/queues/${id}` , {
       method: "DELETE",
       headers: {
         authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ export const apiService = (function () {
   };
 
   module.deleteLeetcodeQueue = function (id, token) {
-    return fetch(process.env.BASE_URL + `/api/leetcodeQueues/${id}`, {
+    return fetch( `/api/leetcodeQueues/${id}`, {
       method: "DELETE",
       headers: {
         authorization: `Bearer ${token}`,
@@ -66,15 +66,15 @@ export const apiService = (function () {
   };
 
   module.getQueue = function () {
-    return fetch(process.env.BASE_URL + "/api/queues").then((res) => res.json());
+    return fetch( "/api/queues").then((res) => res.json());
   };
 
   module.getLeetcodeQueue = function () {
-    return fetch(process.env.BASE_URL + "/api/leetcodeQueues").then((res) => res.json());
+    return fetch("/api/leetcodeQueues").then((res) => res.json());
   };
 
   module.signup = function (username, password) {
-    return fetch(process.env.BASE_URL + "/api/users/signup", {
+    return fetch("/api/users/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -84,7 +84,7 @@ export const apiService = (function () {
   };
 
   module.connect = function (username, password) {
-    return fetch(process.env.BASE_URL + "/api/users/connect", {
+    return fetch( "/api/users/connect", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -94,7 +94,7 @@ export const apiService = (function () {
   };
 
   module.setPlayerStatus = function (id, status, token) {
-    return fetch(process.env.BASE_URL + `/api/rooms/${id}/playerStatus`, {
+    return fetch(`/api/rooms/${id}/playerStatus`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export const apiService = (function () {
   };
 
   module.createRoom = function (status, userId1, userId2, token, isPve, questionTitleSlug, gameType) {
-    return fetch(process.env.BASE_URL + "/api/rooms", {
+    return fetch( "/api/rooms", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -116,7 +116,7 @@ export const apiService = (function () {
   };
 
   module.getRoom = function (id, token) {
-    return fetch(process.env.BASE_URL + `/api/rooms/${id}`, {
+    return fetch( `/api/rooms/${id}`, {
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -124,13 +124,13 @@ export const apiService = (function () {
   };
 
   module.deleteRoom = function (id) {
-    return fetch(process.env.BASE_URL + `/api/rooms/${id}`, {
+    return fetch(`/api/rooms/${id}`, {
       method: "DELETE",
     }).then((res) => res.json());
   };
 
   module.clearUserSocket = function (socketId, token) {
-    return fetch(process.env.BASE_URL + `/api/users/clearSocket`, {
+    return fetch(`/api/users/clearSocket`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -141,7 +141,7 @@ export const apiService = (function () {
   };
 
   module.getFriendsById = function (id) {
-    return fetch(process.env.BASE_URL + `/api/friends/list/${id}`, {
+    return fetch(`/api/friends/list/${id}`, {
       method: "GET",
     }).then((res) => res.json());
   };
@@ -156,7 +156,7 @@ export const apiService = (function () {
     input3,
     output3,
   ) {
-    return fetch(process.env.BASE_URL + "/api/problems", {
+    return fetch( "/api/problems", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -175,13 +175,13 @@ export const apiService = (function () {
   };
 
   module.getUserSocketId = function (nickname) {
-    return fetch(process.env.BASE_URL + `/api/users/${nickname}/socket`).then(
+    return fetch(`/api/users/${nickname}/socket`).then(
       (res) => res.json(),
     );
   };
 
   module.getRandomProblem = function () {
-    return fetch(process.env.BASE_URL + "/api/leetcode/random-problem").then((res) =>
+    return fetch( "/api/leetcode/random-problem").then((res) =>
       res.json(),
     );
   };
