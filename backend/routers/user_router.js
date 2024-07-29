@@ -102,7 +102,7 @@ userRouter.get("/:nickname/socket", async (req, res) => {
     if (!user) return res.status(404).json({ error: "User not found" });
     return res.json({
       nickname: user.nickname,
-      socketId: user.socketId
+      socketId: user.socketId,
     });
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -200,22 +200,24 @@ userRouter.get("/performance/:id", async (req, res) => {
     const allRooms = [...rooms1, ...rooms2];
     allRooms.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     const firstFiveRooms = allRooms.slice(0, 10);
-    const history = await Promise.all(firstFiveRooms.map(async (room) => {
-      const user1 = await User.findByPk(room.userId1);
-      const user2 = await User.findByPk(room.userId2);
-      return {
-        ...room.toJSON(),
-        user1ProfilePicture: user1 ? user1.picture : null,
-        user1Nickname: user1 ? user1.nickname : null,
-        user2ProfilePicture: user2 ? user2.picture : null,
-        user2Nickname: user2 ? user2.nickname : null,
-      };
-    }));
+    const history = await Promise.all(
+      firstFiveRooms.map(async (room) => {
+        const user1 = await User.findByPk(room.userId1);
+        const user2 = await User.findByPk(room.userId2);
+        return {
+          ...room.toJSON(),
+          user1ProfilePicture: user1 ? user1.picture : null,
+          user1Nickname: user1 ? user1.nickname : null,
+          user2ProfilePicture: user2 ? user2.picture : null,
+          user2Nickname: user2 ? user2.nickname : null,
+        };
+      }),
+    );
     const wins = rooms1.filter((room) => room.winner === "p1").length;
     const losses = rooms1.filter((room) => room.winner === "p2").length;
     const wins2 = rooms2.filter((room) => room.winner === "p2").length;
     const losses2 = rooms2.filter((room) => room.winner === "p1").length;
-    
+
     return res.json({
       nickname: user.nickname,
       history: history,

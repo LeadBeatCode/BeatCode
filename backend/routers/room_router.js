@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { Room } from "../models/room.js";
 import { User } from "../models/user.js";
-import { isAuthorizedRoom, isAuthenticated, isAuthenticatedRoom } from "../middleware/helper.js";
+import {
+  isAuthorizedRoom,
+  isAuthenticated,
+  isAuthenticatedRoom,
+} from "../middleware/helper.js";
 
 export const roomRouter = Router();
 
@@ -74,15 +78,15 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
         questionTitleSlug: room.questionTitleSlug,
         gameType: room.gameType,
         userImg1: user.picture,
-        userImg2: isPve ? "pveGame": user2.picture,
+        userImg2: isPve ? "pveGame" : user2.picture,
         user1Nickname: user.nickname,
-        user2Nickname: isPve ? "pveGame": user2.nickname,
+        user2Nickname: isPve ? "pveGame" : user2.nickname,
         user1Attempts: room.user1Attempts,
         user2Attempts: room.user2Attempts,
         userId1: user.id,
-        userId2: isPve ? "pveGame": user2.id,
+        userId2: isPve ? "pveGame" : user2.id,
         user1rank: user.rank,
-        user2rank: isPve ? "pveGame": user2.rank,
+        user2rank: isPve ? "pveGame" : user2.rank,
         winner: room.winner,
         user1Status: room.user1Status,
         user2Status: room.user2Status,
@@ -257,7 +261,7 @@ roomRouter.put("/:id/result", isAuthenticated, async (req, res) => {
       room.user1Attempts = room.user1Attempts + 1;
     } else {
       room.user2Result = req.body.result;
-      room.user2Attempts = room.user2Attempts + 1; 
+      room.user2Attempts = room.user2Attempts + 1;
     }
     await room.save();
     return res.json(room);
@@ -266,7 +270,7 @@ roomRouter.put("/:id/result", isAuthenticated, async (req, res) => {
   }
 });
 
-roomRouter.put("/gameover",  async (req, res) => {
+roomRouter.put("/gameover", async (req, res) => {
   try {
     const room = await Room.findByPk(req.body.roomId);
     if (!room) return res.status(404).json({ error: "Room not found" });

@@ -12,7 +12,7 @@
 } */
 
 .dark {
-  background-color: rgba(0,0,0,0.99);
+  background-color: rgba(0, 0, 0, 0.99);
   width: 100%;
   z-index: 1000;
   height: 100%;
@@ -26,8 +26,8 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .dark {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .game-summary-container {
@@ -70,7 +70,7 @@
 
 .game-summary-container .exit-btn {
   margin: 20px 0 -20px;
-  color:rgb(7, 195, 72);
+  color: rgb(7, 195, 72);
   font-size: 30px;
   font-weight: 600;
   transition: 0.5s;
@@ -78,7 +78,7 @@
 }
 
 .game-summary-container .exit-btn:hover {
-  color:rgb(6, 255, 6);
+  color: rgb(6, 255, 6);
 }
 
 .game-detail-container > * {
@@ -104,7 +104,7 @@
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 50%;
-  background-color:rgb(31, 31, 31);
+  background-color: rgb(31, 31, 31);
 }
 
 .game-summary-content {
@@ -149,7 +149,6 @@
   background-repeat: no-repeat;
   background-image: url(../../../assets/rank1.png);
 }
-
 
 .game-detail-container .title {
   font-size: 20px;

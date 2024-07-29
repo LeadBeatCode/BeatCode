@@ -4,7 +4,7 @@ export const apiService = (function () {
   const module = {};
   dotenv.config();
   module.enqueue = function (userId, accessToken, socketId) {
-    return fetch( process.env.BASE_URL + "/api/queues/enqueue", {
+    return fetch(process.env.BASE_URL + "/api/queues/enqueue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,10 +45,10 @@ export const apiService = (function () {
       },
       body: JSON.stringify({ socketId }),
     }).then((res) => res.json());
-  }
+  };
 
   module.deleteQueue = function (id, token) {
-    return fetch(process.env.BASE_URL + `/api/queues/${id}` , {
+    return fetch(process.env.BASE_URL + `/api/queues/${id}`, {
       method: "DELETE",
       headers: {
         authorization: `Bearer ${token}`,
@@ -66,11 +66,15 @@ export const apiService = (function () {
   };
 
   module.getQueue = function () {
-    return fetch(process.env.BASE_URL + "/api/queues").then((res) => res.json());
+    return fetch(process.env.BASE_URL + "/api/queues").then((res) =>
+      res.json(),
+    );
   };
 
   module.getLeetcodeQueue = function () {
-    return fetch(process.env.BASE_URL + "/api/leetcodeQueues").then((res) => res.json());
+    return fetch(process.env.BASE_URL + "/api/leetcodeQueues").then((res) =>
+      res.json(),
+    );
   };
 
   module.signup = function (username, password) {
@@ -104,14 +108,29 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.createRoom = function (status, userId1, userId2, token, isPve, questionTitleSlug, gameType) {
+  module.createRoom = function (
+    status,
+    userId1,
+    userId2,
+    token,
+    isPve,
+    questionTitleSlug,
+    gameType,
+  ) {
     return fetch(process.env.BASE_URL + "/api/rooms", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ status, isPve, userId1, userId2, questionTitleSlug, gameType }),
+      body: JSON.stringify({
+        status,
+        isPve,
+        userId1,
+        userId2,
+        questionTitleSlug,
+        gameType,
+      }),
     }).then((res) => res.json());
   };
 
@@ -189,13 +208,13 @@ export const apiService = (function () {
       },
       body: JSON.stringify({ socketId, userId }),
     }).then((res) => res.json());
-  }
+  };
 
   module.getRandomProblem = function () {
-    return fetch(process.env.BASE_URL + "/api/leetcode/random-problem").then((res) =>
-      res.json(),
+    return fetch(process.env.BASE_URL + "/api/leetcode/random-problem").then(
+      (res) => res.json(),
     );
   };
-  
+
   return module;
 })();

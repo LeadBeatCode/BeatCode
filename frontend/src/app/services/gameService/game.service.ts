@@ -16,8 +16,6 @@ export class GameService {
   }
 
   getUserSocket(uID: string): Observable<any> {
-    return this.http.get(
-      this.endpoint + `/api/users/${uID}/socket`,
-    );
+    return this.http.get(this.endpoint + `/api/users/${uID}/socket`);
   }
 }

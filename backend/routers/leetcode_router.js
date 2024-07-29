@@ -208,7 +208,12 @@ leetcodeRouter.get("/startcode/:title", async (req, res) => {
             data[language.lang] = language.code;
           });
         else
-          return res.status(400).json({error : "Premium Question: This question is only available for premium users" });
+          return res
+            .status(400)
+            .json({
+              error:
+                "Premium Question: This question is only available for premium users",
+            });
         return res.json(data);
       });
   } catch (error) {
@@ -314,15 +319,17 @@ leetcodeRouter.get("/problems", async (req, res) => {
 });
 
 leetcodeRouter.post("/submission/check", async (req, res) => {
-  const submissionId = req.body.submissionId
-    const user = await User.findByPk(req.body.id, { raw: true })
-      if (!user) return res.status(404).json({ error: "User not found" });
-      const cookie = user.leetcodeCookie;
-      const csrftoken = cookie.split("csrftoken=")[1].split(";")[0];
-      const data = {};
-      const LEETCODE_SESSION = user.leetcodeCookie.split("LEETCODE_SESSION=")[1].split(";")[0]
-      console.log(LEETCODE_SESSION)
-            const query = `
+  const submissionId = req.body.submissionId;
+  const user = await User.findByPk(req.body.id, { raw: true });
+  if (!user) return res.status(404).json({ error: "User not found" });
+  const cookie = user.leetcodeCookie;
+  const csrftoken = cookie.split("csrftoken=")[1].split(";")[0];
+  const data = {};
+  const LEETCODE_SESSION = user.leetcodeCookie
+    .split("LEETCODE_SESSION=")[1]
+    .split(";")[0];
+  console.log(LEETCODE_SESSION);
+  const query = `
     query submissionDetails($submissionId: Int!) {
         submissionDetails(submissionId: $submissionId) {
             runtime
@@ -375,12 +382,15 @@ leetcodeRouter.post("/submission/check", async (req, res) => {
     }
 `;
 
-const variables = {
-    submissionId: submissionId
-};
+  const variables = {
+    submissionId: submissionId,
+  };
 
-axios.post('https://leetcode.com/graphql/', {
-    query: `
+  axios
+    .post(
+      "https://leetcode.com/graphql/",
+      {
+        query: `
             query submissionDetails($submissionId: Int!) {
                 submissionDetails(submissionId: $submissionId) {
                     runtime
@@ -432,69 +442,82 @@ axios.post('https://leetcode.com/graphql/', {
                 }
             }
         `,
-            variables: {
-            submissionId: submissionId
+        variables: {
+          submissionId: submissionId,
         },
-    operationName: "submissionDetails"
-},  {
-          headers: {
-              "x-csrftoken": csrftoken,
-              "cookie": cookie, //`csrftoken=${csrftoken}; LEETCODE_SESSION=${LEETCODE_SESSION}`,
-              // "Referer": `https://leetcode.com/problems/${titleSlug}/`,
-          }
-      }).then(function (response) {
-        return res.json(response.data);
-      })
-      .catch(function (error) {
-      return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
-      });
-  
+        operationName: "submissionDetails",
+      },
+      {
+        headers: {
+          "x-csrftoken": csrftoken,
+          cookie: cookie, //`csrftoken=${csrftoken}; LEETCODE_SESSION=${LEETCODE_SESSION}`,
+          // "Referer": `https://leetcode.com/problems/${titleSlug}/`,
+        },
+      },
+    )
+    .then(function (response) {
+      return res.json(response.data);
+    })
+    .catch(function (error) {
+      return res
+        .status(400)
+        .json({ error: "Leetcode cookie is not valid: " + error.message });
+    });
 });
 
 leetcodeRouter.post("/problems/submit", async (req, res) => {
   const titleSlug = req.body.titleSlug;
   const questionId = req.body.questionId;
-  
-  
+
   try {
-    console.log(req.body)
-    const user = await User.findByPk(req.body.id, { raw: true })
-      if (!user) return res.status(404).json({ error: "User not found" });
-      const cookie = user.leetcodeCookie;
-      const csrftoken = cookie.split("csrftoken=")[1].split(";")[0];
-      const data = {};
-      const LEETCODE_SESSION = user.leetcodeCookie.split("LEETCODE_SESSION=")[1].split(";")[0]
-      console.log(LEETCODE_SESSION)
+    console.log(req.body);
+    const user = await User.findByPk(req.body.id, { raw: true });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const cookie = user.leetcodeCookie;
+    const csrftoken = cookie.split("csrftoken=")[1].split(";")[0];
+    const data = {};
+    const LEETCODE_SESSION = user.leetcodeCookie
+      .split("LEETCODE_SESSION=")[1]
+      .split(";")[0];
+    console.log(LEETCODE_SESSION);
 
-    console.log(req.body.language)
+    console.log(req.body.language);
     const lang = {
-      "Python3": "python3",
-      "Python": "python",
-      "Java": "java",
-      "C": "c",
-      "c++": "cpp"
-    }
+      Python3: "python3",
+      Python: "python",
+      Java: "java",
+      C: "c",
+      "c++": "cpp",
+    };
 
-    await axios.post(`https://leetcode.com/problems/${titleSlug}/submit/`, {
-          "lang": lang[req.body.language],
-          "question_id": questionId,
-          "typed_code": req.body.code
-      }, {
+    await axios
+      .post(
+        `https://leetcode.com/problems/${titleSlug}/submit/`,
+        {
+          lang: lang[req.body.language],
+          question_id: questionId,
+          typed_code: req.body.code,
+        },
+        {
           headers: {
-              "x-csrftoken": csrftoken,
-              "cookie": cookie, //`csrftoken=${csrftoken}; LEETCODE_SESSION=${LEETCODE_SESSION}`,
-              "Referer": `https://leetcode.com/problems/${titleSlug}/`,
-          }
-      })
+            "x-csrftoken": csrftoken,
+            cookie: cookie, //`csrftoken=${csrftoken}; LEETCODE_SESSION=${LEETCODE_SESSION}`,
+            Referer: `https://leetcode.com/problems/${titleSlug}/`,
+          },
+        },
+      )
       .then(function (response) {
-        
         return res.json(response.data);
       })
       .catch(function (error) {
-      return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
+        return res
+          .status(400)
+          .json({ error: "Leetcode cookie is not valid: " + error.message });
       });
   } catch (error) {
-    return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
+    return res
+      .status(400)
+      .json({ error: "Leetcode cookie is not valid: " + error.message });
   }
 });
 
@@ -506,30 +529,36 @@ leetcodeRouter.post("/checkCookie", async (req, res) => {
     const data = JSON.stringify({
       lang: "python",
       question_id: "12",
-      typed_code: "class Solution(object):\n    def myAtoi(self, s):\n        \"\"\"\n        :type s: str\n        :rtype: int\n        \"\"\"\n        ",
-      data_input: "\"42\"\n\"   -042\"\n\"1337c0d3\"\n\"0-1\"\n\"words and 987\""
+      typed_code:
+        'class Solution(object):\n    def myAtoi(self, s):\n        """\n        :type s: str\n        :rtype: int\n        """\n        ',
+      data_input: '"42"\n"   -042"\n"1337c0d3"\n"0-1"\n"words and 987"',
     });
 
     const config = {
-      method: 'post',
-      url: 'https://leetcode.com/problems/string-to-integer-atoi/interpret_solution/',
+      method: "post",
+      url: "https://leetcode.com/problems/string-to-integer-atoi/interpret_solution/",
       headers: {
-        'x-csrftoken': csrftoken,
-        'cookie': cookie,
-        'Referer': 'https://leetcode.com/problems/string-to-integer-atoi/description/',
-        'Content-Type': 'application/json'
+        "x-csrftoken": csrftoken,
+        cookie: cookie,
+        Referer:
+          "https://leetcode.com/problems/string-to-integer-atoi/description/",
+        "Content-Type": "application/json",
       },
-      data: data
+      data: data,
     };
 
     axios(config)
-    .then(function (response) {
-      return res.json(response.data);
-    })
-    .catch(function (error) {
-    return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
-    });
-  }catch (error) {
-    return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
+      .then(function (response) {
+        return res.json(response.data);
+      })
+      .catch(function (error) {
+        return res
+          .status(400)
+          .json({ error: "Leetcode cookie is not valid: " + error.message });
+      });
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ error: "Leetcode cookie is not valid: " + error.message });
   }
 });

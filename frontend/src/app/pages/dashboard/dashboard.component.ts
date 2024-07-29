@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ApiService } from '../../services/apiService/api.service';
 import { Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
@@ -20,14 +25,14 @@ export class DashboardComponent implements OnInit {
   showLeetcodeSessionValue: boolean = false;
   leetcodeCookieForm: any = '';
   showLeetcodeSessionFormError: string = '';
-  userDetails: any = {rank: '', subrank: '', bp: 0}
+  userDetails: any = { rank: '', subrank: '', bp: 0 };
 
   constructor(
     private api: ApiService,
     private router: Router,
     private socket: Socket,
     private oidcSecurityService: OidcSecurityService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     const navigation = this.router.getCurrentNavigation();
     console.log('navigation', navigation);
@@ -126,7 +131,7 @@ export class DashboardComponent implements OnInit {
   }
 
   get changeLoadMenuFunc() {
-      return this.changeLoadMenu.bind(this);
+    return this.changeLoadMenu.bind(this);
   }
 
   changeLoadMenu(value: string) {
@@ -143,11 +148,9 @@ export class DashboardComponent implements OnInit {
 
   enterLeetcodeLobby() {
     console.log('enterLobby');
-    this.router.navigate(['/leetcode-matching-lobby'], 
-      {
-        state: { userId: this.userData.sub },
-      }
-    );
+    this.router.navigate(['/leetcode-matching-lobby'], {
+      state: { userId: this.userData.sub },
+    });
   }
 
   checkLeetcodeSession() {
@@ -157,24 +160,32 @@ export class DashboardComponent implements OnInit {
       this.router.navigate(['/']);
       return;
     }
-    this.api.checkUserLeetcodeCookie(this.leetcodeCookieForm.value.cookie).subscribe({
-      next: (res) => {
-        this.api.updateUserLeetcodeCookie(token, this.leetcodeCookieForm.value.cookie).subscribe({
-          next: (data) => {
-            console.log('checkLeetcodeSession', data);
-            if (data) {
-              this.enterLeetcodeLobby();
-            }
-          },
-          error: (err) => {
-            this.showLeetcodeSessionFormError = 'You have a valid cookie but we could not update it';
-          },
-        });
-      },
-      error: (err) => {
-            this.showLeetcodeSessionFormError = 'Invalid cookie';
-      },
-    });
+    this.api
+      .checkUserLeetcodeCookie(this.leetcodeCookieForm.value.cookie)
+      .subscribe({
+        next: (res) => {
+          this.api
+            .updateUserLeetcodeCookie(
+              token,
+              this.leetcodeCookieForm.value.cookie,
+            )
+            .subscribe({
+              next: (data) => {
+                console.log('checkLeetcodeSession', data);
+                if (data) {
+                  this.enterLeetcodeLobby();
+                }
+              },
+              error: (err) => {
+                this.showLeetcodeSessionFormError =
+                  'You have a valid cookie but we could not update it';
+              },
+            });
+        },
+        error: (err) => {
+          this.showLeetcodeSessionFormError = 'Invalid cookie';
+        },
+      });
     console.log('checkLeetcodeSession');
   }
 

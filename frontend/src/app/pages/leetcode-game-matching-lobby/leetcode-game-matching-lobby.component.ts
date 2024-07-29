@@ -7,7 +7,7 @@ import { GameService } from '../../services/gameService/game.service';
 @Component({
   selector: 'app-leetcode-game-matching-lobby',
   templateUrl: './leetcode-game-matching-lobby.component.html',
-  styleUrl: './leetcode-game-matching-lobby.component.css'
+  styleUrl: './leetcode-game-matching-lobby.component.css',
 })
 export class LeetcodeGameMatchingLobbyComponent {
   loadingText: string = 'Matching A Game...';

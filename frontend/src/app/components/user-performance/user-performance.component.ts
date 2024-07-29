@@ -24,11 +24,9 @@ export class UserPerformanceComponent implements OnInit {
     Diamond: '../../../assets/rank3.png',
     Ruby: '../../../assets/rank4.png',
     Master: '../../../assets/rank5.png',
-  }
+  };
 
-  constructor(private api:ApiService) {
-    
-  }
+  constructor(private api: ApiService) {}
 
   ngOnInit(): void {
     console.log('userId in user performance', this.userId);
@@ -37,13 +35,13 @@ export class UserPerformanceComponent implements OnInit {
         console.log('data from user performance', data);
         this.wins = data['wins'];
         this.losses = data['losses'];
-        
+
         const historyData = data['history'];
 
-        this.quickHistory =historyData.map((game: any) => {
+        this.quickHistory = historyData.map((game: any) => {
           console.log('game', game);
           return game;
-        })
+        });
 
         const groups = historyData.reduce((groups: any, game: any) => {
           const date = game.createdAt.split('T')[0];
@@ -58,35 +56,35 @@ export class UserPerformanceComponent implements OnInit {
         this.quickHistory = Object.keys(groups).map((date) => {
           return {
             date,
-            games: groups[date]
+            games: groups[date],
           };
         });
 
-        console.log(this.quickHistory)
+        console.log(this.quickHistory);
 
         this.quickHistoryGames = this.quickHistory.map((group: any) => {
           console.log('sdfsdf', group.games);
           return group.games;
-        })
+        });
 
         this.quickHistoryDates = this.quickHistory.map((group: any) => {
           return group.date;
-        })
-        
+        });
+
         console.log('history', this.quickHistoryGames);
         this.nickname = data['nickName'];
       },
       error: (err) => {
         console.log(err);
-      }
+      },
     });
   }
 
   showResults(game: any) {
-    if (game.winner === "p1" && game.userId1 === this.userId) {
+    if (game.winner === 'p1' && game.userId1 === this.userId) {
       return 'win';
     }
-    if (game.winner === "p2" && game.userId2 === this.userId) {
+    if (game.winner === 'p2' && game.userId2 === this.userId) {
       return 'win';
     }
     return 'lose';
@@ -111,6 +109,4 @@ export class UserPerformanceComponent implements OnInit {
     }
     return game.user1ProfilePicture;
   }
-
-
 }

@@ -1,42 +1,56 @@
 <div class="dark" [ngClass]="{ hidden: !showGameSummaryValue }">
   <div class="game-summary-container">
     <!-- <div class="game-summary-content-container"> -->
-      <div class="game-summary-header">{{ winner }} <span class="result"></span></div>
-      <div class="game-summary-content">
-        <div class="player">
-          <div class="image" [ngStyle]="{'background-image': 'url(' + userImg1 + ')'}"></div>
-          <div class="title">
-            <div class="rank" [ngStyle]="{'background-image': 'url(' + userrank1 + ')'}"></div>
-            <div class="nickname">{{username1}}</div>
-          </div>
-        </div>
-        <div class="vs">VS</div>
-        <div class="player">
-          <div class="image" [ngStyle]="{'background-image': 'url(' + userImg2 + ')'}"></div>
-          <div class="title">
-            <div class="rank" [ngStyle]="{'background-image': 'url(' + userrank2 + ')'}"></div>
-            <div class="nickname">{{username2}}</div>
-          </div>
+    <div class="game-summary-header">
+      {{ winner }} <span class="result"></span>
+    </div>
+    <div class="game-summary-content">
+      <div class="player">
+        <div
+          class="image"
+          [ngStyle]="{ 'background-image': 'url(' + userImg1 + ')' }"
+        ></div>
+        <div class="title">
+          <div
+            class="rank"
+            [ngStyle]="{ 'background-image': 'url(' + userrank1 + ')' }"
+          ></div>
+          <div class="nickname">{{ username1 }}</div>
         </div>
       </div>
-      <div class="game-detail-container">
-        <!-- <div class="game-detail-content"> -->
-          <div class="game-title-container">
-            <div class="game-title-title title">Question</div>
-            <div class="game-title">{{ problemData.title }}</div>
-          </div>
-          <div class="game-difficulty-container">
-            <div class="game-difficulty-title title">difficulty</div>
-          <div class="game-difficulty">{{ problemData.difficulty }}</div>
-          </div>
-          <div class="game-time-elapsed-container">
-            <div class="game-time-elapsed-title title">Time</div>
-            <div class="time-elapsed">{{ timeElapsed }}</div>
-          </div>
-        <!-- </div> -->
+      <div class="vs">VS</div>
+      <div class="player">
+        <div
+          class="image"
+          [ngStyle]="{ 'background-image': 'url(' + userImg2 + ')' }"
+        ></div>
+        <div class="title">
+          <div
+            class="rank"
+            [ngStyle]="{ 'background-image': 'url(' + userrank2 + ')' }"
+          ></div>
+          <div class="nickname">{{ username2 }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="game-detail-container">
+      <!-- <div class="game-detail-content"> -->
+      <div class="game-title-container">
+        <div class="game-title-title title">Question</div>
+        <div class="game-title">{{ problemData.title }}</div>
+      </div>
+      <div class="game-difficulty-container">
+        <div class="game-difficulty-title title">difficulty</div>
+        <div class="game-difficulty">{{ problemData.difficulty }}</div>
+      </div>
+      <div class="game-time-elapsed-container">
+        <div class="game-time-elapsed-title title">Time</div>
+        <div class="time-elapsed">{{ timeElapsed }}</div>
+      </div>
       <!-- </div> -->
-      </div>
-      <div class="exit-btn" (click)="exitGameRoom()">EXIT</div>
+      <!-- </div> -->
+    </div>
+    <div class="exit-btn" (click)="exitGameRoom()">EXIT</div>
   </div>
 </div>
 <div class="header-container" [ngClass]="{ hidden: showGameSummaryValue }">
@@ -73,7 +87,9 @@
         </div>
       </ng-container>
       <ng-template #noAction>
-        <div class="lang" (change)="changeOpponentLanguage()">{{ opponentLanguage }}</div>
+        <div class="lang" (change)="changeOpponentLanguage()">
+          {{ opponentLanguage }}
+        </div>
       </ng-template>
       <div class="lang-list hidden p1">
         <div
@@ -126,7 +142,7 @@
       </div>
     </div>
     <ngx-monaco-editor
-      style="min-height: 300px; max-height: 400px;"
+      style="min-height: 300px; max-height: 400px"
       [options]="editorOptions"
       [(ngModel)]="player1Code"
       class="editor-left"
@@ -194,7 +210,7 @@
       </div>
     </div>
     <ngx-monaco-editor
-      style="min-height: 300px; max-height: 400px;"
+      style="min-height: 300px; max-height: 400px"
       [options]="opponentEditorOptions"
       [(ngModel)]="player2Code"
       class="editor-right"

@@ -22,12 +22,28 @@
   <div class="test-result content" *ngIf="testResult">
     <div class="result-container">
       <div class="testcases">
-        <span class="correct" [innerHTML]="correct_testcases" *ngIf="!stderr"></span>
-        <span class="total" [innerHTML]="total_testcases" *ngIf="!stderr"></span>
+        <span
+          class="correct"
+          [innerHTML]="correct_testcases"
+          *ngIf="!stderr"
+        ></span>
+        <span
+          class="total"
+          [innerHTML]="total_testcases"
+          *ngIf="!stderr"
+        ></span>
       </div>
-      <div class="last_testcase" [innerHTML]="last_testcase" *ngIf="!stderr"></div>
+      <div
+        class="last_testcase"
+        [innerHTML]="last_testcase"
+        *ngIf="!stderr"
+      ></div>
       <div class="stdout" [innerHTML]="stdout" *ngIf="!stderr"></div>
-      <div class="expected_output" [innerHTML]="expected_output" *ngIf="!stderr"></div>
+      <div
+        class="expected_output"
+        [innerHTML]="expected_output"
+        *ngIf="!stderr"
+      ></div>
       <div [ngClass]="[resultStyle]" [innerHTML]="result" *ngIf="!stderr"></div>
       <div class="stderr" [innerHTML]="stderr" *ngIf="stderr"></div>
     </div>

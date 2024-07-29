@@ -47,7 +47,6 @@
   border-radius: 50%;
   height: 50px;
   width: 100px;
-
 }
 
 .user-info {
@@ -86,10 +85,9 @@
   height: 100%;
   font-size: 20px;
   color: white;
-
 }
 
-.rank-image-container{
+.rank-image-container {
   height: inherit;
   display: flex;
   justify-content: center;

@@ -8,9 +8,8 @@ describe('LeetcodeGameMatchingLobbyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LeetcodeGameMatchingLobbyComponent]
-    })
-    .compileComponents();
+      declarations: [LeetcodeGameMatchingLobbyComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LeetcodeGameMatchingLobbyComponent);
     component = fixture.componentInstance;

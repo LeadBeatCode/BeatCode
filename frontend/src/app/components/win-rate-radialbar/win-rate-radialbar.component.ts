@@ -1,12 +1,18 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core";
-import { ChartComponent } from "ng-apexcharts";
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { ChartComponent } from 'ng-apexcharts';
 
 import {
   ApexNonAxisChartSeries,
   ApexPlotOptions,
   ApexChart,
-  ApexStroke
-} from "ng-apexcharts";
+  ApexStroke,
+} from 'ng-apexcharts';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -18,12 +24,12 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: "win-rate-radialbar",
-  templateUrl: "./win-rate-radialbar.component.html",
-  styleUrls: ["./win-rate-radialbar.component.css"]
+  selector: 'win-rate-radialbar',
+  templateUrl: './win-rate-radialbar.component.html',
+  styleUrls: ['./win-rate-radialbar.component.css'],
 })
 export class WinRateRadialbarComponent implements OnChanges {
-  @ViewChild("chart") chart!: ChartComponent;
+  @ViewChild('chart') chart!: ChartComponent;
   @Input() wins!: number;
   @Input() losses!: number;
 
@@ -33,43 +39,43 @@ export class WinRateRadialbarComponent implements OnChanges {
     this.chartOptions = {
       chart: {
         height: 250,
-        type: "radialBar"
+        type: 'radialBar',
       },
       series: [0],
-      colors: ["#29fffb"],
+      colors: ['#29fffb'],
       plotOptions: {
         radialBar: {
           hollow: {
             margin: 0,
-            background: "#293450",
-            size: "70%"
+            background: '#293450',
+            size: '70%',
           },
           dataLabels: {
             name: {
               offsetY: -5,
-              color: "#fff",
-              fontSize: "14px",
-              fontFamily: 'Saira'
+              color: '#fff',
+              fontSize: '14px',
+              fontFamily: 'Saira',
             },
             value: {
               offsetY: 0,
-              color: "#fff",
-              fontSize: "18px",
+              color: '#fff',
+              fontSize: '18px',
               show: true,
-              fontFamily: 'Saira'
-            }
-          }
-        }
+              fontFamily: 'Saira',
+            },
+          },
+        },
       },
-      labels: ["WIN RATES"],
+      labels: ['WIN RATES'],
       stroke: {
-        lineCap: "round"
-      }
+        lineCap: 'round',
+      },
     };
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes["wins"] || changes["losses"]) {
+    if (changes['wins'] || changes['losses']) {
       this.updateChart();
     }
   }
@@ -80,7 +86,9 @@ export class WinRateRadialbarComponent implements OnChanges {
 
   updateChart() {
     const totalGames = this.wins + this.losses;
-    const winRate = (totalGames > 0 ? (this.wins / totalGames) * 100 : 0).toFixed(2);
+    const winRate = (
+      totalGames > 0 ? (this.wins / totalGames) * 100 : 0
+    ).toFixed(2);
     this.chartOptions.series = [winRate];
   }
 }

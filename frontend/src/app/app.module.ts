@@ -10,7 +10,7 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
 
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { NgApexchartsModule } from "ng-apexcharts"
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SignInComponent } from './pages/sign-in/sign-in.component';
@@ -81,7 +81,7 @@ const socketIoConfig: SocketIoConfig = {
     SocketIoModule.forRoot(socketIoConfig),
     AppRoutingModule,
     ReactiveFormsModule,
-    NgApexchartsModule
+    NgApexchartsModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

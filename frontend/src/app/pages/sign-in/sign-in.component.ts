@@ -65,7 +65,7 @@ export class SignInComponent implements OnInit {
         }
       });
   }
-  
+
   loginUser() {
     this.oidcSecurityService.checkAuth().subscribe((auth) => {
       console.log('is authenticated', auth);

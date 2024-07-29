@@ -103,19 +103,26 @@ export class ApiService {
     return this.http.get(this.endpoint + '/api/leaderboard');
   }
 
-  runCode(gameType: string, id: string, titleSlug: any, questionId: string, language: string, code: string): Observable<any> {
+  runCode(
+    gameType: string,
+    id: string,
+    titleSlug: any,
+    questionId: string,
+    language: string,
+    code: string,
+  ): Observable<any> {
     if (gameType === 'leetcode') {
-      console.log("running leetcode test");
+      console.log('running leetcode test');
       return this.http.post(this.leetcodeApiEndpoint + `/problems/submit`, {
         id,
         titleSlug,
         questionId,
         language,
-        code
+        code,
       });
     } else {
       console.log(titleSlug);
-      
+
       return this.http.post(this.endpoint + '/api/problems/test', {
         titleSlug,
         language,
@@ -124,11 +131,15 @@ export class ApiService {
     }
   }
 
-  checkSubmission(gameType: string, id: string, submissionId: string): Observable<any> {
+  checkSubmission(
+    gameType: string,
+    id: string,
+    submissionId: string,
+  ): Observable<any> {
     if (gameType === 'leetcode') {
       return this.http.post(this.leetcodeApiEndpoint + '/submission/check/', {
         submissionId,
-        id
+        id,
       });
     }
     return this.http.get(this.endpoint + '/api/problems/check/' + submissionId);
@@ -225,7 +236,11 @@ export class ApiService {
     });
   }
 
-  roomGameOver(roomId: number, accessToken: string, winner: string): Observable<any> {
+  roomGameOver(
+    roomId: number,
+    accessToken: string,
+    winner: string,
+  ): Observable<any> {
     return this.http.put(this.endpoint + '/api/rooms/gameover', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -239,8 +254,13 @@ export class ApiService {
     return this.http.get(this.endpoint + '/api/users/performance/' + userId);
   }
 
-  updateGameResult = (roomId: number, totalCorrect:number, numAttempts:number, accessToken: string) => {
-    console.log(numAttempts)
+  updateGameResult = (
+    roomId: number,
+    totalCorrect: number,
+    numAttempts: number,
+    accessToken: string,
+  ) => {
+    console.log(numAttempts);
     return this.http.put(this.endpoint + `/api/rooms/${roomId}/result`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -248,14 +268,14 @@ export class ApiService {
       result: totalCorrect,
       numAttempts,
     });
-  }
+  };
 
   setUserSocketId(
     accessToken: string,
     socketId: string,
     userId: string,
   ): Observable<any> {
-    console.log( socketId, userId)
+    console.log(socketId, userId);
     return this.http.put(this.endpoint + '/api/users/socket/', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -277,7 +297,11 @@ export class ApiService {
     return this.http.get(this.endpoint + '/api/problems/' + problemId);
   }
 
-  updateRoomAttempt(roomId: number, accessToken: string, attempt: number): Observable<any> {
+  updateRoomAttempt(
+    roomId: number,
+    accessToken: string,
+    attempt: number,
+  ): Observable<any> {
     return this.http.put(this.endpoint + `/api/rooms/${roomId}/attempt`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -286,7 +310,11 @@ export class ApiService {
     });
   }
 
-  updateRoomResult(roomId: number, accessToken: string, result: number): Observable<any> {
+  updateRoomResult(
+    roomId: number,
+    accessToken: string,
+    result: number,
+  ): Observable<any> {
     return this.http.put(this.endpoint + `/api/rooms/${roomId}/result`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -295,7 +323,11 @@ export class ApiService {
     });
   }
 
-  updateRoomTimeElapsed(roomId: number, accessToken: string, time: string): Observable<any> {
+  updateRoomTimeElapsed(
+    roomId: number,
+    accessToken: string,
+    time: string,
+  ): Observable<any> {
     return this.http.put(this.endpoint + `/api/rooms/${roomId}/time`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -329,16 +361,19 @@ export class ApiService {
 
   checkUserLeetcodeCookie(cookie: string): Observable<any> {
     return this.http.post(this.leetcodeApiEndpoint + '/checkCookie', {
-      cookie
+      cookie,
     });
   }
 
-  updateUserLeetcodeCookie(accessToken: string, cookie: string): Observable<any> {
+  updateUserLeetcodeCookie(
+    accessToken: string,
+    cookie: string,
+  ): Observable<any> {
     return this.http.put(this.endpoint + '/api/users/leetcodecookie', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-      cookie
+      cookie,
     });
   }
 }

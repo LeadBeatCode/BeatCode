@@ -21,7 +21,6 @@ const PORT = 3000;
 const socketPort = 3001;
 export const app = express();
 
-
 app.use(bodyParser.json());
 app.use(express.static("static"));
 dotenv.config();
@@ -35,7 +34,11 @@ try {
 }
 
 const corsOptions = {
-  origin: ["https://beat.codes", "https://api.beat.codes", "http://localhost:4200"],
+  origin: [
+    "https://beat.codes",
+    "https://api.beat.codes",
+    "http://localhost:4200",
+  ],
   credentials: true, //allows cookies and HTTP authentication information to be included in the requests sent to the server
 };
 app.use(cors(corsOptions));
@@ -57,15 +60,16 @@ const httpServer = http.createServer(app);
 export const io = new Server(httpServer, {
   cors: {
     methods: ["GET", "POST", "PUT", "DELETE"],
-    origin: ["https://beat.codes", "https://api.beat.codes", "http://localhost:4200"],
+    origin: [
+      "https://beat.codes",
+      "https://api.beat.codes",
+      "http://localhost:4200",
+    ],
     credentials: true,
   },
 });
 
-
-
 io.on("connection", (socket) => {
-  
   console.log("a user connected");
   // console.log("socket.handshake.headers", socket.handshake.headers);
 
@@ -76,24 +80,27 @@ io.on("connection", (socket) => {
     //     console.log('setUserSocket', res);
     //   });
     // });
-    console.log("sdfsdf", userId)
+    console.log("sdfsdf", userId);
     socket.emit("reconnected", userId, socket.id);
   });
   // socket.on("roomSocket", (roomId) => {
   //   socket.emit("roomSocket", sockets)
   // })
 
-   socket.on("opponent_reconnected", (roomId, title, socketId, toSocketId, token) => {
-    console.log("opponent_reconnected", roomId, title);
-        io.to(toSocketId).emit("opponent_reconnected", title, socketId, roomId);
-    // apiService.getRoom(roomId, token).then((res) => {
-    //   if (title === 'p1') 
-    //     socket.emit("opponent_recconected", title, res.socketId1, roomId);
-    //   else
-    //     socket.emit("opponent_recconected", title, res.socketId2, roomId);
-    // });
-  })
-  
+  socket.on(
+    "opponent_reconnected",
+    (roomId, title, socketId, toSocketId, token) => {
+      console.log("opponent_reconnected", roomId, title);
+      io.to(toSocketId).emit("opponent_reconnected", title, socketId, roomId);
+      // apiService.getRoom(roomId, token).then((res) => {
+      //   if (title === 'p1')
+      //     socket.emit("opponent_recconected", title, res.socketId1, roomId);
+      //   else
+      //     socket.emit("opponent_recconected", title, res.socketId2, roomId);
+      // });
+    },
+  );
+
   const token = socket.handshake.query.token;
   // console.log("token at 70", socket.handshake.query);
   socket.on("online", function (data) {
@@ -145,7 +152,7 @@ io.on("connection", (socket) => {
               accessToken,
             );
             const problem = await apiService.getRandomProblem();
-            
+
             const pair = await apiService.createRoom(
               "created",
               player1.userId,
@@ -153,10 +160,9 @@ io.on("connection", (socket) => {
               accessToken,
               false,
               problem.question.titleSlug,
-              'normal'
-              
+              "normal",
             );
-            
+
             io.to(player1.socketId).emit("matched", pair, player1);
             io.to(player2.socketId).emit("matched", pair, player2);
             console.log("matched", pair);
@@ -173,7 +179,7 @@ io.on("connection", (socket) => {
             console.log("delete", "success");
           }
         }
-    }
+      }
     } else {
       await apiService.leetcodeEnqueue(userId, accessToken, socket.id); // Assuming you handle the response inside the enqueue function
       const leetcodeQueueRes = await apiService.getLeetcodeQueue();
@@ -182,17 +188,18 @@ io.on("connection", (socket) => {
         for (let i = 0; i < leetcodeQueueRes.queue.length; i = i + 2) {
           if (
             leetcodeQueueRes.queue[i + 1] &&
-            leetcodeQueueRes.queue[i + 1].userId !== leetcodeQueueRes.queue[i].userId
+            leetcodeQueueRes.queue[i + 1].userId !==
+              leetcodeQueueRes.queue[i].userId
           ) {
             // Ensure there's a pair
-  
-            console.log("hello")
-            
+
+            console.log("hello");
+
             const player1 = await apiService.leetcodeDequeue(
               leetcodeQueueRes.queue[i].socketId,
               accessToken,
             );
-  
+
             const player2 = await apiService.leetcodeDequeue(
               leetcodeQueueRes.queue[i + 1].socketId,
               accessToken,
@@ -207,35 +214,39 @@ io.on("connection", (socket) => {
               accessToken,
               false,
               problem.question.titleSlug,
-              'leetcode',
+              "leetcode",
             );
 
             console.log(player1.socketId, player2.socketId);
             io.to(player1.socketId).emit("matched", pair, player1);
             io.to(player2.socketId).emit("matched", pair, player2);
-  
-            await apiService.deleteLeetcodeQueue(leetcodeQueueRes.queue[i].socketId, token);
-            await apiService.deleteLeetcodeQueue(leetcodeQueueRes.queue[i + 1].socketId, token);
+
+            await apiService.deleteLeetcodeQueue(
+              leetcodeQueueRes.queue[i].socketId,
+              token,
+            );
+            await apiService.deleteLeetcodeQueue(
+              leetcodeQueueRes.queue[i + 1].socketId,
+              token,
+            );
             console.log("delete", "success"); // Assuming deleteQueue works as expected
           } else {
             const player1 = await apiService.leetcodeDequeue(
               leetcodeQueueRes.queue[i].socketId,
               accessToken,
             );
-            await apiService.deleteLeetcodeQueue(leetcodeQueueRes.queue[i].socketId);
+            await apiService.deleteLeetcodeQueue(
+              leetcodeQueueRes.queue[i].socketId,
+            );
             console.log("delete", "success");
           }
         }
       }
     }
-
-    
-
-   
   });
 
   socket.on("accepted", function (data, userId, token) {
-    console.log('accepted', data, userId);
+    console.log("accepted", data, userId);
     apiService.setPlayerStatus(data.id, "accepted", token).then((res) => {
       console.log("accepted");
       apiService.getRoom(data.id, token).then((pair) => {
