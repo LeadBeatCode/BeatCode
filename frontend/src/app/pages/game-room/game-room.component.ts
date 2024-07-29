@@ -32,7 +32,6 @@ export class GameRoomComponent implements OnInit {
   language: string = 'Python3';
   import: string = 'from typing import List\n';
   numAttempts: number = 0;
-  numAttemptsText: string = '';
   time: number = 0;
   displayTime: string = '';
   timeInterval: any;
@@ -43,9 +42,9 @@ export class GameRoomComponent implements OnInit {
   problemSlug: string = '';
   problemTitle: string = '';
   problemText: string = '';
-  HEART_COUNT: number = 2;
-  player1HeartCount: number[] = Array(this.HEART_COUNT).fill(1);
-  player2HeartCount: number[] = Array(this.HEART_COUNT).fill(1);
+  HEART_COUNT: number = 5;
+  player1HeartCount: number[] = [];
+  player2HeartCount: number[] = [];
   isPve: boolean = false;
   gptResponse: string = '';
   pveProblemId: number = 1;
@@ -66,6 +65,8 @@ export class GameRoomComponent implements OnInit {
   userrank2: string = '';
   userId1: string = '';
   userId2: string = '';
+  winner: string = '';
+  runtimeerr_num: number = 0;
 
   rankImage: any = {
     Silver: '../../../assets/rank1.png',
@@ -109,6 +110,9 @@ export class GameRoomComponent implements OnInit {
             this.submissionData.gameType = data.gameType;
             this.submissionData.titleSlug = data.questionTitleSlug;
             this.submissionData.id = data.playerTitle === 'p1' ? data.userId1 : data.userId2;
+            this.HEART_COUNT = data.playerTitle === 'p1' ? this.HEART_COUNT - data.user1Attempts : this.HEART_COUNT - data.user2Attempts;
+            console.log(this.HEART_COUNT);
+            this.numAttempts = this.HEART_COUNT;
             this.isPve = data.isPve;
             this.titleSlug = data.questionTitleSlug;
             console.log(data)
@@ -119,8 +123,8 @@ export class GameRoomComponent implements OnInit {
             this.timeElapsedInterval = setInterval(() => {
               this.timeElapsed = moment(this.timeElapsed, 'HH:mm:ss').add(1, 'second').format("HH:mm:ss");
               if (this.timeElapsed !== "Invalid date") {
-                // this.api.updateRoomTimeElapsed(parseInt(this.currentRoom), accessToken, this.timeElapsed).subscribe((data) => {
-                // })
+                this.api.updateRoomTimeElapsed(parseInt(this.currentRoom), accessToken, this.timeElapsed).subscribe((data) => {
+                })
               }
             }, 1000);
 
@@ -307,11 +311,6 @@ export class GameRoomComponent implements OnInit {
     }
   }
 
-  showLeetcodeResult(lastTestcase:any, totalCorrect:any, totalTestcases:any) {
-
-    
-  }
-
   getUserSocket() {
     const token = localStorage.getItem('accessToken');
     if (!token) {
@@ -344,14 +343,15 @@ export class GameRoomComponent implements OnInit {
   updateSubmissionDetails = (check_data: any) => {
     this.submissionDetails.runtimeError = check_data.runtimeError;
     this.submissionDetails.compileError = check_data.compileError;
-    this.submissionDetails.codeOutput = check_data.codeOutput;
-    this.submissionDetails.lastTestcase = check_data.lastTestcase// check_data.lastTestcase != "" ? JSON.parse(check_data.lastTestcase) : "";
+    this.submissionDetails.codeOutput = "Output : " + check_data.codeOutput;
+    this.submissionDetails.lastTestcase = "Test case : " + check_data.lastTestcase// check_data.lastTestcase != "" ? JSON.parse(check_data.lastTestcase) : "";
     this.submissionDetails.totalCorrect = check_data.totalCorrect;
-    this.submissionDetails.totalTestcases = check_data.totalTestcases;
-    this.submissionDetails.expectedOutput = check_data.expectedOutput // check_data.expectedOutput != "" ? JSON.parse(check_data.expectedOutput) : "";
+    this.submissionDetails.totalTestcases = " / " + check_data.totalTestcases;
+    this.submissionDetails.expectedOutput = "Expected : " + check_data.expectedOutput // check_data.expectedOutput != "" ? JSON.parse(check_data.expectedOutput) : "";
   }
 
   showGameSummary = () => {
+    clearInterval(this.timeElapsedInterval);
     this.showGameSummaryValue = true;
   }
 
@@ -361,6 +361,13 @@ export class GameRoomComponent implements OnInit {
 
   checkCorrectness = (totalCorrect: number, totalTestcases: number) => {
     console.log(this.titleSlug)
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      console.log(this.submissionDetails.expectedOutput, this.numAttempts)
+      this.api.updateGameResult(parseInt(this.currentRoom), this.submissionDetails.totalCorrect, this.numAttempts + 1, token).subscribe((data) => {
+        console.log(data);
+      })
+    }
     if (totalCorrect === totalTestcases) {
       console.log('Game Over');
       // clearInterval(this.timeInterval);
@@ -382,14 +389,21 @@ export class GameRoomComponent implements OnInit {
   runCode(isGptResponse: boolean) {
     console.log(this.submissionData)
     this.clearResult();
+    this.submissionDetails = {}
     this.api.runCode(this.submissionData.gameType, this.submissionData.id, this.submissionData.titleSlug, this.submissionData.questionId, this.language, this.playerTitle === 'p1' ? this.player1Code : this.player2Code).subscribe((data) => {
       console.log(data);
       if (this.submissionData.gameType === 'leetcode') {
         var submission_status = 16;
+        this.runtimeerr_num = 0;
           const submitInterval = setInterval(() => {
             this.api.checkSubmission(this.submissionData.gameType, this.submissionData.id, data.submission_id).subscribe((res) => {
               const check_data = res.data.submissionDetails;
               console.log("checking", check_data.statusCode, check_data)
+              this.runtimeerr_num += 1;
+              if (this.runtimeerr_num > 10) {
+                this.showError('Runtime Error; Try different language.');
+                clearInterval(submitInterval);
+              }
               if (check_data.totalTestcases) {
                 clearInterval(submitInterval);
                 submission_status = check_data.statusCode;
@@ -402,9 +416,17 @@ export class GameRoomComponent implements OnInit {
                   if (!this.submissionDetails.codeOutput) {
                     this.showError('No output was printed');
                   } else {
-                    this.showResult(this.submissionDetails.codeOutput, this.submissionDetails.expectedOutput, this.numAttempts);
-                    this.showLeetcodeResult(this.submissionDetails.lastTestcase, this.submissionDetails.totalCorrect, this.submissionDetails.totalTestcases);
+
+                     this.submissionDetails.runtimeError = check_data.runtimeError;
+                    this.showResult(this.submissionDetails.codeOutput, '', this.submissionDetails.expectedOutput);
                   }
+                }
+                const token = localStorage.getItem('accessToken');
+                if (token) {
+                  console.log(this.submissionDetails.expectedOutput, this.numAttempts)
+                  this.api.updateGameResult(parseInt(this.currentRoom), this.submissionDetails.totalCorrect, this.numAttempts + 1, token).subscribe((data) => {
+                    console.log(data);
+                  })
                 }
                 this.reduceHeartCount();
 
@@ -478,19 +500,18 @@ export class GameRoomComponent implements OnInit {
 
   getWinner = (user1Attempts: number, user2Attempts: number, user1Result: number, user2Result: number) => {
     console.log(user1Attempts, user2Attempts, user1Result, user2Result);
-    if (user1Attempts < user2Attempts) {
-      console.log('User 1 wins');
-      // this.api.updateUserRank(this.submissionData.id, 'win').subscribe((data) => {
-      //   console.log(data);
-      // });
-    } else if (user1Attempts > user2Attempts) {
-      console.log('User 2 wins');
-      // this.api.updateUserRank(this.submissionData.id, 'lose').subscribe((data) => {
-      //   console.log(data);
-      // });
-    } else {
-      console.log('Tie');
+    var winner = 2
+    if (user1Result > user2Result) {
+      winner = 1
+    } else if (user1Result === user2Result && user1Attempts < user2Attempts) {
+      winner = 1
     }
+    if (this.playerTitle === `p${winner}`) {
+      this.winner = "You"
+    } else {
+      this.winner = "Your Opponenet"
+    }
+    return `p${winner}`
   }
 
   reduceHeartCount() {
@@ -519,8 +540,9 @@ export class GameRoomComponent implements OnInit {
       }
       this.api.getRoom(parseInt(this.currentRoom), token).subscribe({
         next: (room_data) => {
-          this.getWinner(room_data.user1Attempts, room_data.user2Attempts, room_data.user1Result, room_data.user2Result);
-          this.api.roomGameOver(parseInt(this.currentRoom), token, this.playerTitle === 'p1' ? 'p1' : 'p2' ).subscribe((data) => {
+          const winner = this.getWinner(room_data.user1Attempts, room_data.user2Attempts, room_data.user1Result, room_data.user2Result);
+          console.log(winner)
+          this.api.roomGameOver(parseInt(this.currentRoom), token, (this.playerTitle === 'p1' && winner === 'p1') ? 'p1' : 'p2' ).subscribe((data) => {
             this.socket.emit('game over', {roomId: this.currentRoom, token: token});
             this.showGameSummary();
           });
@@ -575,16 +597,10 @@ export class GameRoomComponent implements OnInit {
     });
   }
 
-  showResult(stdout: string, result: string, numAttempts: number) {
+  showResult(stdout: string, result: string, expected_output: any) {
     this.stderr = '';
     this.stdout = stdout;
     this.result = result;
-    // console.log(this.stdout, this.expectedOutput)
-    // if ('' + this.stdout + '\n' === this.expectedOutput) {
-    //   this.numAttemptsText = 'Congratulations! You solved the problem in ' + this.numAttempts + ' attempts!';
-    // } else {
-    this.numAttemptsText = 'You have made ' + this.numAttempts + ' attempts.';
-    // }
   }
 
   showError(stderr: string) {
@@ -630,7 +646,7 @@ export class GameRoomComponent implements OnInit {
             if (this.playerTitle === 'p1') {
               this.player1Code += data[this.language];
             } else {
-              this.player2Code += data[this.language] + "sdfsdfsdfsdf";
+              this.player2Code += data[this.language];
             }
             console.log(this.player1Code);
           });

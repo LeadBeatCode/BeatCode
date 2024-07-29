@@ -1,7 +1,7 @@
 <div class="dark" [ngClass]="{ hidden: !showGameSummaryValue }">
   <div class="game-summary-container">
     <!-- <div class="game-summary-content-container"> -->
-      <div class="game-summary-header">You <span class="result">Won</span></div>
+      <div class="game-summary-header">{{ winner }} <span class="result">Won</span></div>
       <div class="game-summary-content">
         <div class="player">
           <div class="image" [ngStyle]="{'background-image': 'url(' + userImg1 + ')'}"></div>
@@ -58,9 +58,10 @@
   [problemText]="problemText"
   [stdout]="stdout"
   [result]="result"
-  [correct_testcases]="submissionDetails.correct_testcases"
-  [total_testcases]="submissionDetails.total_testcases"
-  [numAttemptsText]="numAttemptsText"
+  [correct_testcases]="submissionDetails.totalCorrect"
+  [total_testcases]="submissionDetails.totalTestcases"
+  [expected_output]="submissionDetails.expectedOutput"
+  [last_testcase]="submissionDetails.lastTestcase"
   [stderr]="stderr"
 ></app-problem>
 <div class="editors-container" [ngClass]="{ reverse: playerTitle === 'p2' }">

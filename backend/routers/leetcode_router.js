@@ -203,9 +203,12 @@ leetcodeRouter.get("/startcode/:title", async (req, res) => {
       })
       .then((response) => {
         var data = {};
-        response.data.data.question.codeSnippets.map((language) => {
-          data[language.lang] = language.code;
-        });
+        if (response.data.data.question.codeSnippets)
+          response.data.data.question.codeSnippets.map((language) => {
+            data[language.lang] = language.code;
+          });
+        else
+          return res.status(400).json({error : "Premium Question: This question is only available for premium users" });
         return res.json(data);
       });
   } catch (error) {
@@ -463,10 +466,17 @@ leetcodeRouter.post("/problems/submit", async (req, res) => {
       const LEETCODE_SESSION = user.leetcodeCookie.split("LEETCODE_SESSION=")[1].split(";")[0]
       console.log(LEETCODE_SESSION)
 
-    
+    console.log(req.body.language)
+    const lang = {
+      "Python3": "python3",
+      "Python": "python",
+      "Java": "java",
+      "C": "c",
+      "c++": "cpp"
+    }
 
     await axios.post(`https://leetcode.com/problems/${titleSlug}/submit/`, {
-          "lang": "python3",
+          "lang": lang[req.body.language],
           "question_id": questionId,
           "typed_code": req.body.code
       }, {

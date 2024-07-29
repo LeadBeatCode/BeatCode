@@ -77,6 +77,8 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
         userImg2: user2.picture,
         user1Nickname: user.nickname,
         user2Nickname: user2.nickname,
+        user1Attempts: room.user1Attempts,
+        user2Attempts: room.user2Attempts,
         userId1: user.id,
         userId2: user2.id,
         user1rank: user.rank,
@@ -252,8 +254,10 @@ roomRouter.put("/:id/result", isAuthenticated, async (req, res) => {
     }
     if (user.id === room.userId1) {
       room.user1Result = req.body.result;
+      room.user1Attempts = room.user1Attempts + 1;
     } else {
       room.user2Result = req.body.result;
+      room.user2Attempts = room.user2Attempts + 1; 
     }
     await room.save();
     return res.json(room);

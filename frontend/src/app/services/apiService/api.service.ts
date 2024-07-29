@@ -235,6 +235,17 @@ export class ApiService {
     return this.http.get(this.endpoint + '/api/users/performance/' + userId);
   }
 
+  updateGameResult = (roomId: number, totalCorrect:number, numAttempts:number, accessToken: string) => {
+    console.log(numAttempts)
+    return this.http.put(this.endpoint + `/api/rooms/${roomId}/result`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      result: totalCorrect,
+      numAttempts,
+    });
+  }
+
   setUserSocketId(
     accessToken: string,
     socketId: string,
