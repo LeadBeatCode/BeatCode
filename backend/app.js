@@ -91,10 +91,6 @@ io.on("connection", (socket) => {
     // });
   })
   
-
-  //  apiService.createProblem('Longest Substring Without Repeating Characters', 'longest-substring-without-repeating-characters', { 'subInput1':'abcabcbb'  }, {  "subOutput1": 3 }, { 'subInput1':'bbbbb'  }, {  "subOutput1": 1 }, { 'subInput1':'pwwkew'  }, {  "subOutput1": 3 }).then((res) => {
-  //    console.log('problem', res);
-  //  });
   const token = socket.handshake.query.token;
   // console.log("token at 70", socket.handshake.query);
   socket.on("online", function (data) {

@@ -6,7 +6,7 @@ export const Problem = sequelize.define("Problem", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  titleSlug: {
+  description: {
     type: DataTypes.STRING,
     allowNull: false,
   },
