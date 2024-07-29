@@ -20,7 +20,7 @@ const PORT = 3000;
 const socketPort = 3001;
 export const app = express();
 
-const httpServer = http.createServer(app);
+
 app.use(bodyParser.json());
 dotenv.config();
 
@@ -50,7 +50,7 @@ app.use("/api/leetcode", leetcodeRouter);
 app.use("/api/friends", friendRouter);
 app.use("/api/problems", problemRouter);
 app.use("/api/leetcodeQueues", leetcodeQueueRouter);
-
+const httpServer = http.createServer(app);
 export const io = new Server(httpServer, {
   cors: {
     origin: "https://beat.codes",
