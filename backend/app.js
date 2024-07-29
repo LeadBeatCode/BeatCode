@@ -79,10 +79,6 @@ io.on("connection", (socket) => {
     console.log("sdfsdf", userId)
     socket.emit("reconnected", userId, socket.id);
   });
-
-  socket.on("reduce", (roomId, playerTo) => {
-    io.to(playerTo).emit("reduce", roomId);
-  });
   // socket.on("roomSocket", (roomId) => {
   //   socket.emit("roomSocket", sockets)
   // })
