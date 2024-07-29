@@ -17,6 +17,14 @@
   color: rgb(6, 255, 6);
 }
 
+.login-btn {
+  font-size: 50px;
+  letter-spacing: 2px;
+  border: rgb(6, 255, 6);
+  border-radius: 15px;
+  color: rgb(6, 255, 6);
+}
+
 .sign-in-container .options > * {
   margin: 42px;
   padding: 5px;

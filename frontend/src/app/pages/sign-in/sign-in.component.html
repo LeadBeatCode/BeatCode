@@ -6,7 +6,7 @@
   <div *ngIf="isAuthenticated; else login" class="options"></div>
   <ng-template #login>
     <div class="options">
-      <button (click)="loginUser()">Login</button>
+      <div class="login-btn" (click)="loginUser()">Login</div>
     </div>
   </ng-template>
 </div>
