@@ -33,7 +33,7 @@ import { RankersComponent } from './components/rankers/rankers.component';
 import { WinRateRadialbarComponent } from './components/win-rate-radialbar/win-rate-radialbar.component';
 
 const socketIoConfig: SocketIoConfig = {
-  url: 'https://beat.codes:3001',
+  url: 'https://api.beat.codes',
   options: {},
 };
 

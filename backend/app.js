@@ -334,11 +334,11 @@ app.get("/profile", (req, res) => {
 
 app.get("/connect", (req, res) => res.oidc.login({ returnTo: "/sign-in" }));
 
-app.listen(PORT, (err) => {
-  if (err) console.log(err);
-  else console.log("HTTP server on hhttps://beat.codes:%s", PORT);
-});
+// app.listen(PORT, (err) => {
+//   if (err) console.log(err);
+//   else console.log("HTTP server on hhttps://beat.codes:%s", PORT);
+// });
 
-httpServer.listen(socketPort, () => {
-  console.log("Socket server on https://beat.codes:%s", socketPort);
+httpServer.listen(PORT, () => {
+  console.log("server on https://beat.codes:%s", PORT);
 });
