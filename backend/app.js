@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
-import http from "https";
+import cors from "cors";
+import http from "http";
 import { auth } from "express-openid-connect";
 import { Server } from "socket.io";
 import { sequelize } from "./datasource.js";
@@ -14,7 +15,6 @@ import { leetcodeQueueRouter } from "./routers/leetcodeQueue_router.js";
 import { friendRouter } from "./routers/friend_router.js";
 import { apiService } from "./api-service.js";
 import dotenv from "dotenv";
-import cors from "cors";
 
 const PORT = 3000;
 const socketPort = 3001;
