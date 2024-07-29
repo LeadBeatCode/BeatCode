@@ -99,6 +99,10 @@ export class ApiService {
     );
   }
 
+  getLeaderboard(): Observable<any> {
+    return this.http.get(this.endpoint + '/api/leaderboard');
+  }
+
   runCode(gameType: string, id: string, titleSlug: any, questionId: string, language: string, code: string): Observable<any> {
     if (gameType === 'leetcode') {
       console.log("running leetcode test");

@@ -1,9 +1,10 @@
 <div class="dashboard-container">
   <div class="dashboard-content-container">
-    <div class="top-rankers-container">
-    <app-match-history-element></app-match-history-element>
-    <app-match-history-element></app-match-history-element>
-    <app-match-history-element></app-match-history-element>
+    <div top-rankers-container>
+      <div class="top-rankers" *ngFor="let user of leaderboard">
+        <app-ranker-element [nickname]="user.nickname" [rank]="user.BP" [picture]="user.picture"></app-ranker-element>
       </div>
+    </div>
+    
   </div>
 </div>

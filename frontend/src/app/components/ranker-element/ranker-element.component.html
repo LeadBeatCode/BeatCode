@@ -1,0 +1,15 @@
+<div class="ranker-container">
+  <div class="ranker-content">
+    <div class="user-info">
+      <div class="user-profile-image-container">
+        <div class="profile-image" [style.background-image]="'url(' + picture + ')'"></div>
+      </div>
+      <div class="username-container">
+        <div class="username">{{nickname}}</div>
+      </div>
+    <div class="rank" >BP: {{rank}}</div>
+    <div clasas="rank-image-container">
+      <div class="rank-image" [ngClass]="getRank(rank)"></div>
+    </div>
+  </div>
+</div>

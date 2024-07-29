@@ -26,7 +26,7 @@ import { MatchHistoryComponent } from './components/match-history/match-history.
 import { AuthInterceptor } from './services/auth.intercepter';
 import { FriendComponent } from './components/friend/friend.component';
 import { FriendRequestComponent } from './components/friend-request/friend-request.component';
-import { MatchHistoryElementComponent } from './components/match-history-element/match-history-element.component';
+import { RankerElementComponent } from './components/ranker-element/ranker-element.component';
 import { QuickMatchHistoryElementComponent } from './components/quick-match-history-element/quick-match-history-element.component';
 import { LeetcodeGameMatchingLobbyComponent } from './pages/leetcode-game-matching-lobby/leetcode-game-matching-lobby.component';
 import { RankersComponent } from './components/rankers/rankers.component';
@@ -53,7 +53,7 @@ const socketIoConfig: SocketIoConfig = {
     MatchHistoryComponent,
     FriendComponent,
     FriendRequestComponent,
-    MatchHistoryElementComponent,
+    RankerElementComponent,
     QuickMatchHistoryElementComponent,
     LeetcodeGameMatchingLobbyComponent,
     RankersComponent,
