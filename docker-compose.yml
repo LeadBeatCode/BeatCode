@@ -1,0 +1,58 @@
+version: "3.7"
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+      - ./acme:/etc/acme.sh
+    environment:
+      - DEFAULT_EMAIL=jinting.zhou@mail.utoronto.ca
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+  frontend:
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/frontend-project-cyj
+    container_name: frontend
+    restart: always
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST=beat.codes
+      - LETSENCRYPT_HOST=beat.codes
+  backend:
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/backend-project-cyj
+    container_name: backend
+    restart: always
+    expose:
+      - 3000
+    environment:
+      - VIRTUAL_HOST=api.beat.codes
+      - LETSENCRYPT_HOST=api.beat.codes
+    db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASSWD
+      PGUSER: $DB_USER
+    volumes:
+      - ./database-data:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -h db"
+      timeout: 10s
+      retries: 10
