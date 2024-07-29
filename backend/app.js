@@ -54,7 +54,7 @@ app.use("/api/leetcodeQueues", leetcodeQueueRouter);
 export const io = new Server(httpServer, {
   cors: {
     origin: "https://beat.codes",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
 });
