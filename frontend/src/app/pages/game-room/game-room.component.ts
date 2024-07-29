@@ -335,6 +335,7 @@ export class GameRoomComponent implements OnInit {
                     this.showResult(this.submissionDetails.codeOutput, this.submissionDetails.expectedOutput, this.numAttempts);
                     this.showLeetcodeResult(this.submissionDetails.lastTestcase, this.submissionDetails.totalCorrect, this.submissionDetails.totalTestcases);
                   }
+                  this.reduceHeartCount();
                 }
 
                 // this.showResult(stdOutput, JSON.stringify(lastTestcase), this.numAttempts);
