@@ -67,58 +67,29 @@ export const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   
   console.log("a user connected");
-  // console.log("socket.handshake.headers", socket.handshake.headers);
 
   socket.on("reconnected", function (userId, accessToken) {
-    // console.log(nickname, accessToken);
-    // apiService.getUserSocketId(nickname).then((res) => {
-    //   apiService.setUserSocket(socket.id, nickname, userId, accessToken).then((res) => {
-    //     console.log('setUserSocket', res);
-    //   });
-    // });
     console.log("sdfsdf", userId)
     socket.emit("reconnected", userId, socket.id);
   });
 
-  socket.on("reduce", (roomId, playerTo) => {
-    io.to(playerTo).emit("reduce", roomId);
-  });
-  // socket.on("roomSocket", (roomId) => {
-  //   socket.emit("roomSocket", sockets)
-  // })
-
    socket.on("opponent_reconnected", (roomId, title, socketId, toSocketId, token) => {
     console.log("opponent_reconnected", roomId, title);
         io.to(toSocketId).emit("opponent_reconnected", title, socketId, roomId);
-    // apiService.getRoom(roomId, token).then((res) => {
-    //   if (title === 'p1') 
-    //     socket.emit("opponent_recconected", title, res.socketId1, roomId);
-    //   else
-    //     socket.emit("opponent_recconected", title, res.socketId2, roomId);
-    // });
   })
-  
-
-  //  apiService.createProblem('Longest Substring Without Repeating Characters', 'longest-substring-without-repeating-characters', { 'subInput1':'abcabcbb'  }, {  "subOutput1": 3 }, { 'subInput1':'bbbbb'  }, {  "subOutput1": 1 }, { 'subInput1':'pwwkew'  }, {  "subOutput1": 3 }).then((res) => {
-  //    console.log('problem', res);
-  //  });
   const token = socket.handshake.query.token;
-  // console.log("token at 70", socket.handshake.query);
   socket.on("online", function (data) {
     const { userId, friendSocketId } = data;
-    // console.log("online", userId, friendSocketId);
     io.to(friendSocketId).emit("friend online", userId);
   });
 
   socket.on("new friend", function (data) {
     const { friendId, friendSocketId } = data;
-    // console.log("new friend", friendId, friendSocketId);
     io.to(friendSocketId).emit("new friend added", friendId);
   });
 
   socket.on("editor", function (data) {
     const { targetSocketId, code } = data;
-    // Using 'to' to emit to a specific socket by its ID
     io.to(targetSocketId).emit("editor", { code });
   });
 
@@ -127,7 +98,6 @@ io.on("connection", (socket) => {
     console.log("change language", targetSocketId, language);
     io.to(targetSocketId).emit("opponent change language", { language });
   });
-  // const token = 'Bearer ' + socket.handshake.headers.authorization;
   socket.on("matching", async function (userId, accessToken, gameType) {
     // Make this function async
     console.log("matching", userId);

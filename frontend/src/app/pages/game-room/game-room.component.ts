@@ -226,7 +226,6 @@ export class GameRoomComponent implements OnInit {
     })
 
     this.socket.on("reduce", (roomId: string) => {
-      console.log('reduce');
       if (this.playerTitle === 'p1') {
         this.player2HeartCount[this.opponentNumAttempts] = 0;
         this.player2HeartCount = [...this.player2HeartCount];
@@ -534,7 +533,6 @@ export class GameRoomComponent implements OnInit {
   }
 
   reduceHeartCount() {
-    console.log("reduceHeartCount");
     if (this.playerTitle === 'p1') {
       this.player1HeartCount[this.numAttempts] = 0;
       this.player1HeartCount = [...this.player1HeartCount];
@@ -547,7 +545,6 @@ export class GameRoomComponent implements OnInit {
     console.log(this.numAttempts, this.HEART_COUNT)
     if (this.numAttempts < this.HEART_COUNT - 1) {
       this.numAttempts += 1;
-      this.socket.emit('reduce', {roomId: this.currentRoom, playerTo: this.opponentSocketId});
     } else {
       console.log('Game Over');
       clearInterval(this.timeInterval);
@@ -555,7 +552,6 @@ export class GameRoomComponent implements OnInit {
       const token = localStorage.getItem('accessToken');
       if (!token) {
         console.log('Please sign in');
-        // this.router.navigate(['/']);
         return;
       }
       this.api.getRoom(parseInt(this.currentRoom), token).subscribe({
