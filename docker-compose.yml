@@ -43,6 +43,7 @@ services:
       - VIRTUAL_HOST=api.beat.codes
       - LETSENCRYPT_HOST=api.beat.codes
   db:
+    container_name: db
     image: postgres:16
     restart: always
     environment:
