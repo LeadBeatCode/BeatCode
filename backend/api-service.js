@@ -70,7 +70,7 @@ export const apiService = (function () {
   };
 
   module.getQueue = function () {
-    return fetch(process.env.BASE_URL + "api/queues").then((res) => res.json());
+    return fetch(process.env.BASE_URL + "/api/queues").then((res) => res.json());
   };
 
   module.getLeetcodeQueue = function () {
