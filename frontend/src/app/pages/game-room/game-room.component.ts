@@ -1,358 +1,790 @@
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
-import http from "http";
-import { auth } from "express-openid-connect";
-import { Server } from "socket.io";
-import { sequelize } from "./datasource.js";
-
-import { userRouter } from "./routers/user_router.js";
-import { queueRouter } from "./routers/queue_router.js";
-import { roomRouter } from "./routers/room_router.js";
-import { problemRouter } from "./routers/problem_router.js";
-import { leetcodeRouter } from "./routers/leetcode_router.js";
-import { leetcodeQueueRouter } from "./routers/leetcodeQueue_router.js";
-import { friendRouter } from "./routers/friend_router.js";
-import { apiService } from "./api-service.js";
-import dotenv from "dotenv";
-
-const PORT = 3000;
-const socketPort = 3001;
-export const app = express();
-
-const httpServer = http.createServer(app);
-app.use(bodyParser.json());
-dotenv.config();
-
-try {
-  sequelize.authenticate();
-  await sequelize.sync({ alter: { drop: false } });
-  console.log("Connection has been established successfully.");
-} catch (error) {
-  console.error("Unable to connect to the database:", error);
-}
-
-const corsOptions = {
-  origin: "http://localhost:4200",
-  credentials: true, //allows cookies and HTTP authentication information to be included in the requests sent to the server
-};
-app.use(cors(corsOptions));
-
-app.use(function (req, res, next) {
-  console.log("HTTP request", req.method, req.url, req.body);
-  next();
-});
-
-app.use("/api/users", userRouter);
-app.use("/api/queues", queueRouter);
-app.use("/api/rooms", roomRouter);
-app.use("/api/leetcode", leetcodeRouter);
-app.use("/api/friends", friendRouter);
-app.use("/api/problems", problemRouter);
-app.use("/api/leetcodeQueues", leetcodeQueueRouter);
-
-export const io = new Server(httpServer, {
-  cors: {
-    origin: "http://localhost:4200",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../services/apiService/api.service';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Socket } from 'ngx-socket-io';
+import { GameService } from '../../services/gameService/game.service';
+import { GptService } from '../../services/gptService/gpt.service';
+import { switchMap } from 'rxjs';
+import moment from 'moment';
 
 
+@Component({
+  // selector: 'app-root',
+  // templateUrl: './app.component.html',
+  // styleUrls: ['./app.component.css'],
+  selector: 'app-game-room',
+  templateUrl: './game-room.component.html',
+  styleUrl: './game-room.component.css',
+})
+export class GameRoomComponent implements OnInit {
+  title = 'frontend';
+  editorOptions = { theme: 'vs-dark', language: 'python' };
+  opponentEditorOptions = { theme: 'hc-black', language: 'python' };
+  player1Code: string = ''
+  player2Code: string = ''
+  expectedOutput: string = '4\n';
+  result: string = '';
+  stdout: string = '';
+  stderr: string = '';
+  showEditor: boolean = true;
+  playerTitle: string = '';
+  currentRoom: string = '';
+  language: string = 'Python3';
+  import: string = 'from typing import List\n';
+  numAttempts: number = 0;
+  time: number = 0;
+  displayTime: string = '';
+  timeInterval: any;
+  socketId: string = '';
+  opponentSocketId: string = '';
+  problemData: any = {}
+  problemInitialCode: any = {}
+  problemSlug: string = '';
+  problemTitle: string = '';
+  problemText: string = '';
+  HEART_COUNT: number = 5;
+  player1HeartCount: number[] = [];
+  player2HeartCount: number[] = [];
+  isPve: boolean = false;
+  gptResponse: string = '';
+  pveProblemId: number = 1;
+  opponentLanguage: string = 'Python3';
+  editor: any;
+  timeElapsed: string = "00:00:00";
+  dateStart: any = moment();
+  titleSlug: string = '';
+  submissionData: any = {gameType: "", id: "", titleSlug: "", questionId: ""};
+  submissionDetails: any = {expected_output: "", total_testcases: "", correct_testcases: "", last_testcase: "", result: ""};
+  showGameSummaryValue: boolean = false;
+  timeElapsedInterval: any = 0;
+  userImg1: string = '';
+  userImg2: string = '';
+  username1: string = '';
+  username2: string = '';
+  userrank1: string = '';
+  userrank2: string = '';
+  userId1: string = '';
+  userId2: string = '';
+  winner: string = '';
+  runtimeerr_num: number = 0;
 
-io.on("connection", (socket) => {
-  
-  console.log("a user connected");
-  // console.log("socket.handshake.headers", socket.handshake.headers);
+  rankImage: any = {
+    Silver: '../../../assets/rank1.png',
+    Emerald: '../../../assets/rank2.png',
+    Diamond: '../../../assets/rank3.png',
+    Ruby: '../../../assets/rank4.png',
+    Master: '../../../assets/rank5.png',
+  }
 
-  socket.on("reconnected", function (userId, accessToken) {
-    // console.log(nickname, accessToken);
-    // apiService.getUserSocketId(nickname).then((res) => {
-    //   apiService.setUserSocket(socket.id, nickname, userId, accessToken).then((res) => {
-    //     console.log('setUserSocket', res);
-    //   });
-    // });
-    console.log("sdfsdf", userId)
-    socket.emit("reconnected", userId, socket.id);
-  });
-  // socket.on("roomSocket", (roomId) => {
-  //   socket.emit("roomSocket", sockets)
-  // })
-
-   socket.on("opponent_reconnected", (roomId, title, socketId, toSocketId, token) => {
-    console.log("opponent_reconnected", roomId, title);
-        io.to(toSocketId).emit("opponent_reconnected", title, socketId, roomId);
-    // apiService.getRoom(roomId, token).then((res) => {
-    //   if (title === 'p1') 
-    //     socket.emit("opponent_recconected", title, res.socketId1, roomId);
-    //   else
-    //     socket.emit("opponent_recconected", title, res.socketId2, roomId);
-    // });
-  })
-  
-
-  //  apiService.createProblem('Longest Substring Without Repeating Characters', 'longest-substring-without-repeating-characters', { 'subInput1':'abcabcbb'  }, {  "subOutput1": 3 }, { 'subInput1':'bbbbb'  }, {  "subOutput1": 1 }, { 'subInput1':'pwwkew'  }, {  "subOutput1": 3 }).then((res) => {
-  //    console.log('problem', res);
-  //  });
-  const token = socket.handshake.query.token;
-  // console.log("token at 70", socket.handshake.query);
-  socket.on("online", function (data) {
-    const { userId, friendSocketId } = data;
-    // console.log("online", userId, friendSocketId);
-    io.to(friendSocketId).emit("friend online", userId);
-  });
-
-  socket.on("new friend", function (data) {
-    const { friendId, friendSocketId } = data;
-    // console.log("new friend", friendId, friendSocketId);
-    io.to(friendSocketId).emit("new friend added", friendId);
-  });
-
-  socket.on("editor", function (data) {
-    const { targetSocketId, code } = data;
-    // Using 'to' to emit to a specific socket by its ID
-    io.to(targetSocketId).emit("editor", { code });
-  });
-
-  socket.on("change language", function (data) {
-    const { targetSocketId, language } = data;
-    console.log("change language", targetSocketId, language);
-    io.to(targetSocketId).emit("opponent change language", { language });
-  });
-  // const token = 'Bearer ' + socket.handshake.headers.authorization;
-  socket.on("matching", async function (userId, accessToken, gameType) {
-    // Make this function async
-    console.log("matching", userId);
-    if (gameType === "normal") {
-      await apiService.enqueue(userId, accessToken, socket.id);
-      const queueRes = await apiService.getQueue();
-      console.log("queue", queueRes);
-      if (queueRes.count >= 2) {
-        for (let i = 0; i < queueRes.queue.length; i = i + 2) {
-          if (
-            queueRes.queue[i + 1] &&
-            queueRes.queue[i + 1].userId !== queueRes.queue[i].userId
-          ) {
-            // Ensure there's a pair
-
-            const player1 = await apiService.dequeue(
-              queueRes.queue[i].socketId,
-              accessToken,
-            );
-
-            const player2 = await apiService.dequeue(
-              queueRes.queue[i + 1].socketId,
-              accessToken,
-            );
-            const problem = await apiService.getRandomProblem();
-            
-            const pair = await apiService.createRoom(
-              "created",
-              player1.userId,
-              player2.userId,
-              accessToken,
-              false,
-              problem.question.titleSlug,
-              'normal'
-              
-            );
-            
-            io.to(player1.socketId).emit("matched", pair, player1);
-            io.to(player2.socketId).emit("matched", pair, player2);
-            console.log("matched", pair);
-
-            await apiService.deleteQueue(queueRes.queue[i].socketId, token);
-            await apiService.deleteQueue(queueRes.queue[i + 1].socketId, token);
-            console.log("delete", "success"); // Assuming deleteQueue works as expected
-          } else {
-            const player1 = await apiService.dequeue(
-              queueRes.queue[i].socketId,
-              accessToken,
-            );
-            await apiService.deleteQueue(queueRes.queue[i].socketId);
-            console.log("delete", "success");
-          }
-        }
+  constructor(
+    private api: ApiService,
+    private activatedRoute: ActivatedRoute,
+    private socket: Socket,
+    private game: GameService,
+    private router: Router,
+    private gptService: GptService,
+    private gameService: GameService,
+  ) {
+    console.log('game room');
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation && navigation.extras.state) {
+      console.log(navigation.extras.state);
+      this.playerTitle = navigation.extras.state['playerTitle'];
     }
-    } else {
-      await apiService.leetcodeEnqueue(userId, accessToken, socket.id); // Assuming you handle the response inside the enqueue function
-      const leetcodeQueueRes = await apiService.getLeetcodeQueue();
-      console.log("leetcodeQueue", leetcodeQueueRes);
-      if (leetcodeQueueRes.count >= 2) {
-        for (let i = 0; i < leetcodeQueueRes.queue.length; i = i + 2) {
-          if (
-            leetcodeQueueRes.queue[i + 1] &&
-            leetcodeQueueRes.queue[i + 1].userId !== leetcodeQueueRes.queue[i].userId
-          ) {
-            // Ensure there's a pair
-  
-            console.log("hello")
-            
-            const player1 = await apiService.leetcodeDequeue(
-              leetcodeQueueRes.queue[i].socketId,
-              accessToken,
-            );
-  
-            const player2 = await apiService.leetcodeDequeue(
-              leetcodeQueueRes.queue[i + 1].socketId,
-              accessToken,
-            );
+    console.log('player title', this.playerTitle);
+    this.activatedRoute.queryParams.subscribe((params) => {
+      const roomId = params['roomId'];
+      const accessToken = localStorage.getItem('accessToken');
+      this.currentRoom = roomId;
+      if (accessToken) {
+        this.api.getRoom(roomId, accessToken).subscribe({
+          next: (data) => {
+            this.userImg1 = data.userImg1;
+            this.userImg2 = data.userImg2;
+            this.username1 = data.user1Nickname;
+            this.username2 = data.user2Nickname;
+            this.userrank1 = this.rankImage[data.user1rank];
+            this.userrank2 = this.rankImage[data.user2rank];
+            this.userId1 = data.userId1;
+            this.userId2 = data.userId2;
+            this.submissionData.gameType = data.gameType;
+            this.submissionData.titleSlug = data.questionTitleSlug;
+            this.submissionData.id = data.playerTitle === 'p1' ? data.userId1 : data.userId2;
+            this.HEART_COUNT = data.playerTitle === 'p1' ? this.HEART_COUNT - data.user1Attempts : this.HEART_COUNT - data.user2Attempts;
+            if (data.playerTitle === 'p1') {
+              this.numAttempts = data.user1Attempts;
+            } else {
+              this.numAttempts = data.user2Attempts;
+            }
+            this.player1HeartCount = Array(data.user1Attempts).fill(1);
+            this.player1HeartCount = Array(data.user2Attempts).fill(1);
+            this.isPve = data.isPve;
+            this.titleSlug = data.questionTitleSlug;
+            console.log(data)
+            // this.dateStart = data.timeElapsed
+            this.timeElapsed = data.timeElapsed;
+            console.log(this.timeElapsed);
 
-            console.log("accessToken", accessToken);
-            const problem = await apiService.getRandomProblem();
-            const pair = await apiService.createRoom(
-              "created",
-              player1.userId,
-              player2.userId,
-              accessToken,
-              false,
-              problem.question.titleSlug,
-              'leetcode',
-            );
+            this.timeElapsedInterval = setInterval(() => {
+              this.timeElapsed = moment(this.timeElapsed, 'HH:mm:ss').add(1, 'second').format("HH:mm:ss");
+              if (this.timeElapsed !== "Invalid date") {
+                this.api.updateRoomTimeElapsed(parseInt(this.currentRoom), accessToken, this.timeElapsed).subscribe((data) => {
+                })
+              }
+            }, 1000);
 
-            console.log(player1.socketId, player2.socketId);
-            io.to(player1.socketId).emit("matched", pair, player1);
-            io.to(player2.socketId).emit("matched", pair, player2);
-  
-            await apiService.deleteLeetcodeQueue(leetcodeQueueRes.queue[i].socketId, token);
-            await apiService.deleteLeetcodeQueue(leetcodeQueueRes.queue[i + 1].socketId, token);
-            console.log("delete", "success"); // Assuming deleteQueue works as expected
-          } else {
-            const player1 = await apiService.leetcodeDequeue(
-              leetcodeQueueRes.queue[i].socketId,
-              accessToken,
-            );
-            await apiService.deleteLeetcodeQueue(leetcodeQueueRes.queue[i].socketId);
-            console.log("delete", "success");
-          }
-        }
+            if(!this.isPve){
+              this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
+                console.log(data);
+                var socketOpponentUpdated = false;
+                this.socket.on("opponent_reconnected", (title: string, socketId: string, roomId: string, toSocketId: string) => {
+                  console.log("opponent_reconnected", title, socketId, toSocketId);
+                  if (this.playerTitle !== title) {
+                    this.opponentSocketId = socketId;
+                  }
+                })
+                if (this.playerTitle === 'p1') {
+                  if (data.socketId1 === "") {
+                    this.socket.emit('reconnected', this.userId1, localStorage.getItem('accessToken'));
+                  
+                    this.socket.on('reconnected', (userId: string, socketId: string) => {
+                      console.log("reconnecting", userId, socketId)
+                      this.api.setUserSocketId(accessToken, socketId, this.userId1)
+                        .subscribe({
+                          next: (data) => {
+                            console.log('socket id set');
+                          },
+                          error: (err) => {
+                            console.log(err);
+                          },
+                        });
+                        this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
+                          this.opponentSocketId = data.socketId2;
+                          this.socket.emit('opponent_reconnected', this.currentRoom, this.playerTitle, socketId, this.opponentSocketId, accessToken)
+                          socketOpponentUpdated = true;
+                          console.log('opponent socket id', this.opponentSocketId);
+                        });
+                      })
+                  } else {
+                    this.opponentSocketId = data.socketId2;
+                  }
+                } else {
+                  if (data.socketId2 === "") {
+                    this.socket.emit('reconnected', this.userId2, localStorage.getItem('accessToken'));
+                  
+                    this.socket.on('reconnected', (userId: string, socketId: string) => {
+                      console.log("reconnecting", userId, socketId)
+                      this.api.setUserSocketId(accessToken, socketId, this.userId2)
+                        .subscribe({
+                          next: (data) => {
+                            console.log('socket id set');
+                          },
+                          error: (err) => {
+                            console.log(err);
+                          },
+                        });
+                        this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
+                          this.opponentSocketId = data.socketId1;
+                          this.socket.emit('opponent_reconnected', this.currentRoom, this.playerTitle, socketId, this.opponentSocketId, accessToken)
+                          socketOpponentUpdated = true;
+                          console.log('opponent socket id', this.opponentSocketId);
+                        });
+                      })
+                  } else {
+                    this.opponentSocketId = data.socketId1;
+                  }
+              }
+            });}
+            this.getProblem();
+          },
+          error: (err) => {
+            console.log(err);
+            if (err.status === 401) {
+              console.log('Please sign in');
+              // this.router.navigate(['/']);
+            } else if (err.status === 403) {
+              console.log('You are not authorized to access this page');
+              this.router.navigate(['/']);
+            }
+          },
+        });
+      } else {
+        console.log('Please sign in');
+        // this.router.navigate(['/']);
       }
-    }
 
     
-
-   
-  });
-
-  socket.on("accepted", function (data, userId, token) {
-    console.log('accepted', data, userId);
-    apiService.setPlayerStatus(data.id, "accepted", token).then((res) => {
-      console.log("accepted");
-      apiService.getRoom(data.id, token).then((pair) => {
-        io.fetchSockets().then((data) => {
-          const socketIds = data.map((socket) => socket.id);
-          console.log("socketIds", socketIds);
-          console.log(
-            "in if statement",
-            pair.socketId1,
-            pair.socketId2,
-            socketIds.includes(pair.socketId1),
-            socketIds.includes(pair.socketId2),
-          );
-          if (
-            socketIds.includes(pair.socketId1) &&
-            socketIds.includes(pair.socketId2)
-          ) {
-            if (
-              pair.user1Status === "accepted" &&
-              pair.user2Status === "accepted"
-            ) {
-              console.log("both accepted and in socketIds");
-              io.to(pair.socketId1).emit("start", pair.id, pair.userId1, "p1");
-              io.to(pair.socketId2).emit("start", pair.id, pair.userId2, "p2");
-            }
-          } else {
-            const tempSocketIds = pair.socketId1;
-            console.log("tempSocketIds", tempSocketIds);
-            if (pair.socketId1 in socketIds) {
-              apiService.enqueue(pair.userId1, token, pair.socketId1);
-            } else {
-              apiService.enqueue(pair.userId2, token, pair.socketId2);
-            }
-          }
-        });
-      });
     });
-  });
+  }
 
-  socket.on("game over", async function (data) {
-    const { roomId, token } = data;
-    const room = await apiService.getRoom(roomId, token);
-    if (room) {
-      if (room.winner === "p1") {
-        console.log("p1 won", room.socketId2);
-        io.to(room.socketId2).emit("game won by opponent", "p1won");
-      } else {
-        console.log("p2 won", room);
-        io.to(room.socketId1).emit("game won by opponent", "p2won");
-      }
+  ngOnInit() {
+    this.socket.on("game won by opponent", () => {
+      console.log('game won by opponent');
+      this.showGameSummary();
+    })
+    console.log('game room init');
+
+    // this.socket.on("opponent_reconnected", (title: string, socketId: string, roomId: string) => {
+    //   console.log("opponent_reconnected", title, socketId);
+    //   if (this.playerTitle !== title) {
+    //     this.opponentSocketId = socketId;
+    //   }
+    // })
+    // this.startTimer();    
+    // this.api.getLeetcodeOfficialSolution().subscribe(data => {
+    //   console.log(data.data.allPlaygroundCodes)
+    //   this.player1Code = '\n' + data.data.allPlaygroundCodes[6].code;
+    // })
+    // const getQuestionInterval = setInterval(() => {
+    //   if (this.problemText) {
+    //     clearInterval(getQuestionInterval);
+    //   }
+    // this.getProblem();
+    this.dateStart = moment();
+    // }, 5000);
+
+    const langElement = document.querySelector('.lang-selector');
+    if (langElement) {
+      langElement.addEventListener('click', () => {
+        langElement.classList.toggle('active');
+      });
     }
-  });
+  }
 
-  socket.on("logout", async function (data) {
-    console.log("logout", data);
-    const id = data;
-    apiService.getFriendsById(id).then((friends) => {
-      friends.forEach((friend) => {
-        console.log("friend", friend.socketId);
-        io.to(friend.socketId).emit("friend offline", id);
+  exitGameRoom() {
+    clearInterval(this.timeInterval);
+    this.router.navigate(['/']);
+  }
+
+  editorInit(editor: any) {
+    this.editor = editor;
+    // console.log(editor.getModel().getLanguageIdentifier().language);
+    editor.updateOptions({
+      scrollBeyondLastLine: false,
+      renderLineHighlight: 'none',
+    });
+
+    if (!this.isPve) {
+      if (this.playerTitle === 'p2') {
+      editor.updateOptions({ readOnly: true });
+      this.socket.on('editor', (data: any) => {
+        editor.setValue(data.code);
       });
-    });
-  });
-
-  // const userId = socket.handshake.headers.userId;
-  console.log("token at 231", token);
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-    apiService.deleteQueue(socket.id, token).then((res) => {
-      console.log("deleteQueue", res);
-    });
-    apiService.deleteLeetcodeQueue(socket.id, token).then((res) => {
-      console.log("deleteLeetcodeQueue", res);
-    });
-    console.log("setUserSocket", socket.id);
-    apiService.clearUserSocket(socket.id, token).then((res) => {
-      apiService.getFriendsById(res.id).then((friends) => {
-        console.log("friends", friends);
-        friends.forEach((friend) => {
-          console.log("friend", friend.socketId);
-          io.to(friend.socketId).emit("friend offline", res.id);
+    } else {
+      editor.updateOptions({ readOnly: false });
+      editor.onDidChangeModelContent((event: any) => {
+        //connect to socket
+        console.log(
+          'editor content changed',
+          this.opponentSocketId,
+          editor.getValue(),
+        );
+        this.socket.emit('editor', {
+          targetSocketId: this.opponentSocketId,
+          code: editor.getValue(),
         });
       });
+    }
+  }
+  }
+
+  opponentEditorInit(editor: any) {
+    this.socket.on('opponent change language', (data: any) => {
+      this.opponentLanguage = data.language;
     });
-  });
-});
+    editor.updateOptions({
+      scrollBeyondLastLine: false,
+      renderLineHighlight: 'none',
+    });
+    if(!this.isPve) {
+      if (this.playerTitle === 'p1') {
+      editor.updateOptions({ readOnly: true });
+      this.socket.on('editor', (data: any) => {
+        console.log('opponent editor content changed', data.code);
+        editor.setValue(data.code);
+      });
+    } else {
+      editor.updateOptions({ readOnly: false });
+      editor.onDidChangeModelContent((event: any) => {
+        this.socket.emit('editor', {
+          targetSocketId: this.opponentSocketId,
+          code: editor.getValue(),
+        });
+      });
+    }} else {
+      editor.updateOptions({ readOnly: true });
+    }
+  }
 
-app.use(function (req, res, next) {
-  res.io = io;
-  next();
-});
+  getUserSocket() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.log('Please sign in');
+      // this.router.navigate(['/']);
+      return;
+    }
+    this.gameService.getUserSocket(token).subscribe({
+      next: (data) => {
+        console.log('log out', data);
+        localStorage.removeItem('accessToken');
+        this.gameService.getUserSocket('need to do it').subscribe((result) => {
+          console.log(result);
+        });
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+    
+  }
 
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  secret: process.env.SECRET,
-  baseURL: "http://localhost:3000",
-  clientID: "Kmosk0ISBss1diEABRcTzKJwNceZpSqn",
-  issuerBaseURL: "https://dev-jqe0hc4zidat2q1z.us.auth0.com",
-};
+  clearResult() {
+    this.result = '';
+    this.stdout = '';
+    this.stderr = '';
+  }
 
-app.use(auth(config));
 
-app.get("/profile", (req, res) => {
-  res.send(
-    req.oidc.isAuthenticated() ? JSON.stringify(req.oidc.user) : "Logged out",
-  );
-});
+  updateSubmissionDetails = (check_data: any) => {
+    this.submissionDetails.runtimeError = check_data.runtimeError;
+    this.submissionDetails.compileError = check_data.compileError;
+    this.submissionDetails.codeOutput = "Output : " + check_data.codeOutput;
+    this.submissionDetails.lastTestcase = "Test case : " + check_data.lastTestcase// check_data.lastTestcase != "" ? JSON.parse(check_data.lastTestcase) : "";
+    this.submissionDetails.totalCorrect = check_data.totalCorrect;
+    this.submissionDetails.totalTestcases = " / " + check_data.totalTestcases;
+    this.submissionDetails.expectedOutput = "Expected : " + check_data.expectedOutput // check_data.expectedOutput != "" ? JSON.parse(check_data.expectedOutput) : "";
+  }
 
-app.get("/connect", (req, res) => res.oidc.login({ returnTo: "/sign-in" }));
+  showGameSummary = () => {
+    clearInterval(this.timeElapsedInterval);
+    this.showGameSummaryValue = true;
+  }
 
-app.listen(PORT, (err) => {
-  if (err) console.log(err);
-  else console.log("HTTP server on http://localhost:%s", PORT);
-});
+  gameOver = () => {
+    this.showGameSummary();
+  }
 
-httpServer.listen(socketPort, () => {
-  console.log("Socket server on http://localhost:%s", socketPort);
-});
+  checkCorrectness = (totalCorrect: number, totalTestcases: number) => {
+    console.log(this.titleSlug)
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      console.log(this.submissionDetails.expectedOutput, this.numAttempts)
+      this.api.updateGameResult(parseInt(this.currentRoom), this.submissionDetails.totalCorrect, this.numAttempts + 1, token).subscribe((data) => {
+        console.log(data);
+      })
+    }
+    if (totalCorrect === totalTestcases) {
+      console.log('Game Over');
+      // clearInterval(this.timeInterval);
+      clearInterval(this.timeElapsedInterval);
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        console.log('Please sign in');
+        // this.router.navigate(['/']);
+        return;
+      }
+      this.api.roomGameOver(parseInt(this.currentRoom), token, this.playerTitle === 'p1' ? 'p1' : 'p2' ).subscribe((data) => {
+        console.log(data);
+        this.socket.emit('game over', {roomId: this.currentRoom, token: token});
+        this.showGameSummary();
+      });
+    }
+  }
+
+  runCode(isGptResponse: boolean) {
+    console.log(this.submissionData)
+    this.clearResult();
+    this.submissionDetails = {}
+    this.api.runCode(this.submissionData.gameType, this.submissionData.id, this.submissionData.titleSlug, this.submissionData.questionId, this.language, this.playerTitle === 'p1' ? this.player1Code : this.player2Code).subscribe((data) => {
+      console.log(data);
+      if (this.submissionData.gameType === 'leetcode') {
+        var submission_status = 16;
+        this.runtimeerr_num = 0;
+          const submitInterval = setInterval(() => {
+            this.api.checkSubmission(this.submissionData.gameType, this.submissionData.id, data.submission_id).subscribe((res) => {
+              const check_data = res.data.submissionDetails;
+              console.log("checking", check_data.statusCode, check_data)
+              this.runtimeerr_num += 1;
+              if (this.runtimeerr_num > 10) {
+                this.showError('Runtime Error; Try different language.');
+                clearInterval(submitInterval);
+              }
+              if (check_data.totalTestcases) {
+                clearInterval(submitInterval);
+                submission_status = check_data.statusCode;
+                this.updateSubmissionDetails(check_data)
+                if ((this.submissionDetails.runtimeError && this.submissionDetails.runtimeError != "") || (this.submissionDetails.compileError  && this.submissionDetails.compileError != "")) {
+                  console.log(this.submissionDetails.runtimeError, this.submissionDetails.compileError, !this.submissionDetails.runtimeError, !this.submissionDetails.compileError);
+                  this.showError(this.submissionDetails.runtimeError ? this.submissionDetails.runtimeError : this.submissionDetails.compileError);
+                } else {  // codeOutput, stdOutput
+                  this.checkCorrectness(this.submissionDetails.totalCorrect, this.submissionDetails.totalTestcases);
+                  if (!this.submissionDetails.codeOutput) {
+                    this.showError('No output was printed');
+                  } else {
+
+                     this.submissionDetails.runtimeError = check_data.runtimeError;
+                    this.showResult(this.submissionDetails.codeOutput, '', this.submissionDetails.expectedOutput);
+                  }
+                }
+                const token = localStorage.getItem('accessToken');
+                if (token) {
+                  console.log(this.submissionDetails.expectedOutput, this.numAttempts)
+                  this.api.updateGameResult(parseInt(this.currentRoom), this.submissionDetails.totalCorrect, this.numAttempts + 1, token).subscribe((data) => {
+                    console.log(data);
+                  })
+                }
+                this.reduceHeartCount();
+
+                // this.showResult(stdOutput, JSON.stringify(lastTestcase), this.numAttempts);
+              }
+            })
+          }, 2000);
+      } else {
+        this.checkSubmission(data.token, isGptResponse, this.expectedOutput, 'aaabb');
+      }
+    })
+    if (this.isPve) {
+      const expectedOutputs: any [] = [];
+      const expectedInputs : any [] = [];
+      this.api.getPveProblem(this.pveProblemId).subscribe((data) => {
+        expectedInputs.push(data.input1);
+        expectedInputs.push(data.input2);
+        expectedInputs.push(data.input3);
+        expectedOutputs.push(data.expectedOutput1);
+        expectedOutputs.push(data.expectedOutput2);
+        expectedOutputs.push(data.expectedOutput3);
+        for (let i = 0; i < expectedInputs.length; i++) {
+          if (isGptResponse) {
+            let code = this.player2Code + '\nprint(solution(' + JSON.stringify(expectedInputs[i].subInput1) + '))';
+            this.api.submitCode(code, 'python3').subscribe((data) => {
+            this.checkSubmission(data.token, isGptResponse, expectedOutputs[i].subOutput1, expectedInputs[i].subInput1);
+            
+          });
+          } else {
+            console.log(expectedInputs[0]);
+          console.log(expectedInputs[0].subInput1);
+          var code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
+          console.log(this.playerTitle);
+          code = this.import + code;
+          if (this.language === 'python3' || this.language === 'python') {
+          code = this.player1Code + '\nprint(solution(' + JSON.stringify(expectedInputs[i].subInput1) + '))';
+          } else if (this.language === 'C') {
+            code = this.player1Code + '\n int main(){printf("%d", solution(' + JSON.stringify(expectedInputs[i].subInput1) + '))}';
+          } else if (this.language === 'C++') {
+            code = this.player1Code + '\nstd::cout << solution(' + JSON.stringify(expectedInputs[i].subInput1) + ') << std::endl';
+          } else if (this.language === 'Java') {
+            code = this.player1Code + '\nSystem.out.println(solution(' + JSON.stringify(expectedInputs[i].subInput1) + '));';
+          }
+
+          this.api.submitCode(code, this.language).subscribe((data) => {
+          
+            this.checkSubmission(data.token, isGptResponse, expectedOutputs[i].subOutput1, expectedInputs[i].subInput1);
+          });
+        }
+        }
+        console.log(expectedInputs);
+        console.log(expectedOutputs);
+        
+
+      });
+    } else {
+
+      // var code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
+      // console.log(this.playerTitle);
+      // //code = this.import + code;
+      // //code = this.player2Code + 'print(solution(' + JSON.stringify(expectedInputs[0].subInput1) + '))';
+      // //code += 'print(solution("aaabb"))';
+      // console.log(code);
+      // this.api.submitCode(code, this.language).subscribe((data) => {
+      
+      //   this.checkSubmission(data.token, isGptResponse, this.expectedOutput, 'aaabb');
+      // });
+    
+  }
+  }
+
+  getWinner = (user1Attempts: number, user2Attempts: number, user1Result: number, user2Result: number) => {
+    console.log(user1Attempts, user2Attempts, user1Result, user2Result);
+    var winner = 2
+    if (user1Result > user2Result) {
+      winner = 1
+    } else if (user1Result === user2Result && user1Attempts < user2Attempts) {
+      winner = 1
+    }
+    if (this.playerTitle === `p${winner}`) {
+      this.winner = "You"
+    } else {
+      this.winner = "Your Opponenet"
+    }
+    return `p${winner}`
+  }
+
+  reduceHeartCount() {
+    console.log("reduceHeartCount");
+    if (this.playerTitle === 'p1') {
+      this.player1HeartCount[this.numAttempts] = 0;
+      this.player1HeartCount = [...this.player1HeartCount];
+      console.log(this.player1HeartCount);
+    } else {
+      this.player2HeartCount[this.numAttempts] = 0;
+      this.player2HeartCount = [...this.player2HeartCount];
+      console.log(this.player2HeartCount);
+    }
+    console.log(this.numAttempts, this.HEART_COUNT)
+    if (this.numAttempts < this.HEART_COUNT - 1) {
+      this.numAttempts += 1;
+    } else {
+      console.log('Game Over');
+      clearInterval(this.timeInterval);
+      clearInterval(this.timeElapsedInterval);
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        console.log('Please sign in');
+        // this.router.navigate(['/']);
+        return;
+      }
+      this.api.getRoom(parseInt(this.currentRoom), token).subscribe({
+        next: (room_data) => {
+          const winner = this.getWinner(room_data.user1Attempts, room_data.user2Attempts, room_data.user1Result, room_data.user2Result);
+          console.log(winner)
+          this.api.roomGameOver(parseInt(this.currentRoom), token, (this.playerTitle === 'p1' && winner === 'p1') ? 'p1' : 'p2' ).subscribe((data) => {
+            this.socket.emit('game over', {roomId: this.currentRoom, token: token});
+            this.showGameSummary();
+          });
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
+    }
+  }
+
+  checkSubmission(submissionToken: string, isGptResponse: boolean, expectedOutput: string, input: string) {
+    
+    this.api.getSubmission(submissionToken).subscribe((data) => {
+      console.log(data);
+      if (data.stderr) {
+        const error = atob(data.stderr);
+        this.showError(`Error: ${error}`);
+      }
+      if (data.status.id === 3) {
+        const output = atob(data.stdout);
+        if (output === expectedOutput+'\n') {
+          if (isGptResponse) {
+            this.showResult(
+              `Input: ${input}\nOutput: ${output}`,
+              'Gpt is faster than you!',
+              this.numAttempts,
+            );
+          } else {
+          this.showResult(
+            `Input: ${input}\nOutput: ${output}`,
+            'Correct answer!',
+            this.numAttempts,
+          );
+        }
+        } else {
+          this.reduceHeartCount();
+          this.showResult(
+            `Input: ${input}\n
+            Output: ${output}`,
+            'Incorrect answer!',
+            this.numAttempts,
+          );
+        }
+      } else if (data.status.id === 1 || data.status.id === 2) {
+        setTimeout(() => {
+          this.checkSubmission(submissionToken, isGptResponse, expectedOutput, input);
+        }, 1000);
+      } else {
+        this.showError('Error: ' + data.status.description);
+      }
+    });
+  }
+
+  showResult(stdout: string, result: string, expected_output: any) {
+    this.stderr = '';
+    this.stdout = stdout;
+    this.result = result;
+  }
+
+  showError(stderr: string) {
+    this.stderr = stderr;
+    this.stdout = '';
+    this.result = '';
+  }
+
+  getProblem() {
+    if(this.isPve) {
+      this.api.getRandomPveProblem().subscribe((data) => {
+        console.log(data.title);
+        this.problemTitle = data.title;
+        this.problemText = data.description + '<p>\ninput1: ' + data.input1.subInput1 + '</p><p>\ninput2: ' + data.input2.subInput1 + '</p>\ninput3: ' + data.input3.subInput1;
+        this.pveProblemId = data.id;
+        this.gptService.getResponse(data.description + 'write the solution in python 3 and a method called solution. Do not include anything other than the method itself').then((response) => {
+          console.log(response);
+          this.gptResponse += response;
+          console.log(this.player2Code);
+          if (response){
+            this.displayResponseLineByLine(response);
+          }
+          
+        });
+        console.log(data.question);
+      });
+    } else {
+      this.api.getProblem(this.titleSlug).subscribe((response) => {
+        this.problemData = response.data.question;
+        console.log(this.problemData);
+        this.submissionData.questionId = response.data.question.questionId;
+        console.log(this.problemData.title);
+        this.problemTitle = this.formatString(this.titleSlug);
+        // this.problemSlug = response.slug;
+        // console.log(this.problemSlug);
+        // console.log(JSON.stringify(response));
+        this.problemText = response.data.question.content;
+        if (this.submissionData.gameType === 'leetcode') {
+          this.api.getProblemStartCode(this.titleSlug).subscribe((data) => {
+            this.problemInitialCode = data;
+            console.log(data);
+            if (this.playerTitle === 'p1') {
+              this.player1Code += data[this.language];
+            } else {
+              this.player2Code += data[this.language];
+            }
+            console.log(this.player1Code);
+          });
+        } else {
+          this.problemInitialCode = {
+            'Python3': '# Welcome to BeatCode!\n# Write a function called "Solution" that returns the output. \n',
+            'Python': '# Welcome to BeatCode!\n# Write a function called "Solution" that returns the output. \n',
+            'C': '// Welcome to BeatCode!\n// Write a function called "Solution" that returns the output. \n',
+            'C++': '// Welcome to BeatCode!\n// Write a function called "Solution" that returns the output. \n',
+            'Java': '// Welcome to BeatCode!\n// Write a function called "Solution" that returns the output. \n',
+          };
+          if (this.playerTitle === 'p1') {
+              this.player1Code = this.problemInitialCode[this.language];
+          } else {
+            this.player2Code = this.problemInitialCode[this.language];
+          }
+        }
+      });
+  }
+}
+
+formatString(input: string): string {
+  // Step 1: Replace all dashes with spaces
+  let formattedString = input.replace(/-/g, ' ');
+
+  // Step 2: Split the string into words
+  let words = formattedString.split(' ');
+
+  // Step 3: Capitalize the first letter of each word
+  words = words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+
+  // Step 4: Join the words back into a single string
+  formattedString = words.join(' ');
+
+  // Step 5: Return the formatted string
+  return formattedString;
+}
+
+displayResponseLineByLine(response: string) {
+  // const lines = response.split('\n');
+  // let currentLineIndex = 0;
+
+  // const intervalId = setInterval(() => {
+  //   if (currentLineIndex < lines.length) {
+  //     this.player2Code += lines[currentLineIndex] + '\n';
+  //     currentLineIndex++;
+  //   } else {
+  //     clearInterval(intervalId);
+  //   }
+  // }, 5000); // Adjust the interval time as needed (1000ms = 1 second)
+  let index = 0;
+  const delay = Math.floor(Math.random() * 900) + 100;
+        const intervalId = setInterval(() => {
+            if (index < response.length) {
+                this.player2Code += response[index];
+                index++;
+            } else {
+                clearInterval(intervalId);
+                this.runCode(true);
+            }
+        }, 500);
+}
+
+chooseLanguage(language: string) {
+  
+  
+  const langListElement = document.querySelector('.lang-list.' + this.playerTitle);
+  console.log(this.playerTitle);
+  console.log(langListElement);
+  if (langListElement) {
+    langListElement.classList.toggle('hidden');
+  }
+  console.log(language);
+  if (language !== 'choose') {
+    this.language = language;
+    console.log(this.editor);
+    //this.editor.setLanguageConfiguration(language);
+    //monaco.editor.setModelLanguage(this.editor.getModel(), language);
+    if (!this.isPve) {
+      this.socket.emit('change language', {language: language, targetSocketId: this.opponentSocketId});
+    }
+  }
+  if (this.playerTitle === 'p1') {
+    if (language === 'Python3' || language === 'Python') {
+      this.editorOptions = { theme: 'hc-black', language: 'python' };
+    } else if (language === 'C') {
+      this.editorOptions = { theme: 'hc-black', language: 'c' };
+    } else if (language === 'C++') {
+      this.editorOptions = { theme: 'hc-black', language: 'cpp' };
+    } else if (language === 'Java') {
+      this.editorOptions = { theme: 'hc-black', language: 'java' };
+    }
+    if (language && language !== "choose") {
+      this.player1Code = this.problemInitialCode[language] + '\n'
+    }
+  } else {
+    if (language === 'Python3' || language === 'Python') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'python' };
+    } else if (language === 'C') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'c' };
+    } else if (language === 'C++') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'cpp' };
+    } else if (language === 'Java') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'java' };
+    }
+
+    if (language && language !== "choose") {
+      this.player2Code = this.problemInitialCode[language] + '\n'
+    }
+  }
+  }
+
+changeOpponentLanguage = () => {
+  console.log('change opponent language');
+  if (this.playerTitle === 'p2') {
+    if (this.opponentLanguage === 'Python3' || this.opponentLanguage === 'Python') {
+      this.editorOptions = { theme: 'hc-black', language: 'python' };
+    } else if (this.opponentLanguage === 'C') {
+      this.editorOptions = { theme: 'hc-black', language: 'c' };
+    } else if (this.opponentLanguage === 'C++') {
+      this.editorOptions = { theme: 'hc-black', language: 'cpp' };
+    } else if (this.opponentLanguage === 'Java') {
+      this.editorOptions = { theme: 'hc-black', language: 'java' };
+    }
+  } else {
+    if (this.opponentLanguage === 'Python3' || this.opponentLanguage === 'Python') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'python' };
+    } else if (this.opponentLanguage === 'C') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'c' };
+    } else if (this.opponentLanguage === 'C++') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'cpp' };
+    } else if (this.opponentLanguage === 'Java') {
+      this.opponentEditorOptions = { theme: 'hc-black', language: 'java' };
+    }
+  }
+}
+}
