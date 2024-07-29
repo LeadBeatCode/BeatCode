@@ -1,9 +1,10 @@
+import dotenv from "dotenv";
 export const apiService = (function () {
   "use strict";
   const module = {};
-
+  dotenv.config();
   module.enqueue = function (userId, accessToken, socketId) {
-    return fetch("http://localhost:3000/api/queues/enqueue", {
+    return fetch( process.env.BASE_URL + "/api/queues/enqueue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -14,7 +15,7 @@ export const apiService = (function () {
   };
 
   module.leetcodeEnqueue = function (userId, accessToken, socketId) {
-    return fetch("http://localhost:3000/api/leetcodeQueues/enqueue", {
+    return fetch(process.env.BASE_URL + "/api/leetcodeQueues/enqueue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +26,7 @@ export const apiService = (function () {
   };
 
   module.dequeue = function (socketId, accessToken) {
-    return fetch("http://localhost:3000/api/queues/dequeue", {
+    return fetch(process.env.BASE_URL + "/api/queues/dequeue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +37,7 @@ export const apiService = (function () {
   };
 
   module.leetcodeDequeue = function (socketId, accessToken) {
-    return fetch("http://localhost:3000/api/leetcodeQueues/dequeue", {
+    return fetch(process.env.BASE_URL + "/api/leetcodeQueues/dequeue", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,38 +47,34 @@ export const apiService = (function () {
     }).then((res) => res.json());
   }
 
-  module.deleteQueue = function (socketId, token) {
-    return fetch("http://localhost:3000/api/queues", {
+  module.deleteQueue = function (id, token) {
+    return fetch(process.env.BASE_URL + `/api/queues/${id}` , {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ socketId }),
     }).then((res) => res.json());
   };
 
-  module.deleteLeetcodeQueue = function (socketId, token) {
-    return fetch("http://localhost:3000/api/leetcodeQueues", {
+  module.deleteLeetcodeQueue = function (id, token) {
+    return fetch(process.env.BASE_URL + `/api/leetcodeQueues/${id}`, {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ socketId }),
     }).then((res) => res.json());
   };
 
   module.getQueue = function () {
-    return fetch("http://localhost:3000/api/queues").then((res) => res.json());
+    return fetch(process.env.BASE_URL + "/api/queues").then((res) => res.json());
   };
 
   module.getLeetcodeQueue = function () {
-    return fetch("http://localhost:3000/api/leetcodeQueues").then((res) => res.json());
+    return fetch(process.env.BASE_URL + "/api/leetcodeQueues").then((res) => res.json());
   };
 
   module.signup = function (username, password) {
-    return fetch("http://localhost:3000/api/users/signup", {
+    return fetch(process.env.BASE_URL + "/api/users/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -87,7 +84,7 @@ export const apiService = (function () {
   };
 
   module.connect = function (username, password) {
-    return fetch("http://localhost:3000/api/users/connect", {
+    return fetch(process.env.BASE_URL + "/api/users/connect", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -97,7 +94,7 @@ export const apiService = (function () {
   };
 
   module.setPlayerStatus = function (id, status, token) {
-    return fetch(`http://localhost:3000/api/rooms/${id}/playerStatus`, {
+    return fetch(process.env.BASE_URL + `/api/rooms/${id}/playerStatus`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -108,7 +105,7 @@ export const apiService = (function () {
   };
 
   module.createRoom = function (status, userId1, userId2, token, isPve, questionTitleSlug, gameType) {
-    return fetch("http://localhost:3000/api/rooms", {
+    return fetch(process.env.BASE_URL + "/api/rooms", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -119,7 +116,7 @@ export const apiService = (function () {
   };
 
   module.getRoom = function (id, token) {
-    return fetch(`http://localhost:3000/api/rooms/${id}`, {
+    return fetch(process.env.BASE_URL + `/api/rooms/${id}`, {
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -127,13 +124,13 @@ export const apiService = (function () {
   };
 
   module.deleteRoom = function (id) {
-    return fetch(`http://localhost:3000/api/rooms/${id}`, {
+    return fetch(process.env.BASE_URL + `/api/rooms/${id}`, {
       method: "DELETE",
     }).then((res) => res.json());
   };
 
   module.clearUserSocket = function (socketId, token) {
-    return fetch(`http://localhost:3000/api/users/clearSocket`, {
+    return fetch(process.env.BASE_URL + `/api/users/clearSocket`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +141,7 @@ export const apiService = (function () {
   };
 
   module.getFriendsById = function (id) {
-    return fetch(`http://localhost:3000/api/friends/list/${id}`, {
+    return fetch(process.env.BASE_URL + `/api/friends/list/${id}`, {
       method: "GET",
     }).then((res) => res.json());
   };
@@ -159,7 +156,7 @@ export const apiService = (function () {
     input3,
     output3,
   ) {
-    return fetch("http://localhost:3000/api/problems", {
+    return fetch(process.env.BASE_URL + "/api/problems", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -178,7 +175,7 @@ export const apiService = (function () {
   };
 
   module.getUserSocketId = function (nickname) {
-    return fetch(`http://localhost:3000/api/users/${nickname}/socket`).then(
+    return fetch(process.env.BASE_URL + `/api/users/${nickname}/socket`).then(
       (res) => res.json(),
     );
   };
@@ -195,7 +192,7 @@ export const apiService = (function () {
   }
 
   module.getRandomProblem = function () {
-    return fetch("http://localhost:3000/api/leetcode/random-problem").then((res) =>
+    return fetch(process.env.BASE_URL + "/api/leetcode/random-problem").then((res) =>
       res.json(),
     );
   };

@@ -31,9 +31,10 @@ import { QuickMatchHistoryElementComponent } from './components/quick-match-hist
 import { LeetcodeGameMatchingLobbyComponent } from './pages/leetcode-game-matching-lobby/leetcode-game-matching-lobby.component';
 import { RankersComponent } from './components/rankers/rankers.component';
 import { WinRateRadialbarComponent } from './components/win-rate-radialbar/win-rate-radialbar.component';
+import { environment } from '../environments/environment';
 
 const socketIoConfig: SocketIoConfig = {
-  url: 'http://localhost:3001',
+  url: environment.apiEndpoint,
   options: {},
 };
 
