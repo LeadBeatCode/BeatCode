@@ -38,24 +38,38 @@ export class GameRoomComponent implements OnInit {
   opponentSocketId: string = '';
   problemData: any = {}
   problemInitialCode: any = {}
-  //   title: '',
-  //   text: '',
-  //   slug: '',
-  // }
   problemSlug: string = '';
   problemTitle: string = '';
   problemText: string = '';
-  player1HeartCount: number[] = Array(10).fill(1);
-  player2HeartCount: number[] = Array(10).fill(1);
+  HEART_COUNT: number = 2;
+  player1HeartCount: number[] = Array(this.HEART_COUNT).fill(1);
+  player2HeartCount: number[] = Array(this.HEART_COUNT).fill(1);
   isPve: boolean = false;
   gptResponse: string = '';
   pveProblemId: number = 1;
   opponentLanguage: string = 'Python3';
   editor: any;
-  now: string = "00:00:00";
+  timeElapsed: string = "00:00:00";
   dateStart: any = moment();
-  gameType: string = ''; // pve or normal or leetcode
   titleSlug: string = '';
+  submissionData: any = {gameType: "", id: "", titleSlug: "", questionId: ""};
+  submissionDetails: any = {expected_output: "", total_testcases: "", correct_testcases: "", last_testcase: "", result: ""};
+  showGameSummaryValue: boolean = false;
+  timeElapsedInterval: any = 0;
+  userImg1: string = '';
+  userImg2: string = '';
+  username1: string = '';
+  username2: string = '';
+  userrank1: string = '';
+  userrank2: string = '';
+
+  rankImage: any = {
+    Silver: '../../../assets/rank1.png',
+    Emerald: '../../../assets/rank2.png',
+    Diamond: '../../../assets/rank3.png',
+    Ruby: '../../../assets/rank4.png',
+    Master: '../../../assets/rank5.png',
+  }
 
   constructor(
     private api: ApiService,
@@ -75,17 +89,22 @@ export class GameRoomComponent implements OnInit {
     console.log('player title', this.playerTitle);
     this.activatedRoute.queryParams.subscribe((params) => {
       const roomId = params['roomId'];
-      this.gameType = params['gameType'];
-      console.log(this.gameType);
       const accessToken = localStorage.getItem('accessToken');
       this.currentRoom = roomId;
       if (accessToken) {
         this.api.getRoom(roomId, accessToken).subscribe({
           next: (data) => {
-            console.log(data);
+            this.userImg1 = data.userImg1;
+            this.userImg2 = data.userImg2;
+            this.username1 = data.user1Nickname;
+            this.username2 = data.user2Nickname;
+            this.userrank1 = this.rankImage[data.user1rank];
+            this.userrank2 = this.rankImage[data.user2rank];
+            this.submissionData.gameType = "leetcode";data.gameType;
+            this.submissionData.titleSlug = data.questionTitleSlug;
+            this.submissionData.id = data.playerTitle === 'p1' ? data.userId1 : data.userId2;
             this.isPve = data.isPve;
             this.titleSlug = data.questionTitleSlug;
-            this.gameType = data.gameType;
             if(!this.isPve){
               this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
               if (this.playerTitle === 'p1') {
@@ -112,9 +131,9 @@ export class GameRoomComponent implements OnInit {
         this.router.navigate(['/']);
       }
 
-      setInterval(() => {
-        // this.now = new Date();
-        this.now = moment.utc(moment(moment()).diff(this.dateStart)).format("HH:mm:ss");
+      this.timeElapsedInterval = setInterval(() => {
+        this.timeElapsed = moment.utc(moment(moment()).diff(this.dateStart)).format("HH:mm:ss");
+        // UPDATE DB WITH TIME
       }, 1000);
 
     });
@@ -127,6 +146,10 @@ export class GameRoomComponent implements OnInit {
         this.router.navigate(['/']);
       });
     });
+    this.socket.on("game won by opponent", () => {
+      console.log('game won by opponent');
+      this.showGameSummary();
+    })
     console.log('game room init');
     // this.startTimer();    
     // this.api.getLeetcodeOfficialSolution().subscribe(data => {
@@ -151,7 +174,7 @@ export class GameRoomComponent implements OnInit {
 
   exitGameRoom() {
     clearInterval(this.timeInterval);
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/']);
   }
 
   editorInit(editor: any) {
@@ -214,6 +237,11 @@ export class GameRoomComponent implements OnInit {
     }
   }
 
+  showLeetcodeResult(lastTestcase:any, totalCorrect:any, totalTestcases:any) {
+
+    
+  }
+
   getUserSocket() {
     const token = localStorage.getItem('accessToken');
     if (!token) {
@@ -236,10 +264,86 @@ export class GameRoomComponent implements OnInit {
     
   }
 
+  clearResult() {
+    this.result = '';
+    this.stdout = '';
+    this.stderr = '';
+  }
+
+
+  updateSubmissionDetails = (check_data: any) => {
+    this.submissionDetails.runtimeError = check_data.runtimeError;
+    this.submissionDetails.compileError = check_data.compileError;
+    this.submissionDetails.codeOutput = check_data.codeOutput;
+    this.submissionDetails.lastTestcase = check_data.lastTestcase// check_data.lastTestcase != "" ? JSON.parse(check_data.lastTestcase) : "";
+    this.submissionDetails.totalCorrect = check_data.totalCorrect;
+    this.submissionDetails.totalTestcases = check_data.totalTestcases;
+    this.submissionDetails.expectedOutput = check_data.expectedOutput // check_data.expectedOutput != "" ? JSON.parse(check_data.expectedOutput) : "";
+  }
+
+  showGameSummary = () => {
+    this.showGameSummaryValue = true;
+  }
+
+  gameOver = () => {
+    this.showGameSummary();
+  }
+
+  checkCorrectness = (totalCorrect: number, totalTestcases: number) => {
+    console.log(this.titleSlug)
+    if (totalCorrect === totalTestcases) {
+      console.log('Game Over');
+      // clearInterval(this.timeInterval);
+      clearInterval(this.timeElapsedInterval);
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        console.log('Please sign in');
+        this.router.navigate(['/']);
+        return;
+      }
+      this.api.roomGameOver(parseInt(this.currentRoom), token, this.playerTitle === 'p1' ? 'p1' : 'p2' ).subscribe((data) => {
+        console.log(data);
+        this.socket.emit('game over', {roomId: this.currentRoom, token: token});
+        this.showGameSummary();
+      });
+    }
+  }
+
   runCode(isGptResponse: boolean) {
-    console.log(this.problemSlug)
-    this.api.runCode(this.gameType, this.problemSlug, this.language, this.playerTitle === 'p1' ? this.player1Code : this.player2Code, '1').subscribe((data) => {
+    console.log(this.submissionData)
+    this.clearResult();
+    this.api.runCode(this.submissionData.gameType, this.submissionData.id, this.submissionData.titleSlug, this.submissionData.questionId, this.language, this.playerTitle === 'p1' ? this.player1Code : this.player2Code).subscribe((data) => {
       console.log(data);
+      if (this.submissionData.gameType === 'leetcode') {
+        var submission_status = 16;
+          const submitInterval = setInterval(() => {
+            this.api.checkSubmission(this.submissionData.gameType, this.submissionData.id, data.submission_id).subscribe((res) => {
+              const check_data = res.data.submissionDetails;
+              console.log("checking", check_data.statusCode, check_data)
+              if (check_data.totalTestcases) {
+                clearInterval(submitInterval);
+                submission_status = check_data.statusCode;
+                this.updateSubmissionDetails(check_data)
+                if ((this.submissionDetails.runtimeError && this.submissionDetails.runtimeError != "") || (this.submissionDetails.compileError  && this.submissionDetails.compileError != "")) {
+                  console.log(this.submissionDetails.runtimeError, this.submissionDetails.compileError, !this.submissionDetails.runtimeError, !this.submissionDetails.compileError);
+                  this.showError(this.submissionDetails.runtimeError ? this.submissionDetails.runtimeError : this.submissionDetails.compileError);
+                } else {  // codeOutput, stdOutput
+                  this.checkCorrectness(this.submissionDetails.totalCorrect, this.submissionDetails.totalTestcases);
+                  if (!this.submissionDetails.codeOutput) {
+                    this.showError('No output was printed');
+                  } else {
+                    this.showResult(this.submissionDetails.codeOutput, this.submissionDetails.expectedOutput, this.numAttempts);
+                    this.showLeetcodeResult(this.submissionDetails.lastTestcase, this.submissionDetails.totalCorrect, this.submissionDetails.totalTestcases);
+                  }
+                }
+
+                // this.showResult(stdOutput, JSON.stringify(lastTestcase), this.numAttempts);
+              }
+            })
+          }, 2000);
+      } else {
+        this.checkSubmission(data.token, isGptResponse, this.expectedOutput, 'aaabb');
+      }
     })
     if (this.isPve) {
       const expectedOutputs: any [] = [];
@@ -301,6 +405,35 @@ export class GameRoomComponent implements OnInit {
   }
   }
 
+  reduceHeartCount() {
+    if (this.playerTitle === 'p1') {
+      this.player1HeartCount[this.numAttempts] = 0;
+      this.player1HeartCount = [...this.player1HeartCount];
+      console.log(this.player1HeartCount);
+    } else {
+      this.player2HeartCount[this.numAttempts] = 0;
+      this.player2HeartCount = [...this.player2HeartCount];
+      console.log(this.player2HeartCount);
+    }
+    if (this.numAttempts < this.HEART_COUNT) {
+      this.numAttempts += 1;
+    } else {
+      console.log('Game Over');
+      clearInterval(this.timeInterval);
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        console.log('Please sign in');
+        this.router.navigate(['/']);
+        return;
+      }
+      this.api.roomGameOver(parseInt(this.currentRoom), token, this.playerTitle === 'p1' ? 'p1' : 'p2' ).subscribe((data) => {
+        console.log(data);
+        this.router.navigate(['/']);
+        this.socket.emit('game over', {roomId: this.currentRoom, token: token});
+      });
+    }
+  }
+
   checkSubmission(submissionToken: string, isGptResponse: boolean, expectedOutput: string, input: string) {
     
     this.api.getSubmission(submissionToken).subscribe((data) => {
@@ -326,32 +459,7 @@ export class GameRoomComponent implements OnInit {
           );
         }
         } else {
-          if (this.playerTitle === 'p1') {
-            this.player1HeartCount[this.numAttempts] = 0;
-            this.player1HeartCount = [...this.player1HeartCount];
-            console.log(this.player1HeartCount);
-          } else {
-            this.player2HeartCount[this.numAttempts] = 0;
-            this.player2HeartCount = [...this.player2HeartCount];
-            console.log(this.player2HeartCount);
-          }
-          if (this.numAttempts < 9) {
-            this.numAttempts += 1;
-          } else {
-            console.log('Game Over');
-            clearInterval(this.timeInterval);
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
-              console.log('Please sign in');
-              this.router.navigate(['/']);
-              return;
-            }
-            this.api.roomGameOver(parseInt(this.currentRoom), token, this.playerTitle === 'p1' ? 'p1' : 'p2' ).subscribe((data) => {
-              console.log(data);
-              this.router.navigate(['/']);
-              this.socket.emit('game over', {roomId: this.currentRoom, token: token});
-            });
-          }
+          this.reduceHeartCount();
           this.showResult(
             `Input: ${input}\n
             Output: ${output}`,
@@ -408,14 +516,16 @@ export class GameRoomComponent implements OnInit {
       });
     } else {
       this.api.getProblem(this.titleSlug).subscribe((response) => {
-        this.problemData = response.data;
-        console.log(this.problemData.question.title);
+        this.problemData = response.data.question;
+        console.log(this.problemData);
+        this.submissionData.questionId = response.data.question.questionId;
+        console.log(this.problemData.title);
         this.problemTitle = this.formatString(this.titleSlug);
         this.problemSlug = response.slug;
         console.log(this.problemSlug);
         console.log(JSON.stringify(response));
         this.problemText = response.data.question.content;
-        if (this.gameType === 'leetcode') {
+        if (this.submissionData.gameType === 'leetcode') {
           this.api.getProblemStartCode(this.titleSlug).subscribe((data) => {
             this.problemInitialCode = data;
             console.log(data);

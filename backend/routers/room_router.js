@@ -68,13 +68,20 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
         socketId1: user.socketId,
         socketId2: isPve ? "pveGame" : user2.socketId,
         playerTitle: "p1",
-        user1Status: room.user1Status,
-        user2Status: room.user2Status,
+        userId1: room.userId1,
+        userId2: room.userId2,
         questionTitleSlug: room.questionTitleSlug,
         gameType: room.gameType,
+        userImg1: user.picture,
+        userImg2: user2.picture,
+        user1Nickname: user.nickname,
+        user2Nickname: user2.nickname,
+        user1rank: user.rank,
+        user2rank: user2.rank,
         winner: room.winner,
-        user1Nickname: room.user1Nickname,
-        user2Nickname: room.user2Nickname
+        user1Status: room.user1Status,
+        user2Status: room.user2Status,
+        winner: room.winner,
       });
     }
     console.log("logging room", room);
@@ -94,9 +101,15 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
       user2Status: room.user2Status,
       questionTitleSlug: room.questionTitleSlug,
       gameType: room.gameType,
+      userImg1: user2.picture,
+      userImg2: user.picture,
+      username1: user2.nickname,
+      username2: user.nickname,
+      user1rank: user2.rank,
+      user2rank: user.rank,
       winner: room.winner,
-      user1Nickname: room.user1Nickname,
-      user2Nickname: room.user2Nickname
+      user1Nickname: user2.nickname,
+      user2Nickname: user.nickname,
     });
   } catch (error) {
     return res.status(400).json({ error: error.message });

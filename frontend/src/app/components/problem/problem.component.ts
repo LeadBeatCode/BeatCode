@@ -11,6 +11,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class ProblemComponent implements OnInit {
   @Input() stderr: string = '';
   @Input() stdout: string = '';
+  @Input() expected_output: string = '';
+  @Input() total_testcases: string = '';
+  @Input() correct_testcases: string = '';
+  @Input() last_testcase: string = '';
   @Input() result: string = '';
   @Input() problemTitle: string = '';
   @Input() problemText: string = '';
