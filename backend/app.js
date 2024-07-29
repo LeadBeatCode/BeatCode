@@ -320,7 +320,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: process.env.SECRET,
-  baseURL: "https://beat.codes:3000",
+  baseURL: "api.beat.codes",
   clientID: "Kmosk0ISBss1diEABRcTzKJwNceZpSqn",
   issuerBaseURL: "https://dev-jqe0hc4zidat2q1z.us.auth0.com",
 };
