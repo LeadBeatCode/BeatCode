@@ -47,8 +47,8 @@ export const apiService = (function () {
     }).then((res) => res.json());
   }
 
-  module.deleteQueue = function (socketId, token) {
-    return fetch(process.env.BASE_URL + `/api/queues/${socketId}` , {
+  module.deleteQueue = function (id, token) {
+    return fetch(process.env.BASE_URL + `/api/queues/${id}` , {
       method: "DELETE",
       headers: {
         authorization: `Bearer ${token}`,
@@ -56,8 +56,8 @@ export const apiService = (function () {
     }).then((res) => res.json());
   };
 
-  module.deleteLeetcodeQueue = function (socketId, token) {
-    return fetch(process.env.BASE_URL + `/api/leetcodeQueues/${socketId}`, {
+  module.deleteLeetcodeQueue = function (id, token) {
+    return fetch(process.env.BASE_URL + `/api/leetcodeQueues/${id}`, {
       method: "DELETE",
       headers: {
         authorization: `Bearer ${token}`,
