@@ -291,12 +291,12 @@ io.on("connection", (socket) => {
   // console.log("token at 231", token);
   socket.on("disconnect", () => {
     console.log("user disconnected");
-    apiService.deleteQueue(socket.id, token).then((res) => {
-      console.log("deleteQueue", res);
-    });
-    apiService.deleteLeetcodeQueue(socket.id, token).then((res) => {
-      console.log("deleteLeetcodeQueue", res);
-    });
+    // apiService.deleteQueue(socket.id, token).then((res) => {
+    //   console.log("deleteQueue", res);
+    // });
+    // apiService.deleteLeetcodeQueue(socket.id, token).then((res) => {
+    //   console.log("deleteLeetcodeQueue", res);
+    // });
     console.log("setUserSocket", socket.id);
     apiService.clearUserSocket(socket.id, token).then((res) => {
       apiService.getFriendsById(res.id).then((friends) => {
