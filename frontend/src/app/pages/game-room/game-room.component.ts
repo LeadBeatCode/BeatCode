@@ -66,6 +66,7 @@ export class GameRoomComponent implements OnInit {
   userId1: string = '';
   userId2: string = '';
   winner: string = '';
+  opponentNumAttempts: number = 0;
   runtimeerr_num: number = 0;
 
   rankImage: any = {
@@ -110,14 +111,15 @@ export class GameRoomComponent implements OnInit {
             this.submissionData.gameType = data.gameType;
             this.submissionData.titleSlug = data.questionTitleSlug;
             this.submissionData.id = data.playerTitle === 'p1' ? data.userId1 : data.userId2;
-            this.HEART_COUNT = data.playerTitle === 'p1' ? this.HEART_COUNT - data.user1Attempts : this.HEART_COUNT - data.user2Attempts;
-            if (data.playerTitle === 'p1') {
-              this.numAttempts = data.user1Attempts;
-            } else {
-              this.numAttempts = data.user2Attempts;
-            }
+            this.HEART_COUNT = data.playerTitle === 'p1' ? data.user1Attempts : data.user2Attempts;
+          
             this.player1HeartCount = Array(data.user1Attempts).fill(1);
-            this.player1HeartCount = Array(data.user2Attempts).fill(1);
+            this.player2HeartCount = Array(data.user2Attempts).fill(1);
+            if (this.title === 'p1') {
+              this.opponentNumAttempts = data.user2Attempts;
+            } else {
+              this.opponentNumAttempts = data.user1Attempts;
+            }
             this.isPve = data.isPve;
             this.titleSlug = data.questionTitleSlug;
             console.log(data)
@@ -221,6 +223,17 @@ export class GameRoomComponent implements OnInit {
     this.socket.on("game won by opponent", () => {
       console.log('game won by opponent');
       this.showGameSummary();
+    })
+
+    this.socket.on("reduce", (roomId: string) => {
+      console.log('reduce');
+      if (this.playerTitle === 'p1') {
+        this.player2HeartCount[this.opponentNumAttempts] = 0;
+        this.player2HeartCount = [...this.player2HeartCount];
+      } else {
+        this.player1HeartCount[this.opponentNumAttempts] = 0;
+        this.player1HeartCount = [...this.player1HeartCount];
+      }
     })
     console.log('game room init');
 
@@ -533,6 +546,7 @@ export class GameRoomComponent implements OnInit {
     console.log(this.numAttempts, this.HEART_COUNT)
     if (this.numAttempts < this.HEART_COUNT - 1) {
       this.numAttempts += 1;
+      this.socket.emit('reduce', {roomId: this.currentRoom, playerTo: this.opponentSocketId});
     } else {
       console.log('Game Over');
       clearInterval(this.timeInterval);
