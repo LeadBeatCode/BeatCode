@@ -33,7 +33,7 @@ try {
 }
 
 const corsOptions = {
-  origin: "https://beat.codes",
+  origin: ["https://beat.codes", "https://api.beat.codes", "http://localhost:4200"],
   credentials: true, //allows cookies and HTTP authentication information to be included in the requests sent to the server
 };
 app.use(cors(corsOptions));
@@ -54,7 +54,7 @@ const httpServer = http.createServer(app);
 export const io = new Server(httpServer, {
   cors: {
     methods: ["GET", "POST", "PUT", "DELETE"],
-    origin: ["https://beat.codes", "https://api.beat.codes"],
+    origin: ["https://beat.codes", "https://api.beat.codes", "http://localhost:4200"],
     credentials: true,
   },
 });
@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
   //    console.log('problem', res);
   //  });
   const token = socket.handshake.query.token;
-  console.log("token at 70", socket.handshake.query);
+  // console.log("token at 70", socket.handshake.query);
   socket.on("online", function (data) {
     const { userId, friendSocketId } = data;
     console.log("online", userId, friendSocketId);
@@ -288,7 +288,7 @@ io.on("connection", (socket) => {
   });
 
   // const userId = socket.handshake.headers.userId;
-  console.log("token at 231", token);
+  // console.log("token at 231", token);
   socket.on("disconnect", () => {
     console.log("user disconnected");
     apiService.deleteQueue(socket.id, token).then((res) => {
@@ -319,7 +319,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: process.env.SECRET,
-  baseURL: "https://beat.codes",
+  baseURL: process.env.BASE_URL_FRONTEND,
   clientID: "Kmosk0ISBss1diEABRcTzKJwNceZpSqn",
   issuerBaseURL: "https://dev-jqe0hc4zidat2q1z.us.auth0.com",
 };
