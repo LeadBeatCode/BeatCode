@@ -12,6 +12,7 @@ import { roomRouter } from "./routers/room_router.js";
 import { problemRouter } from "./routers/problem_router.js";
 import { leetcodeRouter } from "./routers/leetcode_router.js";
 import { leetcodeQueueRouter } from "./routers/leetcodeQueue_router.js";
+import { leaderboardRouter } from "./routers/leaderboard_router.js";
 import { friendRouter } from "./routers/friend_router.js";
 import { apiService } from "./api-service.js";
 import dotenv from "dotenv";
@@ -51,6 +52,7 @@ app.use("/api/leetcode", leetcodeRouter);
 app.use("/api/friends", friendRouter);
 app.use("/api/problems", problemRouter);
 app.use("/api/leetcodeQueues", leetcodeQueueRouter);
+app.use("/api/leaderboard", leaderboardRouter);
 const httpServer = http.createServer(app);
 export const io = new Server(httpServer, {
   cors: {
