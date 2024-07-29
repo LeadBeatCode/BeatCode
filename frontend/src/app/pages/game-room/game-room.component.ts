@@ -111,8 +111,13 @@ export class GameRoomComponent implements OnInit {
             this.submissionData.titleSlug = data.questionTitleSlug;
             this.submissionData.id = data.playerTitle === 'p1' ? data.userId1 : data.userId2;
             this.HEART_COUNT = data.playerTitle === 'p1' ? this.HEART_COUNT - data.user1Attempts : this.HEART_COUNT - data.user2Attempts;
-            console.log(this.HEART_COUNT);
-            this.numAttempts = this.HEART_COUNT;
+            if (data.playerTitle === 'p1') {
+              this.numAttempts = data.user1Attempts;
+            } else {
+              this.numAttempts = data.user2Attempts;
+            }
+            this.player1HeartCount = Array(data.user1Attempts).fill(1);
+            this.player1HeartCount = Array(data.user2Attempts).fill(1);
             this.isPve = data.isPve;
             this.titleSlug = data.questionTitleSlug;
             console.log(data)
