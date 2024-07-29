@@ -71,33 +71,30 @@ export const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
-  // console.log("socket.handshake.headers", socket.handshake.headers);
-
+  apiService.createProblem('Longest Substring Without Repeating Characters', 'longest-substring-without-repeating-characters', { 'subInput1':'abcabcbb'  }, {  "subOutput1": 3 }, { 'subInput1':'bbbbb'  }, {  "subOutput1": 1 }, { 'subInput1':'pwwkew'  }, {  "subOutput1": 3 }).then((res) => {
+    console.log('problem', res);
+  });
+  apiService.createProblem('Reverse Integer', 'Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range return 0', { 'subInput1':123  }, {  "subOutput1": 321 }, { 'subInput1':-123  }, {  "subOutput1": -321 }, { 'subInput1': 120  }, {  "subOutput1": 21 }).then((res) => {
+   console.log('problem', res);
+ });
+ apiService.createProblem('Palindrome Number', 'Given an integer x, return true if x is a palindrome, and false otherwise.', { 'subInput1':121  }, {  "subOutput1": true }, { 'subInput1':-121  }, {  "subOutput1": false }, { 'subInput1': 10  }, {  "subOutput1": false }).then((res) => {
+   console.log('problem', res);
+ });
+ apiService.createProblem('Length Of Last Word', 'Given a string s consisting of words and spaces, return the length of the last word in the string. A word is a maximal substring consisting of non-space characters only.', { 'subInput1': "Hello World", }, {  "subOutput1": 5 }, { 'subInput1': "   fly me   to   the moon  "  }, {  "subOutput1": 4 }, { 'subInput1': "luffy is still joyboy"  }, {  "subOutput1": 6 }).then((res) => {
+   console.log('problem', res);
+ });
+ apiService.createProblem('Roman To Int', 'Roman numerals are usually written largest to smallest from left to right. However, the numeral for four is not IIII. Instead, the number four is written as IV. Because the one is before the five we subtract it making four. The same principle applies to the number nine, which is written as IX. Given a roman numeral, convert it to an integer.', { 'subInput1': "III", }, {  "subOutput1": 3 }, { 'subInput1': "LVIII"  }, {  "subOutput1": 58 }, { 'subInput1': "MCMXCIV"  }, {  "subOutput1": 1994 }).then((res) => {
+   console.log('problem', res);
+ });
   socket.on("reconnected", function (userId, accessToken) {
-    // console.log(nickname, accessToken);
-    // apiService.getUserSocketId(nickname).then((res) => {
-    //   apiService.setUserSocket(socket.id, nickname, userId, accessToken).then((res) => {
-    //     console.log('setUserSocket', res);
-    //   });
-    // });
-    console.log("sdfsdf", userId);
     socket.emit("reconnected", userId, socket.id);
   });
-  // socket.on("roomSocket", (roomId) => {
-  //   socket.emit("roomSocket", sockets)
-  // })
 
   socket.on(
     "opponent_reconnected",
     (roomId, title, socketId, toSocketId, token) => {
       console.log("opponent_reconnected", roomId, title);
       io.to(toSocketId).emit("opponent_reconnected", title, socketId, roomId);
-      // apiService.getRoom(roomId, token).then((res) => {
-      //   if (title === 'p1')
-      //     socket.emit("opponent_recconected", title, res.socketId1, roomId);
-      //   else
-      //     socket.emit("opponent_recconected", title, res.socketId2, roomId);
-      // });
     },
   );
 
