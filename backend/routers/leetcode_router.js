@@ -9,6 +9,10 @@ leetcodeRouter.get("/problems/:title", async (req, res) => {
     const query = `query questionContent($titleSlug: String!) {
                     question(titleSlug: $titleSlug) {
                     content
+                    title
+                    isPaidOnly
+                    difficulty
+                    questionId
                     topicTags {
                       name
                       id
@@ -306,40 +310,180 @@ leetcodeRouter.get("/problems", async (req, res) => {
   }
 });
 
-// leetcodeRouter.post("/problems/submit/:titleSlug", async (req, res) => {
-// });
+leetcodeRouter.post("/submission/check", async (req, res) => {
+  const submissionId = req.body.submissionId
+    const user = await User.findByPk(req.body.id, { raw: true })
+      if (!user) return res.status(404).json({ error: "User not found" });
+      const cookie = user.leetcodeCookie;
+      const csrftoken = cookie.split("csrftoken=")[1].split(";")[0];
+      const data = {};
+      const LEETCODE_SESSION = user.leetcodeCookie.split("LEETCODE_SESSION=")[1].split(";")[0]
+      console.log(LEETCODE_SESSION)
+            const query = `
+    query submissionDetails($submissionId: Int!) {
+        submissionDetails(submissionId: $submissionId) {
+            runtime
+            runtimeDisplay
+            runtimePercentile
+            runtimeDistribution
+            memory
+            memoryDisplay
+            memoryPercentile
+            memoryDistribution
+            code
+            timestamp
+            statusCode
+            user {
+                username
+                profile {
+                    realName
+                    userAvatar
+                }
+            }
+            lang {
+                name
+                verboseName
+            }
+            question {
+                questionId
+                titleSlug
+                hasFrontendPreview
+            }
+            notes
+            flagType
+            topicTags {
+                tagId
+                slug
+                name
+            }
+            runtimeError
+            compileError
+            lastTestcase
+            codeOutput
+            expectedOutput
+            totalCorrect
+            totalTestcases
+            fullCodeOutput
+            testDescriptions
+            testBodies
+            testInfo
+            stdOutput
+        }
+    }
+`;
 
-leetcodeRouter.post("/problems/:titleSlug/submit/:userId", async (req, res) => {
-  const titleSlug = req.params.titleSlug;
-  const userId = req.params.userId;
+const variables = {
+    submissionId: submissionId
+};
+
+axios.post('https://leetcode.com/graphql/', {
+    query: `
+            query submissionDetails($submissionId: Int!) {
+                submissionDetails(submissionId: $submissionId) {
+                    runtime
+                    runtimeDisplay
+                    runtimePercentile
+                    runtimeDistribution
+                    memory
+                    memoryDisplay
+                    memoryPercentile
+                    memoryDistribution
+                    code
+                    timestamp
+                    statusCode
+                    user {
+                        username
+                        profile {
+                            realName
+                            userAvatar
+                        }
+                    }
+                    lang {
+                        name
+                        verboseName
+                    }
+                    question {
+                        questionId
+                        titleSlug
+                        hasFrontendPreview
+                    }
+                    notes
+                    flagType
+                    topicTags {
+                        tagId
+                        slug
+                        name
+                    }
+                    runtimeError
+                    compileError
+                    lastTestcase
+                    codeOutput
+                    expectedOutput
+                    totalCorrect
+                    totalTestcases
+                    fullCodeOutput
+                    testDescriptions
+                    testBodies
+                    testInfo
+                    stdOutput
+                }
+            }
+        `,
+            variables: {
+            submissionId: submissionId
+        },
+    operationName: "submissionDetails"
+},  {
+          headers: {
+              "x-csrftoken": csrftoken,
+              "cookie": cookie, //`csrftoken=${csrftoken}; LEETCODE_SESSION=${LEETCODE_SESSION}`,
+              // "Referer": `https://leetcode.com/problems/${titleSlug}/`,
+          }
+      }).then(function (response) {
+        return res.json(response.data);
+      })
+      .catch(function (error) {
+      return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
+      });
   
-  body = "{\"lang\":\"python\",\"question_id\":\"12\",\"typed_code\":\"class Solution(object):\\n    def intToRoman(self, num):\\n        \\\"\\\"\\\"\\n        :type num: int\\n        :rtype: str\\n        \\\"\\\"\\\"\\n        \"}"
+});
+
+leetcodeRouter.post("/problems/submit", async (req, res) => {
+  const titleSlug = req.body.titleSlug;
+  const questionId = req.body.questionId;
+  
   
   try {
-    const user = await User.findByPk(userId);
-    if (!user) return res.status(404).json({ error: "User not found" });
-    const csrftoken = req.body.cookie.split("csrftoken=")[1].split(";")[0];
-    const data = JSON.stringify({body});
+    console.log(req.body)
+    const user = await User.findByPk(req.body.id, { raw: true })
+      if (!user) return res.status(404).json({ error: "User not found" });
+      const cookie = user.leetcodeCookie;
+      const csrftoken = cookie.split("csrftoken=")[1].split(";")[0];
+      const data = {};
+      const LEETCODE_SESSION = user.leetcodeCookie.split("LEETCODE_SESSION=")[1].split(";")[0]
+      console.log(LEETCODE_SESSION)
 
-    const config = {
-      method: 'post',
-      url: `https://leetcode.com/problems/${titleSlug}/submit/`,
-      headers: {
-        'x-csrftoken': csrftoken,
-        'cookie': cookie,
-        'Referer': 'https://leetcode.com/problems/string-to-integer-atoi/description/',
-        'Content-Type': 'application/json'
-      },
-      data: data
-    };
-    axios(config)
-    .then(function (response) {
-      return res.json(response.data);
-    })
-    .catch(function (error) {
-    return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
-    });
-  }catch (error) {
+    
+
+    await axios.post(`https://leetcode.com/problems/${titleSlug}/submit/`, {
+          "lang": "python3",
+          "question_id": questionId,
+          "typed_code": req.body.code
+      }, {
+          headers: {
+              "x-csrftoken": csrftoken,
+              "cookie": cookie, //`csrftoken=${csrftoken}; LEETCODE_SESSION=${LEETCODE_SESSION}`,
+              "Referer": `https://leetcode.com/problems/${titleSlug}/`,
+          }
+      })
+      .then(function (response) {
+        
+        return res.json(response.data);
+      })
+      .catch(function (error) {
+      return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
+      });
+  } catch (error) {
     return res.status(400).json({ error: "Leetcode cookie is not valid: " + error.message });
   }
 });

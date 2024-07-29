@@ -51,7 +51,7 @@
 }
 
 .friend-image-container .friend-image {
-  background-image: url("https://www.w3schools.com/howto/img_avatar.png");
+  background-image: "";
   width: 24px;
   height: 24px;
   background-size: cover;

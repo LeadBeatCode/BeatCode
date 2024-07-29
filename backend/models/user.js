@@ -18,7 +18,12 @@ export const User = sequelize.define("User", {
   rank: {
     type: DataTypes.STRING,
     allowNull: true,
-    defaultValue: "Silver I",
+    defaultValue: "Silver",
+  },
+  subrank: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    defaultValue: 1,
   },
   BP: {
     type: DataTypes.INTEGER,

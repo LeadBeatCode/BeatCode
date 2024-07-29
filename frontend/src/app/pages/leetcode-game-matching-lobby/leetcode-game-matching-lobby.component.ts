@@ -51,7 +51,7 @@ export class LeetcodeGameMatchingLobbyComponent {
       'matching',
       this.userId,
       localStorage.getItem('accessToken'),
-      'leetcode',
+      'normal',
     );
     this.socket.on('matched', (matchedPair: any, accessToken: any) => {
       this.foundMatch();
@@ -96,7 +96,7 @@ export class LeetcodeGameMatchingLobbyComponent {
             if (t <= 0) {
               this.error = '';
               if (!this.game.status) {
-                // this.router.navigate(['/']);
+                this.router.navigate(['/']);
               }
               clearInterval(lobbyInterval);
             } else {
@@ -129,12 +129,17 @@ export class LeetcodeGameMatchingLobbyComponent {
       localStorage.getItem('accessToken'),
     );
 
-    this.socket.on('start', (roomId: number, accessToken: string, playerTitle: string) => {
-      this.game.updateStatus(true);
-      clearInterval(this.timerInterval);
-      console.log('start game', playerTitle);
-      this.api.getRandomProblem()
-      this.router.navigate(['/game-room'], { queryParams: { roomId: roomId, gameType: 'leetcode' } , state: {playerTitle: playerTitle}} );
-    });
+    this.socket.on(
+      'start',
+      (roomId: number, accessToken: string, playerTitle: string) => {
+        this.game.updateStatus(true);
+        clearInterval(this.timerInterval);
+        console.log('start game', playerTitle);
+        this.router.navigate(['/game-room'], {
+          queryParams: { roomId: roomId, gameType: 'leetcode' },
+          state: { playerTitle: playerTitle },
+        });
+      },
+    );
   }
 }

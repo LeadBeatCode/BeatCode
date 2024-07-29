@@ -11,6 +11,153 @@
   margin-right: 10px;
 } */
 
+.dark {
+  background-color: rgba(0,0,0,0.99);
+  width: 100%;
+  z-index: 1000;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+}
+
+.dark::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.dark {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.game-summary-container {
+  display: flex;
+  letter-spacing: 1px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 16px 20px;
+  font-family: "Saira";
+  padding: 80px;
+  position: absolute;
+  background-color: rgb(17, 16, 16);
+  border-radius: 10px;
+  inset: 0;
+  margin: auto;
+  width: 58%;
+  height: 58%;
+  z-index: 100;
+}
+.game-summary-container .game-summary-header {
+  font-size: 40px;
+}
+.game-summary-container .vs {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.game-summary-container .game-detail-container {
+  color: rgb(196, 196, 196);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  border-top: 1px solid rgb(33, 33, 33);
+  border-bottom: 1px solid rgb(33, 33, 33);
+  padding: 10px;
+}
+
+.game-summary-container .exit-btn {
+  margin: 20px 0 -20px;
+  color:rgb(7, 195, 72);
+  font-size: 30px;
+  font-weight: 600;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.game-summary-container .exit-btn:hover {
+  color:rgb(6, 255, 6);
+}
+
+.game-detail-container > * {
+  margin: 0 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.game-detail-container .time-elapsed {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.player .image {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  background-color:rgb(31, 31, 31);
+}
+
+.game-summary-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 380px;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-summary-header {
+  font-size: 40px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: -20px;
+  margin-bottom: 30px;
+}
+
+.game-title {
+  text-align: center;
+}
+
+.player .title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.player .rank {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(../../../assets/rank1.png);
+}
+
+
+.game-detail-container .title {
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
 .editor-contaier-left {
   margin-right: 10px;
 }
@@ -61,14 +208,12 @@
   align-items: center;
   justify-content: center;
   display: flex;
-  align-items: center;
-  justify-content: center;
   position: absolute;
   left: 50%;
   margin-left: -85px;
 }
 
-.time-elapsed {
+.game-room-header-container .time-elapsed {
   color: rgb(192, 192, 192);
   letter-spacing: 1px;
   margin-left: 25px;

@@ -21,7 +21,13 @@
   </div>
   <div class="test-result content" *ngIf="testResult">
     <div class="result-container">
+      <div class="testcases">
+        <span class="correct" [innerHTML]="correct_testcases">2</span> / 
+        <span class="total" [innerHTML]="total_testcases">2</span>
+      </div>
       <div class="stdout" [innerHTML]="stdout"></div>
+      <div class="last_testcase" [innerHTML]="last_testcase"></div>
+      <div class="expected_output" [innerHTML]="expected_output"></div>
       <div [ngClass]="[resultStyle]" [innerHTML]="result"></div>
       <div class="numAttemptsText" [innerHTML]="numAttemptsText"></div>
       <div class="stderr" [innerHTML]="stderr"></div>
