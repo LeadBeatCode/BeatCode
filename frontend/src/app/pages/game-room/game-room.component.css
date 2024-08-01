@@ -7,10 +7,6 @@
   flex-direction: row-reverse;
 }
 
-/* .editor-left {
-  margin-right: 10px;
-} */
-
 .dark {
   background-color: rgba(0, 0, 0, 0.99);
   width: 100%;
@@ -24,10 +20,9 @@
   display: none;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
 .dark {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .game-summary-container {
@@ -48,9 +43,11 @@
   height: 58%;
   z-index: 100;
 }
+
 .game-summary-container .game-summary-header {
   font-size: 40px;
 }
+
 .game-summary-container .vs {
   font-size: 28px;
   font-weight: 600;
@@ -161,11 +158,6 @@
   margin-right: 10px;
 }
 
-/* .editor-left,
-.editor-right {
-  flex: 1;
-} */
-
 .editor-contaier-left,
 .editor-contaier-right {
   flex: 1;
@@ -233,18 +225,6 @@
   color: rgb(6, 255, 6);
 }
 
-@media (max-width: 576px) {
-  .editor-left,
-  .editor-right {
-    width: 240px;
-    height: 900px;
-  }
-  .editor-contaier-left,
-  .editor-contaier-right {
-    width: 240px;
-  }
-}
-
 .editor-header-container {
   display: flex;
   align-items: center;
@@ -260,15 +240,14 @@
   font-family: "Roboto", sans-serif;
   letter-spacing: 1px;
   background-color: rgb(31, 31, 31);
-  /* margin-right: 10px; */
 }
 
 .lang-list {
   display: flex;
   flex-direction: row;
   gap: 10px;
-  margin-left: 10px; /* Ensure no margin */
-  padding: 0; /* Ensure no padding */
+  margin-left: 10px;
+  padding: 0;
   float: left;
 }
 
@@ -287,14 +266,6 @@
 .lang-choice.on {
   cursor: pointer;
 }
-
-/* .editor-contaier-left .lang {
-  background-color: rgb(44, 44, 44);
-}
-
-.editor-contaier-right .lang {
-  background-color: rgb(36, 87, 0);
-} */
 
 .lang.on {
   background-color: rgb(31, 31, 31);
@@ -353,4 +324,41 @@
 
 .lang.active .dropdown-menu {
   display: block;
+}
+
+.mobile {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(0, 0, 0);
+  position: absolute;
+  z-index: 1000;
+  visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .editor-left,
+  .editor-right {
+    width: 240px;
+    height: 900px;
+  }
+  .editor-contaier-left,
+  .editor-contaier-right {
+    width: 240px;
+  }
+
+  .mobile {
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 620px) {
+  .mobile {
+    visibility: visible;
+  }
 }

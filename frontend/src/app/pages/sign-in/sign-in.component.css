@@ -61,3 +61,24 @@
 .sign-in-container .btn:hover {
   color: rgb(6, 255, 6);
 }
+
+.mobile {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(0, 0, 0);
+  position: absolute;
+  z-index: 10000;
+  visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  text-align: center;
+}
+
+@media (max-width: 620px) {
+  .mobile {
+    visibility: visible;
+  }
+}

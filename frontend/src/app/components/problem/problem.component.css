@@ -150,7 +150,7 @@ pre {
   color: rgb(6, 255, 6);
 }
 
-@media (max-width: 576px) {
+@media (max-width: 620px) {
   .contents-container {
     height: 250px;
   }
