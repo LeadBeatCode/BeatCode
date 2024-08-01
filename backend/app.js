@@ -84,6 +84,11 @@ io.on("connection", (socket) => {
     socket.emit("reconnected", userId, socket.id);
   });
 
+  socket.on("reduce", function (data) {
+    const { roomId, playerTo } = data;
+    io.to(playerTo).emit("reduce", roomId);
+  });
+
   socket.on(
     "opponent_reconnected",
     (roomId, title, socketId, toSocketId, token) => {
@@ -250,13 +255,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("game over", async function (data) {
-    const { roomId, token } = data;
+    const { roomId, token, playerTitle } = data;
     const room = await apiService.getRoom(roomId, token);
     if (room) {
-      if (room.winner === "p1") {
-        io.to(room.socketId2).emit("game won by opponent", "p1won");
+      if (playerTitle === "p1") {
+        io.to(room.socketId2).emit("game terminated by opponent");
       } else {
-        io.to(room.socketId1).emit("game won by opponent", "p2won");
+        io.to(room.socketId1).emit("game terminated by opponent");
       }
     }
   });

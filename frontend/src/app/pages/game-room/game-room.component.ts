@@ -27,6 +27,7 @@ export class GameRoomComponent implements OnInit {
   language: string = 'Python3';
   import: string = 'from typing import List\n';
   numAttempts: number = 0;
+  opponentNumAttempts: number = 0;
   time: number = 0;
   displayTime: string = '';
   timeInterval: any;
@@ -258,6 +259,18 @@ export class GameRoomComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.socket.on("reduce", (roomId: string) => {
+      if (this.playerTitle === 'p1') {
+        this.player2HeartCount[this.opponentNumAttempts] = 0;
+        this.player2HeartCount = [...this.player2HeartCount];
+      } else {
+        this.player1HeartCount[this.opponentNumAttempts] = 0;
+        this.player1HeartCount = [...this.player1HeartCount];
+      }
+      this.opponentNumAttempts += 1;
+    });
+
     this.socket.on('game terminated by opponent', () => {
       
       this.showGameSummary();
@@ -607,6 +620,7 @@ export class GameRoomComponent implements OnInit {
     }
     if (this.numAttempts < this.HEART_COUNT - 1) {
       this.numAttempts += 1;
+      this.socket.emit('reduce', {roomId: this.currentRoom, playerTo: this.opponentSocketId});
     } else {
       clearInterval(this.timeInterval);
       clearInterval(this.timeElapsedInterval);
