@@ -15,9 +15,7 @@ export class QuickMatchHistoryElementComponent implements OnInit {
   @Input() opponentImage: string = '';
   @Input() user1bp: number = 0;
   @Input() user2bp: number = 0;
-  constructor(private api:ApiService) {
-
-  }
+  constructor(private api: ApiService) {}
   ngOnInit(): void {
     console.log('image', this.image);
   }

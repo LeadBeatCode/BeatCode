@@ -107,13 +107,11 @@ export class DashboardComponent implements OnInit {
                 const friendSocketId = data.socketId;
                 if (friendSocketId) {
                   // Send online notification to friend
-                  console.log('emit online', this.userData.sub, friendSocketId);
                   this.socket.emit('online', {
                     userId: this.userData.sub,
                     friendSocketId: friendSocketId,
                   });
                   this.onlineFriends.push(friend.id);
-                  console.log('onlineFriends', this.onlineFriends);
                 }
               },
             });
@@ -139,15 +137,12 @@ export class DashboardComponent implements OnInit {
   }
 
   enterLobby() {
-    console.log('enterLobby');
-    console.log('userData', this.userData);
     this.router.navigate(['/matching-lobby'], {
       state: { userId: this.userData.sub },
     });
   }
 
   enterLeetcodeLobby() {
-    console.log('enterLobby');
     this.router.navigate(['/leetcode-matching-lobby'], {
       state: { userId: this.userData.sub },
     });
@@ -236,12 +231,10 @@ export class DashboardComponent implements OnInit {
     }
     this.api.getUserById(this.userData.sub).subscribe({
       next: (data) => {
-        console.log('user data', data);
         this.api
           .createRoom('live', this.userData.sub, 'Gpt', token, true, 'pve')
           .subscribe({
             next: (data) => {
-              console.log('room created', data);
               this.router.navigate(['/game-room'], {
                 queryParams: { roomId: data.id },
               });

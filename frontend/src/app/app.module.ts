@@ -19,6 +19,7 @@ import { GameRoomComponent } from './pages/game-room/game-room.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { CreditsComponent } from './pages/credits/credits.component';
 import { FriendListComponent } from './components/friend-list/friend-list.component';
 import { FriendActionComponent } from './components/friend-action/friend-action.component';
 import { UserPerformanceComponent } from './components/user-performance/user-performance.component';
@@ -52,6 +53,7 @@ const socketIoConfig: SocketIoConfig = {
     UserPerformanceComponent,
     MatchHistoryComponent,
     FriendComponent,
+    CreditsComponent,
     FriendRequestComponent,
     RankerElementComponent,
     QuickMatchHistoryElementComponent,

@@ -7,6 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
   constructor() {}
+  showCredits: boolean = false;
+
+  toggleCredits() {
+    this.showCredits = !this.showCredits;
+  }
 
   ngOnInit(): void {}
 }

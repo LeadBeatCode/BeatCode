@@ -69,14 +69,11 @@ export const io = new Server(httpServer, {
   },
 });
 
-
-
 io.on("connection", (socket) => {
   console.log("a user connected");
 
   const createRandomProblem = async () => {
     const problem = await apiService.getRandomProblem();
-    console.log("hohoho", problem.question.isPaidOnly, problem.question.titleSlug);
     if (problem.question.isPaidOnly) {
       return createRandomProblem();
     }
@@ -161,7 +158,6 @@ io.on("connection", (socket) => {
               accessToken,
             );
             await apiService.deleteQueue(queueRes.queue[i].socketId);
-            console.log("delete", "success");
           }
         }
       }
@@ -187,29 +183,29 @@ io.on("connection", (socket) => {
             );
 
             createRandomProblem().then((problem) => {
-              console.log("ohohoh", problem)
-              apiService.createRoom(
-                "created",
-                player1.userId,
-                player2.userId,
-                accessToken,
-                false,
-                problem.question.titleSlug,
-                "leetcode",
-              ).then((pair) => {
-                io.to(player1.socketId).emit("matched", pair, player1);
-                io.to(player2.socketId).emit("matched", pair, player2);
+              apiService
+                .createRoom(
+                  "created",
+                  player1.userId,
+                  player2.userId,
+                  accessToken,
+                  false,
+                  problem.question.titleSlug,
+                  "leetcode",
+                )
+                .then((pair) => {
+                  io.to(player1.socketId).emit("matched", pair, player1);
+                  io.to(player2.socketId).emit("matched", pair, player2);
 
-                apiService.deleteLeetcodeQueue(
-                  leetcodeQueueRes.queue[i].socketId,
-                  token,
-                );
-                apiService.deleteLeetcodeQueue(
-                  leetcodeQueueRes.queue[i + 1].socketId,
-                  token,
-                );
-                console.log("delete", "success"); // Assuming deleteQueue works as expected
-              });
+                  apiService.deleteLeetcodeQueue(
+                    leetcodeQueueRes.queue[i].socketId,
+                    token,
+                  );
+                  apiService.deleteLeetcodeQueue(
+                    leetcodeQueueRes.queue[i + 1].socketId,
+                    token,
+                  );
+                });
             });
           } else {
             const player1 = await apiService.leetcodeDequeue(
@@ -242,8 +238,6 @@ io.on("connection", (socket) => {
               io.to(pair.socketId2).emit("start", pair.id, pair.userId2, "p2");
             }
           } else {
-            const tempSocketIds = pair.socketId1;
-            console.log("tempSocketIds", tempSocketIds);
             if (pair.socketId1 in socketIds) {
               apiService.enqueue(pair.userId1, token, pair.socketId1);
             } else {
@@ -277,10 +271,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    apiService.deleteQueue(socket.id, token).then((res) => {
-    });
-    apiService.deleteLeetcodeQueue(socket.id, token).then((res) => {
-    });
+    apiService.deleteQueue(socket.id, token).then((res) => {});
+    apiService.deleteLeetcodeQueue(socket.id, token).then((res) => {});
     apiService.clearUserSocket(socket.id, token).then((res) => {
       apiService.getFriendsById(res.id).then((friends) => {
         friends.forEach((friend) => {

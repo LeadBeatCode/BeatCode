@@ -61,3 +61,8 @@
 .sign-in-container .btn:hover {
   color: rgb(6, 255, 6);
 }
+
+.credits-container {
+  padding: 20px;
+  cursor: pointer;
+}

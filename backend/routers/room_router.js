@@ -24,10 +24,6 @@ roomRouter.post("/", isAuthenticated, async (req, res) => {
     const isPve = req.body.isPve;
     if (!user2 && !isPve)
       return res.status(404).json({ error: "User not found" });
-    console.log("logging isPve", isPve);
-    console.log("logging user1", req.body.userId1);
-    console.log("logging user2", req.body.userId2);
-    console.log("logging status", req.body.status);
     const room = await Room.create({
       gameType: req.body.gameType,
       status: req.body.status,
@@ -40,7 +36,6 @@ roomRouter.post("/", isAuthenticated, async (req, res) => {
       user1Nickname: user.nickname,
       user2Nickname: isPve ? "pveGame" : user2.nickname,
     });
-    console.log("logging room", room);
     return res.json(room);
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -59,7 +54,6 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
     });
     const isPve = room.isPve;
     if (user.id === room.userId1) {
-      console.log("logging room", room);
       const user2 = await User.findOne({
         where: {
           id: room.userId2,
@@ -95,7 +89,6 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
         winner: room.winner,
       });
     }
-    console.log("logging room", room);
     const user2 = await User.findOne({
       where: {
         id: room.userId1,
