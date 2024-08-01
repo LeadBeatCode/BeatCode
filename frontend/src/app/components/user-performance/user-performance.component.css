@@ -259,3 +259,31 @@
   );
   margin-right: 15px;
 }
+
+.ranking-image {
+  width: 150px;
+  height: 150px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.rank1 {
+  background-image: url(../../../assets/rank1.png);
+}
+
+.rank2 {
+  background-image: url(../../../assets/rank2.png);
+}
+
+.rank3 {
+  background-image: url(../../../assets/rank3.png);
+}
+
+.rank4 {
+  background-image: url(../../../assets/rank4.png);
+}
+
+.rank5 {
+  background-image: url(../../../assets/rank5.png);
+}

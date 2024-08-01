@@ -18,13 +18,6 @@ export class UserPerformanceComponent implements OnInit {
   quickHistoryGames: any[] = [];
   quickHistoryDates: any[] = [];
   nickname: string = '';
-  rankImage: any = {
-    Silver: '../../../assets/rank1.png',
-    Emerald: '../../../assets/rank2.png',
-    Diamond: '../../../assets/rank3.png',
-    Ruby: '../../../assets/rank4.png',
-    Master: '../../../assets/rank5.png',
-  };
 
   constructor(private api: ApiService) {}
 
@@ -78,6 +71,19 @@ export class UserPerformanceComponent implements OnInit {
         console.log(err);
       },
     });
+  }
+
+  getRank(rank: number): string {
+    if (rank < 200) {
+      return 'rank1';
+    } else if (rank < 400) {
+      return 'rank2';
+    } else if (rank < 600) {
+      return 'rank3';
+    } else if (rank < 800) {
+      return 'rank4';
+    }
+    return 'rank5';
   }
 
   showResults(game: any) {
