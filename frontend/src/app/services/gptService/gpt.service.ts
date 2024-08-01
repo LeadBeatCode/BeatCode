@@ -43,8 +43,6 @@ export class GptService {
         model: 'gpt-3.5-turbo',
       })
       .then((response) => {
-        console.log(response);
-        console.log(response.choices[0].message.content);
         return response.choices[0].message.content;
       });
   }

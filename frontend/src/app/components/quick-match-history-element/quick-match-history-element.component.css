@@ -82,9 +82,11 @@
 
 .user-info .rank-image {
   margin-right: 4px;
-  height: 10px;
-  width: 10px;
-  background-image: url("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+  height: 20px;
+  width: 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .match-result-container {
@@ -114,4 +116,24 @@
 
 .duration .time {
   margin-left: 3px;
+}
+
+.rank1 {
+  background-image: url(../../../assets/rank1.png);
+}
+
+.rank2 {
+  background-image: url(../../../assets/rank2.png);
+}
+
+.rank3 {
+  background-image: url(../../../assets/rank3.png);
+}
+
+.rank4 {
+  background-image: url(../../../assets/rank4.png);
+}
+
+.rank5 {
+  background-image: url(../../../assets/rank5.png);
 }

@@ -14,6 +14,8 @@ export class SignInComponent implements OnInit {
   isAuthenticated = false;
   userData: any;
   socketId: string = '';
+  showCredits: boolean = false;
+
   constructor(
     private api: ApiService,
     private router: Router,
@@ -30,8 +32,6 @@ export class SignInComponent implements OnInit {
     this.oidcSecurityService
       .checkAuth()
       .subscribe(({ isAuthenticated, userData, accessToken }) => {
-        //console.log('app authenticated', isAuthenticated);
-        //console.log(userData.access_token);
         this.isAuthenticated = isAuthenticated;
         this.userData = userData;
         if (isAuthenticated) {
@@ -44,12 +44,10 @@ export class SignInComponent implements OnInit {
             },
             error: (err) => {
               if (err.status === 404) {
-                console.log('User not found, creating user');
                 this.api
                   .signUp(userData, this.socketId, accessToken)
                   .subscribe({
                     next: (data) => {
-                      console.log(data);
                       localStorage.setItem('accessToken', accessToken);
                       this.router.navigate(['/dashboard'], {
                         state: { userData: userData, socketId: this.socketId },
@@ -68,7 +66,6 @@ export class SignInComponent implements OnInit {
 
   loginUser() {
     this.oidcSecurityService.checkAuth().subscribe((auth) => {
-      console.log('is authenticated', auth);
     });
 
     this.oidcSecurityService.authorize();
@@ -78,5 +75,9 @@ export class SignInComponent implements OnInit {
     this.oidcSecurityService
       .logoff()
       .subscribe((result) => console.log(result));
+  }
+
+  toggleCredits() {
+    this.showCredits = !this.showCredits;
   }
 }

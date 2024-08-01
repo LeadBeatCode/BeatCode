@@ -2,13 +2,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Full viewport height */
-  width: 100vw; /* Full viewport width */
-  position: fixed; /* Fixed position to overlay on the screen */
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  z-index: 1000; /* Ensure it is on top of other content */
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .credits-content {
@@ -30,6 +30,6 @@
 }
 
 .credits-content a {
-  color: #6c6c6c; /* Change link color */
-  text-decoration: underline; /* Underline links */
+  color: #6c6c6c;
+  text-decoration: underline;
 }

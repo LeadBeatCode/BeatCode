@@ -24,10 +24,6 @@ roomRouter.post("/", isAuthenticated, async (req, res) => {
     const isPve = req.body.isPve;
     if (!user2 && !isPve)
       return res.status(404).json({ error: "User not found" });
-    console.log("logging isPve", isPve);
-    console.log("logging user1", req.body.userId1);
-    console.log("logging user2", req.body.userId2);
-    console.log("logging status", req.body.status);
     const room = await Room.create({
       gameType: req.body.gameType,
       status: req.body.status,
@@ -40,7 +36,6 @@ roomRouter.post("/", isAuthenticated, async (req, res) => {
       user1Nickname: user.nickname,
       user2Nickname: isPve ? "pveGame" : user2.nickname,
     });
-    console.log("logging room", room);
     return res.json(room);
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -59,7 +54,6 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
     });
     const isPve = room.isPve;
     if (user.id === room.userId1) {
-      console.log("logging room", room);
       const user2 = await User.findOne({
         where: {
           id: room.userId2,
@@ -90,10 +84,11 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
         winner: room.winner,
         user1Status: room.user1Status,
         user2Status: room.user2Status,
+        user1bp: user.BP,
+        user2bp: isPve ? 1000 : user2.BP,
         winner: room.winner,
       });
     }
-    console.log("logging room", room);
     const user2 = await User.findOne({
       where: {
         id: room.userId1,
@@ -126,6 +121,8 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
       user2Nickname: user.nickname,
       userId1: user2.id,
       userId2: user.id,
+      user1bp: user2.BP,
+      user2bp: user.BP,
     });
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -277,6 +274,29 @@ roomRouter.put("/gameover", async (req, res) => {
     room.status = "gameover";
     room.winner = req.body.winner;
     await room.save();
+    const user1 = await User.findOne({
+      where: {
+        id: room.userId1,
+      },
+    });
+    const user2 = await User.findOne({
+      where: {
+        id: room.userId2,
+      },
+    });
+    if (req.body.winner === "p1") {
+      user1.BP = user1.BP + 50;
+      if (!room.isPve) {
+        user2.BP = Math.max(user2.BP - 50, 0);
+      }
+    } else {
+      user1.BP = Math.max(user1.BP - 50, 0);
+      if (!room.isPve) {
+        user2.BP = user2.BP + 50;
+      }
+    }
+    await user1.save();
+    await user2.save();
     return res.json(room);
   } catch (error) {
     return res.status(400).json({ error: error.message });

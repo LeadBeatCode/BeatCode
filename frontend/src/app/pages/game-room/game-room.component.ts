@@ -62,8 +62,8 @@ export class GameRoomComponent implements OnInit {
   userImg2: string = '';
   username1: string = '';
   username2: string = '';
-  userrank1: string = '';
-  userrank2: string = '';
+  user1bp: number = 0;
+  user2bp: number = 0;
   userId1: string = '';
   userId2: string = '';
   winner: string = '';
@@ -86,12 +86,10 @@ export class GameRoomComponent implements OnInit {
     private gptService: GptService,
     private gameService: GameService,
   ) {
-    console.log('game room');
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras.state) {
       this.playerTitle = navigation.extras.state['playerTitle'];
     }
-    console.log('player title', this.playerTitle);
     this.activatedRoute.queryParams.subscribe((params) => {
       const roomId = params['roomId'];
       const accessToken = localStorage.getItem('accessToken');
@@ -99,7 +97,7 @@ export class GameRoomComponent implements OnInit {
       if (accessToken) {
         this.api.getRoom(roomId, accessToken).subscribe({
           next: (data) => {
-              this.timeElapsed = data.timeElapsed;
+            this.timeElapsed = data.timeElapsed;
             if (data.status === 'gameover') {
               this.showGameSummary();
             } else {
@@ -122,8 +120,8 @@ export class GameRoomComponent implements OnInit {
             this.userImg2 = data.userImg2;
             this.username1 = data.user1Nickname;
             this.username2 = data.user2Nickname;
-            this.userrank1 = this.rankImage[data.user1rank];
-            this.userrank2 = this.rankImage[data.user2rank];
+            this.user1bp = data.user1bp;
+            this.user2bp = data.user2bp;
             this.userId1 = data.userId1;
             this.userId2 = data.userId2;
             this.submissionData.gameType = data.gameType;
@@ -139,8 +137,12 @@ export class GameRoomComponent implements OnInit {
             } else {
               this.numAttempts = data.user2Attempts;
             }
-            this.player1HeartCount = Array(this.HEART_COUNT - data.user1Attempts).fill(1);
-            this.player2HeartCount = Array(this.HEART_COUNT - data.user2Attempts).fill(1);
+            this.player1HeartCount = Array(
+              this.HEART_COUNT - data.user1Attempts,
+            ).fill(1);
+            this.player2HeartCount = Array(
+              this.HEART_COUNT - data.user2Attempts,
+            ).fill(1);
             this.isPve = data.isPve;
             this.titleSlug = data.questionTitleSlug;
 
@@ -317,12 +319,6 @@ export class GameRoomComponent implements OnInit {
       } else {
         editor.updateOptions({ readOnly: false });
         editor.onDidChangeModelContent((event: any) => {
-          //connect to socket
-          console.log(
-            'editor content changed',
-            this.opponentSocketId,
-            editor.getValue(),
-          );
           this.socket.emit('editor', {
             targetSocketId: this.opponentSocketId,
             code: editor.getValue(),
@@ -344,7 +340,6 @@ export class GameRoomComponent implements OnInit {
       if (this.playerTitle === 'p1') {
         editor.updateOptions({ readOnly: true });
         this.socket.on('editor', (data: any) => {
-          console.log('opponent editor content changed', data.code);
           editor.setValue(data.code);
         });
       } else {
@@ -370,10 +365,8 @@ export class GameRoomComponent implements OnInit {
     }
     this.gameService.getUserSocket(token).subscribe({
       next: (data) => {
-        console.log('log out', data);
         localStorage.removeItem('accessToken');
         this.gameService.getUserSocket('need to do it').subscribe((result) => {
-          console.log(result);
         });
       },
       error: (err) => {
@@ -410,7 +403,6 @@ export class GameRoomComponent implements OnInit {
   };
 
   checkCorrectness = (totalCorrect: number, totalTestcases: number) => {
-    console.log(this.titleSlug);
     const token = localStorage.getItem('accessToken');
     if (token) {
       this.api
@@ -421,7 +413,6 @@ export class GameRoomComponent implements OnInit {
           token,
         )
         .subscribe((data) => {
-          console.log(data);
         });
     }
     if (totalCorrect === totalTestcases) {
@@ -441,7 +432,6 @@ export class GameRoomComponent implements OnInit {
           this.playerTitle === 'p1' ? 'p1' : 'p2',
         )
         .subscribe((data) => {
-          console.log(data);
           this.socket.emit('game over', {
             roomId: this.currentRoom,
             token: token,
@@ -464,7 +454,6 @@ export class GameRoomComponent implements OnInit {
         this.playerTitle === 'p1' ? this.player1Code : this.player2Code,
       )
       .subscribe((data) => {
-        console.log(data);
         if (this.submissionData.gameType === 'leetcode') {
           var submission_status = 16;
           this.runtimeerr_num = 0;
@@ -477,7 +466,6 @@ export class GameRoomComponent implements OnInit {
               )
               .subscribe((res) => {
                 const check_data = res.data.submissionDetails;
-                console.log('checking', check_data.statusCode, check_data);
                 this.runtimeerr_num += 1;
                 if (this.runtimeerr_num > 10) {
                   this.showError('Timeout Error; Try different language.');
@@ -535,20 +523,12 @@ export class GameRoomComponent implements OnInit {
                         token,
                       )
                       .subscribe((data) => {
-                        console.log(data);
                       });
                   }
                   this.reduceHeartCount();
                 }
               });
           }, 2000);
-        } else {
-          this.checkSubmission(
-            data.token,
-            isGptResponse,
-            this.expectedOutput,
-            'aaabb',
-          );
         }
       });
     if (this.isPve) {
@@ -577,8 +557,7 @@ export class GameRoomComponent implements OnInit {
               );
             });
           } else {
-            var code =
-              this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
+            var code = this.player1Code;
             code = this.import + code;
             if (this.language === 'python3' || this.language === 'python') {
               code =
@@ -639,33 +618,33 @@ export class GameRoomComponent implements OnInit {
     var winner = 2;
     if (user1Result > user2Result) {
       winner = 1;
+      this.user1bp += 50;
+      this.user2bp = Math.max(0, this.user2bp - 50);
     } else if (user1Result === user2Result && user1Attempts < user2Attempts) {
       winner = 1;
-    }
-    if (this.playerTitle === `p${winner}`) {
-      this.winner = 'You';
+      this.user1bp += 50;
+      this.user2bp = Math.max(0, this.user2bp - 50);
     } else {
-      this.winner = 'Your Opponenet';
+      this.user1bp = Math.max(0, this.user1bp - 50);
+      this.user2bp += 50;
     }
+
+    this.winner = winner === 1 ? this.username1 : this.username2;
     return `p${winner}`;
   };
 
   reduceHeartCount() {
-    console.log('reduceHeartCount');
     if (this.playerTitle === 'p1') {
       this.player1HeartCount[this.numAttempts] = 0;
       this.player1HeartCount = [...this.player1HeartCount];
-      console.log(this.player1HeartCount);
     } else {
       this.player2HeartCount[this.numAttempts] = 0;
       this.player2HeartCount = [...this.player2HeartCount];
-      console.log(this.player2HeartCount);
     }
     console.log(this.numAttempts, this.HEART_COUNT);
     if (this.numAttempts < this.HEART_COUNT - 1) {
       this.numAttempts += 1;
     } else {
-      console.log('Game Over');
       clearInterval(this.timeInterval);
       clearInterval(this.timeElapsedInterval);
       const token = localStorage.getItem('accessToken');
@@ -710,7 +689,6 @@ export class GameRoomComponent implements OnInit {
     input: string,
   ) {
     this.api.getSubmission(submissionToken).subscribe((data) => {
-      console.log(data);
       if (data.stderr) {
         const error = atob(data.stderr);
         this.showError(`Error: ${error}`);
@@ -770,7 +748,6 @@ export class GameRoomComponent implements OnInit {
   getProblem() {
     if (this.isPve) {
       this.api.getRandomPveProblem().subscribe((data) => {
-        console.log(data.title);
         this.problemTitle = data.title;
         this.problemText =
           data.description +
@@ -787,27 +764,21 @@ export class GameRoomComponent implements OnInit {
               'write the solution in python 3 and a method called solution. Do not include anything other than the method itself',
           )
           .then((response) => {
-            console.log(response);
             this.gptResponse += response;
-            console.log(this.player2Code);
             if (response) {
               this.displayResponseLineByLine(response);
             }
           });
-        console.log(data.question);
       });
     } else {
       this.api.getProblem(this.titleSlug).subscribe((response) => {
         this.problemData = response.data.question;
-        console.log(this.problemData);
         this.submissionData.questionId = response.data.question.questionId;
-        console.log(this.problemData.title);
         this.problemTitle = this.formatString(this.titleSlug);
         this.problemText = response.data.question.content;
         if (this.submissionData.gameType === 'leetcode') {
           this.api.getProblemStartCode(this.titleSlug).subscribe((data) => {
             this.problemInitialCode = data;
-            console.log(data);
             if (this.playerTitle === 'p1') {
               this.player1Code += data[this.language];
             } else {
@@ -856,17 +827,6 @@ export class GameRoomComponent implements OnInit {
   }
 
   displayResponseLineByLine(response: string) {
-    // const lines = response.split('\n');
-    // let currentLineIndex = 0;
-
-    // const intervalId = setInterval(() => {
-    //   if (currentLineIndex < lines.length) {
-    //     this.player2Code += lines[currentLineIndex] + '\n';
-    //     currentLineIndex++;
-    //   } else {
-    //     clearInterval(intervalId);
-    //   }
-    // }, 5000); // Adjust the interval time as needed (1000ms = 1 second)
     let index = 0;
     const delay = Math.floor(Math.random() * 900) + 100;
     const intervalId = setInterval(() => {
@@ -884,15 +844,11 @@ export class GameRoomComponent implements OnInit {
     const langListElement = document.querySelector(
       '.lang-list.' + this.playerTitle,
     );
-    console.log(this.playerTitle);
-    console.log(langListElement);
     if (langListElement) {
       langListElement.classList.toggle('hidden');
     }
-    console.log(language);
     if (language !== 'choose') {
       this.language = language;
-      console.log(this.editor);
       //this.editor.setLanguageConfiguration(language);
       //monaco.editor.setModelLanguage(this.editor.getModel(), language);
       if (!this.isPve) {
@@ -933,7 +889,6 @@ export class GameRoomComponent implements OnInit {
   }
 
   changeOpponentLanguage = () => {
-    console.log('change opponent language');
     if (this.playerTitle === 'p2') {
       if (
         this.opponentLanguage === 'Python3' ||
@@ -962,4 +917,17 @@ export class GameRoomComponent implements OnInit {
       }
     }
   };
+
+  getRank(rank: number): string {
+    if (rank < 200) {
+      return 'rank1';
+    } else if (rank < 400) {
+      return 'rank2';
+    } else if (rank < 600) {
+      return 'rank3';
+    } else if (rank < 800) {
+      return 'rank4';
+    }
+    return 'rank5';
+  }
 }

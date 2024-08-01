@@ -8,7 +8,7 @@
         <div class="user-profile-image"></div>
       </div>
       <div class="user-info">
-        <div class="rank-image"></div>
+        <div class="rank-image" [ngClass]="getRank(user1bp)"></div>
         <div class="username">{{ nickname }}</div>
       </div>
     </div>
@@ -24,7 +24,7 @@
         <div class="user-profile-image"></div>
       </div>
       <div class="user-info">
-        <div class="rank-image"></div>
+        <div class="rank-image" [ngClass]="getRank(user2bp)"></div>
         <div class="username">{{ opponent }}</div>
       </div>
     </div>

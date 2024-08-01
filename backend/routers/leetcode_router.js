@@ -71,7 +71,6 @@ leetcodeRouter.get("/official-solution/:title", async (req, res) => {
           const uuid = response.data.data.question.solution.content
             .split("https://leetcode.com/playground/")[1]
             .split("/")[0];
-          console.log(uuid);
           const getCodeQuery = `query fetchPlayground {
                                         allPlaygroundCodes(uuid: "${uuid}") {
                                             code
@@ -89,7 +88,6 @@ leetcodeRouter.get("/official-solution/:title", async (req, res) => {
               codes.map((element) => {
                 const code = element.code;
 
-                console.log(element);
               });
               return res.json(response.data);
             });
@@ -208,12 +206,10 @@ leetcodeRouter.get("/startcode/:title", async (req, res) => {
             data[language.lang] = language.code;
           });
         else
-          return res
-            .status(400)
-            .json({
-              error:
-                "Premium Question: This question is only available for premium users",
-            });
+          return res.status(400).json({
+            error:
+              "Premium Question: This question is only available for premium users",
+          });
         return res.json(data);
       });
   } catch (error) {
@@ -330,7 +326,6 @@ leetcodeRouter.post("/submission/check", async (req, res) => {
   const LEETCODE_SESSION = user.leetcodeCookie
     .split("LEETCODE_SESSION=")[1]
     .split(";")[0];
-  console.log(LEETCODE_SESSION);
   const query = `
     query submissionDetails($submissionId: Int!) {
         submissionDetails(submissionId: $submissionId) {
@@ -472,7 +467,6 @@ leetcodeRouter.post("/problems/submit", async (req, res) => {
   const questionId = req.body.questionId;
 
   try {
-    console.log(req.body);
     const user = await User.findByPk(req.body.id, { raw: true });
     if (!user) return res.status(404).json({ error: "User not found" });
     const cookie = user.leetcodeCookie;
@@ -481,9 +475,7 @@ leetcodeRouter.post("/problems/submit", async (req, res) => {
     const LEETCODE_SESSION = user.leetcodeCookie
       .split("LEETCODE_SESSION=")[1]
       .split(";")[0];
-    console.log(LEETCODE_SESSION);
 
-    console.log(req.body.language);
     const lang = {
       Python3: "python3",
       Python: "python",

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ApiService } from '../../services/apiService/api.service';
 
 @Component({
   selector: 'app-quick-match-history-element',
@@ -12,8 +13,25 @@ export class QuickMatchHistoryElementComponent implements OnInit {
   @Input() opponent: string = '';
   @Input() image: string = '';
   @Input() opponentImage: string = '';
-  constructor() {}
+  @Input() user1bp: number = 0;
+  @Input() user2bp: number = 0;
+  constructor(private api: ApiService) {}
   ngOnInit(): void {
     console.log('image', this.image);
+  }
+  getRank(rank: number): string {
+    if (rank === null) {
+      return 'unranked';
+    }
+    if (rank < 200) {
+      return 'rank1';
+    } else if (rank < 400) {
+      return 'rank2';
+    } else if (rank < 600) {
+      return 'rank3';
+    } else if (rank < 800) {
+      return 'rank4';
+    }
+    return 'rank5';
   }
 }
