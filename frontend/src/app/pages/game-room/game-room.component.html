@@ -5,7 +5,7 @@
   <div class="game-summary-container">
     <!-- <div class="game-summary-content-container"> -->
     <div class="game-summary-header">
-      {{ winner }} <span class="result"></span>
+      {{ winner }} won! <span class="result"></span>
     </div>
     <div class="game-summary-content">
       <div class="player">
@@ -15,6 +15,7 @@
         ></div>
         <div class="title">
           <div class="rank" [ngClass]="getRank(user1bp)"></div>
+          <div class="bp">BP: {{ user1bp }}</div>
           <div class="nickname">{{ username1 }}</div>
         </div>
       </div>
@@ -26,6 +27,7 @@
         ></div>
         <div class="title">
           <div class="rank" [ngClass]="getRank(user2bp)"></div>
+          <div class="bp">BP: {{ user1bp }}</div>
           <div class="nickname">{{ username2 }}</div>
         </div>
       </div>

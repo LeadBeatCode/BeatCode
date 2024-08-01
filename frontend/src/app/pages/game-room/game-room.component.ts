@@ -86,12 +86,10 @@ export class GameRoomComponent implements OnInit {
     private gptService: GptService,
     private gameService: GameService,
   ) {
-    console.log('game room');
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras.state) {
       this.playerTitle = navigation.extras.state['playerTitle'];
     }
-    console.log('player title', this.playerTitle);
     this.activatedRoute.queryParams.subscribe((params) => {
       const roomId = params['roomId'];
       const accessToken = localStorage.getItem('accessToken');
@@ -531,13 +529,6 @@ export class GameRoomComponent implements OnInit {
                 }
               });
           }, 2000);
-        } else {
-          this.checkSubmission(
-            data.token,
-            isGptResponse,
-            this.expectedOutput,
-            'aaabb',
-          );
         }
       });
     if (this.isPve) {
@@ -627,14 +618,18 @@ export class GameRoomComponent implements OnInit {
     var winner = 2;
     if (user1Result > user2Result) {
       winner = 1;
+      this.user1bp += 50;
+      this.user2bp = Math.max(0, this.user2bp - 50);
     } else if (user1Result === user2Result && user1Attempts < user2Attempts) {
       winner = 1;
-    }
-    if (this.playerTitle === `p${winner}`) {
-      this.winner = 'You';
+      this.user1bp += 50;
+      this.user2bp = Math.max(0, this.user2bp - 50);
     } else {
-      this.winner = 'Your Opponenet';
+      this.user1bp = Math.max(0, this.user1bp - 50);
+      this.user2bp += 50;
     }
+
+    this.winner = winner === 1 ? this.username1 : this.username2;
     return `p${winner}`;
   };
 
@@ -832,17 +827,6 @@ export class GameRoomComponent implements OnInit {
   }
 
   displayResponseLineByLine(response: string) {
-    // const lines = response.split('\n');
-    // let currentLineIndex = 0;
-
-    // const intervalId = setInterval(() => {
-    //   if (currentLineIndex < lines.length) {
-    //     this.player2Code += lines[currentLineIndex] + '\n';
-    //     currentLineIndex++;
-    //   } else {
-    //     clearInterval(intervalId);
-    //   }
-    // }, 5000); // Adjust the interval time as needed (1000ms = 1 second)
     let index = 0;
     const delay = Math.floor(Math.random() * 900) + 100;
     const intervalId = setInterval(() => {
