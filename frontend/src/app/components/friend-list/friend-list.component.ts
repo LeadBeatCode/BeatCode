@@ -28,7 +28,6 @@ export class FriendListComponent implements OnInit {
     } else {
       this.api.getFriends(accessToken).subscribe({
         next: (friends) => {
-          console.log(friends);
           this.friends = friends;
         },
         error: (err) => {
@@ -37,14 +36,9 @@ export class FriendListComponent implements OnInit {
       });
     }
     this.socket.on('friend online', (friendId: any) => {
-      console.log('friend online', friendId);
       this.onlineFriends.push(friendId);
-      this.onlineFriends.forEach((id) => {
-        console.log(id);
-      });
     });
     this.socket.on('new friend added', (friendId: any) => {
-      console.log('new friend added', friendId);
       this.friends.push(friendId.id);
       this.onlineFriends.push(friendId.id);
     });

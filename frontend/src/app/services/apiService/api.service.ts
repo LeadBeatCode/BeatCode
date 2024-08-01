@@ -37,9 +37,6 @@ export class ApiService {
       languageId = 70;
     }
     const base64Content = btoa(content);
-    console.log('languageId', languageId);
-    console.log('content', content);
-    console.log('base64Content', base64Content);
     const data = {
       source_code: base64Content,
       language_id: languageId,
@@ -112,7 +109,6 @@ export class ApiService {
     code: string,
   ): Observable<any> {
     if (gameType === 'leetcode') {
-      console.log('running leetcode test');
       return this.http.post(this.leetcodeApiEndpoint + `/problems/submit`, {
         id,
         titleSlug,
@@ -121,7 +117,6 @@ export class ApiService {
         code,
       });
     } else {
-      console.log(titleSlug);
 
       return this.http.post(this.endpoint + '/api/problems/test', {
         titleSlug,
@@ -260,7 +255,6 @@ export class ApiService {
     numAttempts: number,
     accessToken: string,
   ) => {
-    console.log(numAttempts);
     return this.http.put(this.endpoint + `/api/rooms/${roomId}/result`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -275,7 +269,6 @@ export class ApiService {
     socketId: string,
     userId: string,
   ): Observable<any> {
-    console.log(socketId, userId);
     return this.http.put(this.endpoint + '/api/users/socket/', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
