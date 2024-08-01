@@ -23,9 +23,7 @@
             <div class="title">RANKING</div>
             <div class="ranking-contents-container">
               <div class="ranking-image" [ngClass]="getRank(bp)"></div>
-              <div class="ranking-title">
-                {{ rank }} {{ subrank }}
-              </div>
+              <div class="ranking-title">{{ rank }} {{ subrank }}</div>
               <div class="BP">BP: {{ bp }}</div>
             </div>
           </div>
@@ -62,6 +60,8 @@
                   [opponent]="showOpponent(game)"
                   [image]="showImage(game, true)"
                   [opponentImage]="showImage(game, false)"
+                  [user1bp]="game.user1bp"
+                  [user2bp]="game.user2bp"
                 ></app-quick-match-history-element>
               </div>
             </div>

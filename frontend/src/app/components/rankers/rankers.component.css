@@ -21,13 +21,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #08080f;
+  background-color: #0c0c18;
   font-family: "Saira";
   color: white;
   border-radius: 18px;
-  height: 150px;
+  height: 100%;
+  overflow-y: scroll;
   width: 100%;
-  border: 1px solid rgb(16, 16, 16);
+  border: 1px solid rgb(31, 31, 31);
 }
 
 .top-rankers {
@@ -35,4 +36,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.ranker {
+  width: 1000px;
+}
+
+@media (max-width: 1000px) {
+  .ranker {
+    width: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ranker {
+    width: 700px;
+  }
 }
