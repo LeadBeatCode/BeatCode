@@ -120,28 +120,7 @@ Our web application is a coding competition platform where users can compete aga
 
 #
 
-### Installation
+### Access
 
-To start the application, please follow the instructions below:
+To access the application, please go to https://beat.codes
 
-#### Frontend directory
-
-1. Within the frontend directory and install all packages if not already done so
-   ```
-   npm install
-   ```
-2. Start the frontend by running the following:
-   ```
-   ng serve
-   ```
-
-#### Backend directory
-
-1. Within the backend directory and install all packages if not already done so
-   ```
-   npm install
-   ```
-2. Start the backend by running the following:
-   ```
-   node app.js
-   ```
