@@ -27,7 +27,6 @@
 
 .header-container {
   width: 100%;
-  /* background-color: aqua; */
   height: 12%;
   margin-top: 10px;
   display: flex;
@@ -147,8 +146,9 @@
 
 .play-pvp-game-container {
   margin-right: -26px;
-  z-index: 10000;
+  z-index: 100;
 }
+
 .pvp-btns-container .play-game-btn {
   margin-top: 10px;
   color: #898989;
@@ -315,16 +315,10 @@
 }
 
 .friends-container .friends-component {
-  /* background-image: linear-gradient(125deg, #191b29, #211128);
-    border: 1px solid transparent;
-    border-radius: 6px;
-    width: 100%;*/
   height: 90%;
-  /* box-shadow: inset 0px 0px 50px 50px #0c0c18; */
 }
 
 .user-profile-image {
-  /* background-image: url("https://lh3.googleusercontent.com/a/ACg8ocLmXbSLH6sCOqd978QthE9U5ByX42LiCZyBFtFSk6iMInZLvw=s96-c"); */
   width: 86px;
   height: 86px;
   background-size: cover;
@@ -361,4 +355,49 @@
 
 .hidden {
   visibility: hidden;
+}
+
+.mobile {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(0, 0, 0);
+  position: absolute;
+  z-index: 10000;
+  visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  text-align: center;
+}
+
+@media (max-width: 920px) {
+  .mobile {
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile {
+    visibility: hidden;
+  }
+
+  .header-side-container {
+    width: 300px;
+  }
+
+  .header-container .menu {
+    display: none;
+  }
+
+  .user-info-container {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .mobile {
+    visibility: visible;
+  }
 }
