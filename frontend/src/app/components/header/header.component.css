@@ -20,10 +20,3 @@
 .logo.active {
   font-size: 28px;
 }
-
-.credits-container {
-  cursor: pointer;
-  align-items: center;
-  text-align: center;
-  font-size: 12px;
-}
