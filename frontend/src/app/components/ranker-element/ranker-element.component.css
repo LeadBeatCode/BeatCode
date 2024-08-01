@@ -1,10 +1,10 @@
 .ranker-container {
-  width: 1000px;
+  width: 100%;
   display: block;
-  height: 60px;
+  height: 52px;
   margin-top: 50px;
-  margin-left: -22px;
   user-select: none;
+  letter-spacing: 2px;
   background-image: linear-gradient(
     90deg,
     rgba(253, 8, 61, 0.4) 0%,
@@ -12,7 +12,6 @@
     rgba(61, 157, 247, 0.1) 90%,
     transparent 100%
   );
-  /* display: flex; */
   flex-direction: row;
   flex-wrap: wrap;
 }
@@ -27,10 +26,6 @@
   flex-basis: calc(3 / 12 * 100%);
 }
 
-/* .ranker-content:first-child {
-  margin-left: 3px;
-} */
-
 .user-info-container {
   display: flex;
   flex-direction: column;
@@ -40,23 +35,22 @@
 }
 
 .user-profile-image-container {
-  margin-left: 30px;
-  margin-top: 2px;
-  /* overflow: hidden; */
+  margin-left: 50px;
   border: 1px solid transparent;
   border-radius: 50%;
+  margin-top: 10px;
   height: 50px;
-  width: 100px;
+  width: 50px;
 }
 
 .user-info {
-  margin-top: 2px;
   font-size: 24px;
   color: white;
   font-weight: 600;
   display: flex;
   align-items: center;
-  width: 500px;
+  justify-content: space-between;
+  width: 80%;
 }
 
 .user-info .username {
@@ -69,22 +63,30 @@
 
 .user-info .profile-image {
   margin-right: 4px;
-  height: 40px;
-  width: 40px;
+  height: 35px;
+  width: 35px;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
   z-index: 1;
+  border: 1px solid transparent;
+  border-radius: 50%;
 }
 
 .rank {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 100px;
+  width: 200px;
   height: 100%;
   font-size: 20px;
+  margin-left: -90px;
   color: white;
+}
+
+.user-info-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .rank-image-container {
@@ -127,4 +129,14 @@
 
 .duration .time {
   margin-left: 3px;
+}
+
+@media (max-width: 1000px) {
+  .rank-image {
+    display: none;
+  }
+
+  .profile-image {
+    display: none;
+  }
 }

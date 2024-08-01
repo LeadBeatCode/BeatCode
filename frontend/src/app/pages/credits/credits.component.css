@@ -2,18 +2,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Full viewport height */
-  width: 100vw; /* Full viewport width */
-  position: fixed; /* Fixed position to overlay on the screen */
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  z-index: 1000; /* Ensure it is on top of other content */
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .credits-content {
   margin-top: 350px;
+  font-family: 'Saira';
+  letter-spacing: 2px;
   background-color: #000000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  height: 50%;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -22,6 +30,6 @@
 }
 
 .credits-content a {
-  color: #ffffff; /* Change link color */
-  text-decoration: underline; /* Underline links */
+  color: #6c6c6c;
+  text-decoration: underline;
 }

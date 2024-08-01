@@ -65,6 +65,9 @@
 .credits-container {
   padding: 20px;
   cursor: pointer;
+  color: rgb(99, 99, 99);
+  font-family: 'Saira';
+  letter-spacing: 1px;
 }
 
 .mobile {

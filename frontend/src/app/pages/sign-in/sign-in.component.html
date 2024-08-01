@@ -2,10 +2,6 @@
   BeatCode is not supported on mobile.
 </div>
 <div class="sign-in-container">
-  <!-- <div class="options">
-        <div class="sign-in active">Sign In</div>
-        <div class="sign-up">Sign Up</div>
-    </div> -->
   <div *ngIf="isAuthenticated; else login" class="options"></div>
   <ng-template #login>
     <div class="options">
