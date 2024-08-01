@@ -101,6 +101,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   background-color: #0c0c18;
   font-family: "Saira";
   color: white;
@@ -108,6 +109,39 @@
   height: 100%;
   width: 38%;
   border: 1px solid rgb(31, 31, 31);
+}
+
+.overview-inner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.overview-contents-container {
+  color: white;
+  height: inherit;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.overview-contents-container .content {
+  display: flex;
+  margin-top: -20px;
+  letter-spacing: 2px;
+  color: rgb(73, 73, 73);
+  align-items: center;
+}
+
+.ranking-title {
+  color:rgb(206, 206, 206);
+  letter-spacing: 2px;
+}
+
+.BP {
+  color:rgb(182, 182, 182);
+  letter-spacing: 2px;
 }
 
 .user-info-container .overview {
@@ -285,7 +319,7 @@
   background-image: url(../../../assets/rank5.png);
 }
 
-@media (max-width: 920px) {
+@media (max-width: 1000px) {
   .win-rate {
     display: none;
   }
