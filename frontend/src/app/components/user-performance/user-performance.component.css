@@ -299,23 +299,23 @@
   background-position: center;
 }
 
-.rank1 {
+.silver {
   background-image: url(../../../assets/rank1.png);
 }
 
-.rank2 {
+.emerald {
   background-image: url(../../../assets/rank2.png);
 }
 
-.rank3 {
+.diamond {
   background-image: url(../../../assets/rank3.png);
 }
 
-.rank4 {
+.master {
   background-image: url(../../../assets/rank4.png);
 }
 
-.rank5 {
+.challenger {
   background-image: url(../../../assets/rank5.png);
 }
 

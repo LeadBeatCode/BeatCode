@@ -11,8 +11,8 @@ export class UserPerformanceComponent implements OnInit {
   losses: number = 3;
   @Input() changeLoadMenu: Function = () => {};
   @Input() userId: string = '';
-  @Input() rank: string = '';
-  @Input() subrank: string = '';
+  rank: string = '';
+  subrank: string = '';
   @Input() bp: number = 0;
   quickHistory: any[] = [];
   quickHistoryGames: any[] = [];
@@ -68,15 +68,24 @@ export class UserPerformanceComponent implements OnInit {
 
   getRank(rank: number): string {
     if (rank < 200) {
-      return 'rank1';
+      this.rank = 'Silver';
+      this.subrank = rank < 100 ? '1' : '2';
+      return 'silver';
     } else if (rank < 400) {
-      return 'rank2';
+      this.rank = 'Emerald';
+      this.subrank = rank < 300 ? '1' : '2';
+      return 'emerald';
     } else if (rank < 600) {
-      return 'rank3';
+      this.rank = 'Diamond';
+      this.subrank = rank < 500 ? '1' : '2';
+      return 'diamond';
     } else if (rank < 800) {
-      return 'rank4';
+      this.rank = 'Master';
+      this.subrank = rank < 700 ? '1' : '2';
+      return 'master';
     }
-    return 'rank5';
+    this.rank = 'Challenger';
+    return 'challenger';
   }
 
   showResults(game: any) {
