@@ -356,6 +356,9 @@
   height: 100vh;
   background-color: rgb(0, 0, 0);
   position: absolute;
+  color: rgb(188, 188, 188);
+  font-family: "Saira";
+  letter-spacing: 1px;
   z-index: 1000;
   visibility: hidden;
   display: flex;
