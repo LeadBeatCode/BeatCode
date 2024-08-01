@@ -42,8 +42,6 @@ export class LeetcodeGameMatchingLobbyComponent {
     }
     this.loading();
     const navigation = this.router.getCurrentNavigation();
-    console.log('navigation', navigation);
-    //console.log('navigation.extras.state', navigation.extras.state);
     if (navigation && navigation.extras.state) {
       this.userId = navigation.extras.state['userId'];
     }
@@ -134,7 +132,6 @@ export class LeetcodeGameMatchingLobbyComponent {
       (roomId: number, accessToken: string, playerTitle: string) => {
         this.game.updateStatus(true);
         clearInterval(this.timerInterval);
-        console.log('start game', playerTitle);
         this.router.navigate(['/game-room'], {
           queryParams: { roomId: roomId },
           state: { playerTitle: playerTitle },

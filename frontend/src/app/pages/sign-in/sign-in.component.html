@@ -12,4 +12,8 @@
       <div class="login-btn" (click)="loginUser()">Login</div>
     </div>
   </ng-template>
+  <div class="credits-container" (click)="toggleCredits()">
+    Credits
+    <app-credits *ngIf="showCredits"></app-credits>
+  </div>
 </div>

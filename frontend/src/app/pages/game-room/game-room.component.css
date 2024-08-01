@@ -326,6 +326,31 @@
   display: block;
 }
 
+
+.rank1 {
+  background-image: url(../../../assets/rank1.png);
+}
+
+.rank2 {
+  background-image: url(../../../assets/rank2.png);
+}
+
+.rank3 {
+  background-image: url(../../../assets/rank3.png);
+}
+
+.rank4 {
+  background-image: url(../../../assets/rank4.png);
+}
+
+.rank5 {
+  background-image: url(../../../assets/rank5.png);
+}
+
+.pve-class {
+  display: none;
+}
+
 .mobile {
   width: 100vw;
   height: 100vh;
@@ -347,6 +372,7 @@
     width: 240px;
     height: 900px;
   }
+  
   .editor-contaier-left,
   .editor-contaier-right {
     width: 240px;

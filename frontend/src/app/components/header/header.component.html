@@ -1,3 +1,7 @@
 <div class="header">
   <a routerLink="/" id="title" class="logo active">BeatCode</a>
+  <div class="credits-container" (click)="toggleCredits()">
+    Credits
+    <app-credits *ngIf="showCredits"></app-credits>
+  </div>
 </div>

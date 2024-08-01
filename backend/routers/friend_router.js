@@ -85,10 +85,8 @@ friendRouter.get("/list", async (req, res) => {
       },
       attributes: [["user2", "friendId"]],
     });
-    console.log("friends", friends);
     const friendIds = [];
     for (let i = 0; i < friends.length; i++) {
-      console.log("friend", friends[i].friendId);
       friendIds.push(friends[i].friendId);
     }
     const friendInfo = await User.findAll({
@@ -99,8 +97,6 @@ friendRouter.get("/list", async (req, res) => {
       },
       attributes: ["id", "nickname", "rank", "picture"],
     });
-    console.log("friendIds", friendIds);
-    console.log("friend info", friendInfo);
     return res.json(friendInfo);
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -151,10 +147,6 @@ friendRouter.get("/pending", async (req, res) => {
       },
       attributes: [["user1", "friendId"]],
     });
-    console.log("pending friends", friends);
-    //friends.toJSON();
-    console.log("pending friends2", friends);
-    // const friendIds = friends.map((friend) => friend.friendId);
     const friendIds = [];
     for (let i = 0; i < friends.length; i++) {
       friendIds.push(friends[i].friendId);
@@ -167,8 +159,6 @@ friendRouter.get("/pending", async (req, res) => {
       },
       attributes: ["id", "nickname", "rank", "picture"],
     });
-    console.log("pending friendIds", friendIds);
-    console.log("pending friend info", friendInfo);
     return res.json(friendInfo);
   } catch (error) {
     return res.status(400).json({ error: error.message });

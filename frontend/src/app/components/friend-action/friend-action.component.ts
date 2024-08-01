@@ -40,11 +40,6 @@ export class FriendActionComponent {
 
   ngOnInit(): void {}
 
-  // isFriendOnline(friendId: any) : boolean {
-  //   console.log('is friend online', this.onlineFriends.includes(friendId), friendId, this.onlineFriends);
-  //   return this.onlineFriends.includes(friendId);
-  // }
-
   sendFriendRequest() {
     console.log('send friend request');
     const friendId = (
@@ -55,7 +50,6 @@ export class FriendActionComponent {
       // You can use fetch or any other HTTP library to make the API call
       this.api.getUserById(friendId).subscribe({
         next: (data) => {
-          console.log(data);
           const accessToken = localStorage.getItem('accessToken');
           if (!accessToken) {
             console.log('Please sign in');
@@ -64,10 +58,8 @@ export class FriendActionComponent {
           }
           this.api.sendFriendRequest(accessToken, friendId).subscribe({
             next: (data) => {
-              console.log(data);
             },
             error: (err) => {
-              console.log(err);
             },
           });
         },

@@ -285,7 +285,7 @@
   background-image: url(../../../assets/rank5.png);
 }
 
-@media (max-width: 920px) {
+@media (max-width: 1000px) {
   .win-rate {
     display: none;
   }
