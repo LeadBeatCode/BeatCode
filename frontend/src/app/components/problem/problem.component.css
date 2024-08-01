@@ -20,17 +20,6 @@
   background-clip: padding-box;
 }
 
-/* .resize-icon {
-  background-image: url(../../../assets/resize_icon.png);
-  width: 20px;
-  height: 20px;
-  background-size: contain;
-  z-index: 100;
-  transform: rotate(135deg);
-  right: 0;
-  position: absolute;
-} */
-
 ::-webkit-resizer {
   background: rgb(26, 25, 25);
   padding: 2px;
@@ -148,6 +137,41 @@ pre {
 
 .correct {
   color: rgb(6, 255, 6);
+}
+
+.loader {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  animation: spin 1.5s linear infinite;
+  inset: 0;
+  margin: auto;
+  background:
+    linear-gradient(rgb(26, 25, 25), rgb(26, 25, 25)) padding-box,
+    linear-gradient(to right, rgb(69, 202, 220), rgb(6, 255, 6))
+      border-box;
+  border-radius: 50em;
+  border: 5px solid transparent;
+}
+
+@keyframes animatedBackground {
+  0% {
+    width: 0px;
+    height: 120%;
+  }
+  100% {
+    width: 180px;
+    height: 120%;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 620px) {

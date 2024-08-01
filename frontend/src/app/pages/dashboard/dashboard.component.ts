@@ -155,12 +155,12 @@ export class DashboardComponent implements OnInit {
               },
               error: (err) => {
                 this.showLeetcodeSessionFormError =
-                  'You have a valid cookie but we could not update it';
+                  'You have a valid cookie but we could not process it. Please Try again.';
               },
             });
         },
         error: (err) => {
-          this.showLeetcodeSessionFormError = 'Invalid cookie';
+          this.showLeetcodeSessionFormError = 'Please try again.';
         },
       });
   }
