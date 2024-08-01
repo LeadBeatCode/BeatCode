@@ -62,8 +62,8 @@ export class GameRoomComponent implements OnInit {
   userImg2: string = '';
   username1: string = '';
   username2: string = '';
-  userrank1: string = '';
-  userrank2: string = '';
+  user1bp: number = 0;
+  user2bp: number = 0;
   userId1: string = '';
   userId2: string = '';
   winner: string = '';
@@ -122,8 +122,8 @@ export class GameRoomComponent implements OnInit {
             this.userImg2 = data.userImg2;
             this.username1 = data.user1Nickname;
             this.username2 = data.user2Nickname;
-            this.userrank1 = this.rankImage[data.user1rank];
-            this.userrank2 = this.rankImage[data.user2rank];
+            this.user1bp = data.user1bp;
+            this.user2bp = data.user2bp;
             this.userId1 = data.userId1;
             this.userId2 = data.userId2;
             this.submissionData.gameType = data.gameType;
@@ -578,7 +578,7 @@ export class GameRoomComponent implements OnInit {
             });
           } else {
             var code =
-              this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
+              this.player1Code;
             code = this.import + code;
             if (this.language === 'python3' || this.language === 'python') {
               code =
@@ -651,7 +651,6 @@ export class GameRoomComponent implements OnInit {
   };
 
   reduceHeartCount() {
-    console.log('reduceHeartCount');
     if (this.playerTitle === 'p1') {
       this.player1HeartCount[this.numAttempts] = 0;
       this.player1HeartCount = [...this.player1HeartCount];
@@ -962,4 +961,17 @@ export class GameRoomComponent implements OnInit {
       }
     }
   };
+
+  getRank(rank: number): string {
+    if (rank < 200) {
+      return 'rank1';
+    } else if (rank < 400) {
+      return 'rank2';
+    } else if (rank < 600) {
+      return 'rank3';
+    } else if (rank < 800) {
+      return 'rank4';
+    }
+    return 'rank5';
+  }
 }

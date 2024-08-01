@@ -90,6 +90,8 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
         winner: room.winner,
         user1Status: room.user1Status,
         user2Status: room.user2Status,
+        user1bp: user.BP,
+        user2bp: isPve ? 1000 : user2.BP,
         winner: room.winner,
       });
     }
@@ -126,6 +128,8 @@ roomRouter.get("/:id", isAuthenticated, async (req, res) => {
       user2Nickname: user.nickname,
       userId1: user2.id,
       userId2: user.id,
+      user1bp: user2.BP,
+      user2bp: user.BP,
     });
   } catch (error) {
     return res.status(400).json({ error: error.message });

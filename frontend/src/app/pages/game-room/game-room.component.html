@@ -13,7 +13,7 @@
         <div class="title">
           <div
             class="rank"
-            [ngStyle]="{ 'background-image': 'url(' + userrank1 + ')' }"
+            [ngClass]="getRank(user1bp)"
           ></div>
           <div class="nickname">{{ username1 }}</div>
         </div>
@@ -27,7 +27,7 @@
         <div class="title">
           <div
             class="rank"
-            [ngStyle]="{ 'background-image': 'url(' + userrank2 + ')' }"
+            [ngClass]="getRank(user2bp)"
           ></div>
           <div class="nickname">{{ username2 }}</div>
         </div>
@@ -204,7 +204,7 @@
       </div>
       <div class="reset-btn"></div>
       <div class="hearts">
-        <div class="heart-container" *ngFor="let num of player2HeartCount">
+        <div class="heart-container" *ngFor="let num of player2HeartCount" [ngClass]="{'pve-class': isPve}">
           <div *ngIf="num === 1" class="heart"></div>
         </div>
       </div>

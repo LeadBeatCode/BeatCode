@@ -210,6 +210,8 @@ userRouter.get("/performance/:id", async (req, res) => {
           user1Nickname: user1 ? user1.nickname : null,
           user2ProfilePicture: user2 ? user2.picture : null,
           user2Nickname: user2 ? user2.nickname : null,
+          user1bp: user1 ? user1.BP : null,
+          user2bp: user2 ? user2.BP : null,
         };
       }),
     );
