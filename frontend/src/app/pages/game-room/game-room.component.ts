@@ -602,8 +602,15 @@ export class GameRoomComponent implements OnInit {
     var winner = 2;
     if (user1Result > user2Result) {
       winner = 1;
+      this.user1bp += 50;
+      this.user2bp = Math.max(0, this.user2bp - 50);
     } else if (user1Result === user2Result && user1Attempts < user2Attempts) {
       winner = 1;
+      this.user1bp += 50;
+      this.user2bp = Math.max(0, this.user2bp - 50);
+    } else{
+      this.user1bp = Math.max(0, this.user1bp - 50);
+      this.user2bp += 50;
     }
 
     this.winner = winner === 1 ? this.username1 : this.username2;
