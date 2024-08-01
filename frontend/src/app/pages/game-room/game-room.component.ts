@@ -452,7 +452,6 @@ export class GameRoomComponent implements OnInit {
   };
 
   runCode(isGptResponse: boolean) {
-    console.log(this.submissionData);
     this.clearResult();
     this.submissionDetails = {};
     this.api
@@ -578,11 +577,8 @@ export class GameRoomComponent implements OnInit {
               );
             });
           } else {
-            console.log(expectedInputs[0]);
-            console.log(expectedInputs[0].subInput1);
             var code =
               this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
-            console.log(this.playerTitle);
             code = this.import + code;
             if (this.language === 'python3' || this.language === 'python') {
               code =
@@ -609,7 +605,6 @@ export class GameRoomComponent implements OnInit {
                 JSON.stringify(expectedInputs[i].subInput1) +
                 '));';
             }
-
             this.api.submitCode(code, this.language).subscribe((data) => {
               this.checkSubmission(
                 data.token,
@@ -620,8 +615,6 @@ export class GameRoomComponent implements OnInit {
             });
           }
         }
-        console.log(expectedInputs);
-        console.log(expectedOutputs);
       });
     } else {
       // var code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;

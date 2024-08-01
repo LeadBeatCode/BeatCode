@@ -6,7 +6,6 @@ export const leetcodeQueueRouter = Router();
 
 leetcodeQueueRouter.post("/enqueue", isAuthorized, async (req, res) => {
   try {
-    console.log("\n\n\n\n\nReached enqueue\n\n\n\n\n");
     const queue = await LeetcodeQueue.create({
       userId: req.body.userId,
       socketId: req.body.socketId,

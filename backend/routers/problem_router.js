@@ -38,9 +38,7 @@ problemRouter.get("/random", async (req, res) => {
 
 problemRouter.get("/:id", async (req, res) => {
   try {
-    console.log("logging req.params.id", req.params.id);
     const problem = await Problem.findByPk(req.params.id);
-    console.log("logging problem", problem);
     if (!problem) return res.status(404).json({ error: "Problem not found" });
     return res.json(problem);
   } catch (error) {

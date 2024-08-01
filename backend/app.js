@@ -90,22 +90,18 @@ io.on("connection", (socket) => {
   socket.on(
     "opponent_reconnected",
     (roomId, title, socketId, toSocketId, token) => {
-      console.log("opponent_reconnected", roomId, title);
       io.to(toSocketId).emit("opponent_reconnected", title, socketId, roomId);
     },
   );
 
   const token = socket.handshake.query.token;
-  // console.log("token at 70", socket.handshake.query);
   socket.on("online", function (data) {
     const { userId, friendSocketId } = data;
-    // console.log("online", userId, friendSocketId);
     io.to(friendSocketId).emit("friend online", userId);
   });
 
   socket.on("new friend", function (data) {
     const { friendId, friendSocketId } = data;
-    // console.log("new friend", friendId, friendSocketId);
     io.to(friendSocketId).emit("new friend added", friendId);
   });
 
@@ -117,17 +113,14 @@ io.on("connection", (socket) => {
 
   socket.on("change language", function (data) {
     const { targetSocketId, language } = data;
-    console.log("change language", targetSocketId, language);
     io.to(targetSocketId).emit("opponent change language", { language });
   });
   // const token = 'Bearer ' + socket.handshake.headers.authorization;
   socket.on("matching", async function (userId, accessToken, gameType) {
     // Make this function async
-    console.log("matching", userId);
     if (gameType === "normal") {
       await apiService.enqueue(userId, accessToken, socket.id);
       const queueRes = await apiService.getQueue();
-      console.log("queue", queueRes);
       if (queueRes.count >= 2) {
         for (let i = 0; i < queueRes.queue.length; i = i + 2) {
           if (
@@ -159,11 +152,9 @@ io.on("connection", (socket) => {
 
             io.to(player1.socketId).emit("matched", pair, player1);
             io.to(player2.socketId).emit("matched", pair, player2);
-            console.log("matched", pair);
 
             await apiService.deleteQueue(queueRes.queue[i].socketId, token);
             await apiService.deleteQueue(queueRes.queue[i + 1].socketId, token);
-            console.log("delete", "success"); // Assuming deleteQueue works as expected
           } else {
             const player1 = await apiService.dequeue(
               queueRes.queue[i].socketId,
@@ -177,7 +168,6 @@ io.on("connection", (socket) => {
     } else {
       await apiService.leetcodeEnqueue(userId, accessToken, socket.id); // Assuming you handle the response inside the enqueue function
       const leetcodeQueueRes = await apiService.getLeetcodeQueue();
-      console.log("leetcodeQueue", leetcodeQueueRes);
       if (leetcodeQueueRes.count >= 2) {
         for (let i = 0; i < leetcodeQueueRes.queue.length; i = i + 2) {
           if (
@@ -186,7 +176,6 @@ io.on("connection", (socket) => {
               leetcodeQueueRes.queue[i].userId
           ) {
             // Ensure there's a pair
-
             const player1 = await apiService.leetcodeDequeue(
               leetcodeQueueRes.queue[i].socketId,
               accessToken,
@@ -230,7 +219,6 @@ io.on("connection", (socket) => {
             await apiService.deleteLeetcodeQueue(
               leetcodeQueueRes.queue[i].socketId,
             );
-            console.log("delete", "success");
           }
         }
       }
@@ -238,20 +226,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("accepted", function (data, userId, token) {
-    console.log("accepted", data, userId);
     apiService.setPlayerStatus(data.id, "accepted", token).then((res) => {
-      console.log("accepted");
       apiService.getRoom(data.id, token).then((pair) => {
         io.fetchSockets().then((data) => {
           const socketIds = data.map((socket) => socket.id);
-          console.log("socketIds", socketIds);
-          console.log(
-            "in if statement",
-            pair.socketId1,
-            pair.socketId2,
-            socketIds.includes(pair.socketId1),
-            socketIds.includes(pair.socketId2),
-          );
           if (
             socketIds.includes(pair.socketId1) &&
             socketIds.includes(pair.socketId2)
@@ -260,7 +238,6 @@ io.on("connection", (socket) => {
               pair.user1Status === "accepted" &&
               pair.user2Status === "accepted"
             ) {
-              console.log("both accepted and in socketIds");
               io.to(pair.socketId1).emit("start", pair.id, pair.userId1, "p1");
               io.to(pair.socketId2).emit("start", pair.id, pair.userId2, "p2");
             }
@@ -283,42 +260,30 @@ io.on("connection", (socket) => {
     const room = await apiService.getRoom(roomId, token);
     if (room) {
       if (room.winner === "p1") {
-        console.log("p1 won", room.socketId2);
         io.to(room.socketId2).emit("game won by opponent", "p1won");
       } else {
-        console.log("p2 won", room);
         io.to(room.socketId1).emit("game won by opponent", "p2won");
       }
     }
   });
 
   socket.on("logout", async function (data) {
-    console.log("logout", data);
     const id = data;
     apiService.getFriendsById(id).then((friends) => {
       friends.forEach((friend) => {
-        console.log("friend", friend.socketId);
         io.to(friend.socketId).emit("friend offline", id);
       });
     });
   });
 
-  // const userId = socket.handshake.headers.userId;
-  // console.log("token at 231", token);
   socket.on("disconnect", () => {
-    console.log("user disconnected");
     apiService.deleteQueue(socket.id, token).then((res) => {
-      console.log("deleteQueue", res);
     });
     apiService.deleteLeetcodeQueue(socket.id, token).then((res) => {
-      console.log("deleteLeetcodeQueue", res);
     });
-    console.log("setUserSocket", socket.id);
     apiService.clearUserSocket(socket.id, token).then((res) => {
       apiService.getFriendsById(res.id).then((friends) => {
-        console.log("friends", friends);
         friends.forEach((friend) => {
-          console.log("friend", friend.socketId);
           io.to(friend.socketId).emit("friend offline", res.id);
         });
       });
@@ -349,11 +314,6 @@ app.get("/profile", (req, res) => {
 });
 
 app.get("/connect", (req, res) => res.oidc.login({ returnTo: "/sign-in" }));
-
-// app.listen(PORT, (err) => {
-//   if (err) console.log(err);
-//   else console.log("HTTP server on hhttps://beat.codes:%s", PORT);
-// });
 
 httpServer.listen(PORT, () => {
   console.log("server on https://beat.codes:%s", PORT);

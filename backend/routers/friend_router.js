@@ -77,7 +77,6 @@ friendRouter.get("/list", async (req, res) => {
         accessToken: accessToken,
       },
     });
-    console.log("user", user.id);
     const friends = await Friend.findAll({
       raw: true,
       where: {
