@@ -69,8 +69,19 @@ export const io = new Server(httpServer, {
   },
 });
 
+
+
 io.on("connection", (socket) => {
   console.log("a user connected");
+
+  const createRandomProblem = async () => {
+    const problem = await apiService.getRandomProblem();
+    console.log("hohoho", problem.question.isPaidOnly, problem.question.titleSlug);
+    if (problem.question.isPaidOnly) {
+      return createRandomProblem();
+    }
+    return problem;
+  };
 
   socket.on("reconnected", function (userId, accessToken) {
     socket.emit("reconnected", userId, socket.id);
@@ -176,8 +187,6 @@ io.on("connection", (socket) => {
           ) {
             // Ensure there's a pair
 
-            console.log("hello");
-
             const player1 = await apiService.leetcodeDequeue(
               leetcodeQueueRes.queue[i].socketId,
               accessToken,
@@ -188,31 +197,31 @@ io.on("connection", (socket) => {
               accessToken,
             );
 
-            console.log("accessToken", accessToken);
-            const problem = await apiService.getRandomProblem();
-            const pair = await apiService.createRoom(
-              "created",
-              player1.userId,
-              player2.userId,
-              accessToken,
-              false,
-              problem.question.titleSlug,
-              "leetcode",
-            );
+            createRandomProblem().then((problem) => {
+              console.log("ohohoh", problem)
+              apiService.createRoom(
+                "created",
+                player1.userId,
+                player2.userId,
+                accessToken,
+                false,
+                problem.question.titleSlug,
+                "leetcode",
+              ).then((pair) => {
+                io.to(player1.socketId).emit("matched", pair, player1);
+                io.to(player2.socketId).emit("matched", pair, player2);
 
-            console.log(player1.socketId, player2.socketId);
-            io.to(player1.socketId).emit("matched", pair, player1);
-            io.to(player2.socketId).emit("matched", pair, player2);
-
-            await apiService.deleteLeetcodeQueue(
-              leetcodeQueueRes.queue[i].socketId,
-              token,
-            );
-            await apiService.deleteLeetcodeQueue(
-              leetcodeQueueRes.queue[i + 1].socketId,
-              token,
-            );
-            console.log("delete", "success"); // Assuming deleteQueue works as expected
+                apiService.deleteLeetcodeQueue(
+                  leetcodeQueueRes.queue[i].socketId,
+                  token,
+                );
+                apiService.deleteLeetcodeQueue(
+                  leetcodeQueueRes.queue[i + 1].socketId,
+                  token,
+                );
+                console.log("delete", "success"); // Assuming deleteQueue works as expected
+              });
+            });
           } else {
             const player1 = await apiService.leetcodeDequeue(
               leetcodeQueueRes.queue[i].socketId,

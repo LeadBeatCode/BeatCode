@@ -4,13 +4,9 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
 import { GameService } from '../../services/gameService/game.service';
 import { GptService } from '../../services/gptService/gpt.service';
-import { switchMap } from 'rxjs';
 import moment from 'moment';
 
 @Component({
-  // selector: 'app-root',
-  // templateUrl: './app.component.html',
-  // styleUrls: ['./app.component.css'],
   selector: 'app-game-room',
   templateUrl: './game-room.component.html',
   styleUrl: './game-room.component.css',
@@ -93,7 +89,6 @@ export class GameRoomComponent implements OnInit {
     console.log('game room');
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras.state) {
-      console.log(navigation.extras.state);
       this.playerTitle = navigation.extras.state['playerTitle'];
     }
     console.log('player title', this.playerTitle);
@@ -104,6 +99,25 @@ export class GameRoomComponent implements OnInit {
       if (accessToken) {
         this.api.getRoom(roomId, accessToken).subscribe({
           next: (data) => {
+              this.timeElapsed = data.timeElapsed;
+            if (data.status === 'gameover') {
+              this.showGameSummary();
+            } else {
+              this.timeElapsedInterval = setInterval(() => {
+                this.timeElapsed = moment(this.timeElapsed, 'HH:mm:ss')
+                  .add(1, 'second')
+                  .format('HH:mm:ss');
+                if (this.timeElapsed !== 'Invalid date') {
+                  this.api
+                    .updateRoomTimeElapsed(
+                      parseInt(this.currentRoom),
+                      accessToken,
+                      this.timeElapsed,
+                    )
+                    .subscribe((data) => {});
+                }
+              }, 1000);
+            }
             this.userImg1 = data.userImg1;
             this.userImg2 = data.userImg2;
             this.username1 = data.user1Nickname;
@@ -125,33 +139,13 @@ export class GameRoomComponent implements OnInit {
             } else {
               this.numAttempts = data.user2Attempts;
             }
-            this.player1HeartCount = Array(data.user1Attempts).fill(1);
-            this.player1HeartCount = Array(data.user2Attempts).fill(1);
+            this.player1HeartCount = Array(this.HEART_COUNT - data.user1Attempts).fill(1);
+            this.player2HeartCount = Array(this.HEART_COUNT - data.user2Attempts).fill(1);
             this.isPve = data.isPve;
             this.titleSlug = data.questionTitleSlug;
-            console.log(data);
-            // this.dateStart = data.timeElapsed
-            this.timeElapsed = data.timeElapsed;
-            console.log(this.timeElapsed);
-
-            this.timeElapsedInterval = setInterval(() => {
-              this.timeElapsed = moment(this.timeElapsed, 'HH:mm:ss')
-                .add(1, 'second')
-                .format('HH:mm:ss');
-              if (this.timeElapsed !== 'Invalid date') {
-                this.api
-                  .updateRoomTimeElapsed(
-                    parseInt(this.currentRoom),
-                    accessToken,
-                    this.timeElapsed,
-                  )
-                  .subscribe((data) => {});
-              }
-            }, 1000);
 
             if (!this.isPve) {
               this.api.getRoomSocketIds(this.currentRoom).subscribe((data) => {
-                console.log(data);
                 var socketOpponentUpdated = false;
                 this.socket.on(
                   'opponent_reconnected',
@@ -271,7 +265,7 @@ export class GameRoomComponent implements OnInit {
             console.log(err);
             if (err.status === 401) {
               console.log('Please sign in');
-              // this.router.navigate(['/']);
+              this.router.navigate(['/']);
             } else if (err.status === 403) {
               console.log('You are not authorized to access this page');
               this.router.navigate(['/']);
@@ -280,7 +274,7 @@ export class GameRoomComponent implements OnInit {
         });
       } else {
         console.log('Please sign in');
-        // this.router.navigate(['/']);
+        this.router.navigate(['/']);
       }
     });
   }
@@ -292,24 +286,7 @@ export class GameRoomComponent implements OnInit {
     });
     console.log('game room init');
 
-    // this.socket.on("opponent_reconnected", (title: string, socketId: string, roomId: string) => {
-    //   console.log("opponent_reconnected", title, socketId);
-    //   if (this.playerTitle !== title) {
-    //     this.opponentSocketId = socketId;
-    //   }
-    // })
-    // this.startTimer();
-    // this.api.getLeetcodeOfficialSolution().subscribe(data => {
-    //   console.log(data.data.allPlaygroundCodes)
-    //   this.player1Code = '\n' + data.data.allPlaygroundCodes[6].code;
-    // })
-    // const getQuestionInterval = setInterval(() => {
-    //   if (this.problemText) {
-    //     clearInterval(getQuestionInterval);
-    //   }
-    // this.getProblem();
     this.dateStart = moment();
-    // }, 5000);
 
     const langElement = document.querySelector('.lang-selector');
     if (langElement) {
@@ -326,7 +303,6 @@ export class GameRoomComponent implements OnInit {
 
   editorInit(editor: any) {
     this.editor = editor;
-    // console.log(editor.getModel().getLanguageIdentifier().language);
     editor.updateOptions({
       scrollBeyondLastLine: false,
       renderLineHighlight: 'none',
@@ -389,7 +365,7 @@ export class GameRoomComponent implements OnInit {
     const token = localStorage.getItem('accessToken');
     if (!token) {
       console.log('Please sign in');
-      // this.router.navigate(['/']);
+      this.router.navigate(['/']);
       return;
     }
     this.gameService.getUserSocket(token).subscribe({
@@ -437,12 +413,11 @@ export class GameRoomComponent implements OnInit {
     console.log(this.titleSlug);
     const token = localStorage.getItem('accessToken');
     if (token) {
-      console.log(this.submissionDetails.expectedOutput, this.numAttempts);
       this.api
         .updateGameResult(
           parseInt(this.currentRoom),
           this.submissionDetails.totalCorrect,
-          this.numAttempts + 1,
+          this.numAttempts,
           token,
         )
         .subscribe((data) => {
@@ -451,12 +426,12 @@ export class GameRoomComponent implements OnInit {
     }
     if (totalCorrect === totalTestcases) {
       console.log('Game Over');
-      // clearInterval(this.timeInterval);
+      clearInterval(this.timeInterval);
       clearInterval(this.timeElapsedInterval);
       const token = localStorage.getItem('accessToken');
       if (!token) {
         console.log('Please sign in');
-        // this.router.navigate(['/']);
+        this.router.navigate(['/']);
         return;
       }
       this.api
@@ -506,7 +481,7 @@ export class GameRoomComponent implements OnInit {
                 console.log('checking', check_data.statusCode, check_data);
                 this.runtimeerr_num += 1;
                 if (this.runtimeerr_num > 10) {
-                  this.showError('Runtime Error; Try different language.');
+                  this.showError('Timeout Error; Try different language.');
                   clearInterval(submitInterval);
                 }
                 if (check_data.totalTestcases) {
@@ -531,7 +506,6 @@ export class GameRoomComponent implements OnInit {
                         : this.submissionDetails.compileError,
                     );
                   } else {
-                    // codeOutput, stdOutput
                     this.checkCorrectness(
                       this.submissionDetails.totalCorrect,
                       this.submissionDetails.totalTestcases,
@@ -558,7 +532,7 @@ export class GameRoomComponent implements OnInit {
                       .updateGameResult(
                         parseInt(this.currentRoom),
                         this.submissionDetails.totalCorrect,
-                        this.numAttempts + 1,
+                        this.numAttempts,
                         token,
                       )
                       .subscribe((data) => {
@@ -566,8 +540,6 @@ export class GameRoomComponent implements OnInit {
                       });
                   }
                   this.reduceHeartCount();
-
-                  // this.showResult(stdOutput, JSON.stringify(lastTestcase), this.numAttempts);
                 }
               });
           }, 2000);
@@ -705,8 +677,8 @@ export class GameRoomComponent implements OnInit {
       clearInterval(this.timeElapsedInterval);
       const token = localStorage.getItem('accessToken');
       if (!token) {
-        console.log('Please sign in');
-        // this.router.navigate(['/']);
+        // Not sign in
+        this.router.navigate(['/']);
         return;
       }
       this.api.getRoom(parseInt(this.currentRoom), token).subscribe({
@@ -717,7 +689,6 @@ export class GameRoomComponent implements OnInit {
             room_data.user1Result,
             room_data.user2Result,
           );
-          console.log(winner);
           this.api
             .roomGameOver(
               parseInt(this.currentRoom),
@@ -839,9 +810,6 @@ export class GameRoomComponent implements OnInit {
         this.submissionData.questionId = response.data.question.questionId;
         console.log(this.problemData.title);
         this.problemTitle = this.formatString(this.titleSlug);
-        // this.problemSlug = response.slug;
-        // console.log(this.problemSlug);
-        // console.log(JSON.stringify(response));
         this.problemText = response.data.question.content;
         if (this.submissionData.gameType === 'leetcode') {
           this.api.getProblemStartCode(this.titleSlug).subscribe((data) => {
