@@ -145,7 +145,7 @@ leetcodeRouter.get("/question-set", async (req, res) => {
                             freqBar
                             frontendQuestionId: questionFrontendId
                             isFavor
-                            paidOnly: isPaidOnly
+                            isPaidOnly
                             status
                             title
                             titleSlug
@@ -249,6 +249,7 @@ leetcodeRouter.get("/random-problem", (req, res) => {
                                                 questionId
                                                 questionTitle
                                                 enableRunCode
+                                                isPaidOnly
                                                 enableSubmit
                                                 exampleTestcaseList
                                             }
@@ -286,6 +287,7 @@ leetcodeRouter.get("/random-problem", (req, res) => {
               exampleTestcaseList.data.data.question.exampleTestcaseList,
             content: problemContent.data.data.question.content,
             topicTags: problemContent.data.data.question.topicTags,
+            isPaidOnly: exampleTestcaseList.data.data.question.isPaidOnly,
           },
         };
         return res.json(data);
