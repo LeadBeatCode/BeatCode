@@ -11,7 +11,6 @@ export class WebSocketService {
   // setup the socket connection
   setupSocketConnection() {
     this.socket.on('connect', () => {
-      console.log('Connected to the server');
     });
   }
 

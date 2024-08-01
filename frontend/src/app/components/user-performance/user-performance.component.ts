@@ -22,17 +22,14 @@ export class UserPerformanceComponent implements OnInit {
   constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    console.log('userId in user performance', this.userId);
     this.api.getPerformance(this.userId).subscribe({
       next: (data) => {
-        console.log('data from user performance', data);
         this.wins = data['wins'];
         this.losses = data['losses'];
 
         const historyData = data['history'];
 
         this.quickHistory = historyData.map((game: any) => {
-          console.log('game', game);
           return game;
         });
 
@@ -53,10 +50,8 @@ export class UserPerformanceComponent implements OnInit {
           };
         });
 
-        console.log(this.quickHistory);
 
         this.quickHistoryGames = this.quickHistory.map((group: any) => {
-          console.log('sdfsdf', group.games);
           return group.games;
         });
 
@@ -64,11 +59,9 @@ export class UserPerformanceComponent implements OnInit {
           return group.date;
         });
 
-        console.log('history', this.quickHistoryGames);
         this.nickname = data['nickName'];
       },
       error: (err) => {
-        console.log(err);
       },
     });
   }

@@ -17,7 +17,6 @@ export class QuickMatchHistoryElementComponent implements OnInit {
   @Input() user2bp: number = 0;
   constructor(private api: ApiService) {}
   ngOnInit(): void {
-    console.log('image', this.image);
   }
   getRank(rank: number): string {
     if (rank === null) {

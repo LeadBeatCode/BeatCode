@@ -35,28 +35,22 @@ export class DashboardComponent implements OnInit {
     private fb: FormBuilder,
   ) {
     const navigation = this.router.getCurrentNavigation();
-    console.log('navigation', navigation);
     if (navigation && navigation.extras.state) {
       this.userData = navigation.extras.state['userData'];
-      console.log('userData in dashboard', this.userData);
     }
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     } else {
       this.socket.on('connect', () => {
         this.socketId = this.socket.ioSocket.id;
-        console.log('socket id', this.socketId);
         this.api
           .setUserSocketId(token, this.socketId, this.userData.sub)
           .subscribe({
             next: (data) => {
-              console.log('socket id set');
             },
             error: (err) => {
-              console.log(err);
             },
           });
       });
@@ -72,10 +66,6 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.gptService.getResponse('hello').then((response) => {
-    //   console.log('response', response);
-    // });
-    //console.log('response', response);
     const token = localStorage.getItem('accessToken');
 
     this.api.getUserById(this.userData.sub).subscribe({
@@ -85,25 +75,20 @@ export class DashboardComponent implements OnInit {
         this.userDetails.bp = data.bp;
       },
       error: (err) => {
-        console.log(err);
       },
     });
     if (!token) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     }
-    console.log('userData', this.userData);
     this.api.getFriends(token).subscribe({
       next: (friends) => {
         for (const friend of friends) {
-          console.log('friend', friend);
           // Check if friend's socket is not null
           const token = localStorage.getItem('accessToken');
           if (token !== null) {
             this.api.getUserById(friend.id).subscribe({
               next: (data) => {
-                console.log('friend data', data);
                 const friendSocketId = data.socketId;
                 if (friendSocketId) {
                   // Send online notification to friend
@@ -119,7 +104,6 @@ export class DashboardComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.log(err);
       },
     });
   }
@@ -151,7 +135,6 @@ export class DashboardComponent implements OnInit {
   checkLeetcodeSession() {
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     }
@@ -166,7 +149,6 @@ export class DashboardComponent implements OnInit {
             )
             .subscribe({
               next: (data) => {
-                console.log('checkLeetcodeSession', data);
                 if (data) {
                   this.enterLeetcodeLobby();
                 }
@@ -181,7 +163,6 @@ export class DashboardComponent implements OnInit {
           this.showLeetcodeSessionFormError = 'Invalid cookie';
         },
       });
-    console.log('checkLeetcodeSession');
   }
 
   closeLeetcodeSession() {
@@ -199,33 +180,27 @@ export class DashboardComponent implements OnInit {
   }
 
   logOut() {
-    console.log('log out', this.userData.sub);
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     }
 
     this.api.logOut(token, this.userData.sub).subscribe({
       next: (data) => {
-        console.log('log out', data);
         localStorage.removeItem('accessToken');
         this.oidcSecurityService.logoff().subscribe((result) => {
-          console.log(result);
           this.router.navigate(['/']);
         });
         this.socket.emit('logout', this.userData.sub);
       },
       error: (err) => {
-        console.log(err);
       },
     });
   }
   startPveGame() {
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     }
@@ -240,12 +215,10 @@ export class DashboardComponent implements OnInit {
               });
             },
             error: (err) => {
-              console.log(err);
             },
           });
       },
       error: (err) => {
-        console.log(err);
       },
     });
   }

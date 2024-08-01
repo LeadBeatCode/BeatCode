@@ -156,7 +156,6 @@ roomRouter.get("/:id/sockets", async (req, res) => {
         id: room.userId2,
       },
     });
-    console.log("\n\n\n\n\n", user1, user2);
     return res.json({ socketId1: user1.socketId, socketId2: user2.socketId });
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -178,10 +177,8 @@ roomRouter.put("/:id/playerStatus", isAuthenticated, async (req, res) => {
       return res.status(403).json({ error: "Unauthorized" });
     }
     if (user.id === room.userId1) {
-      console.log("setting user1 status", req.body.status);
       room.user1Status = req.body.status;
     } else {
-      console.log("setting user2 status", req.body.status);
       room.user2Status = req.body.status;
     }
     await room.save();

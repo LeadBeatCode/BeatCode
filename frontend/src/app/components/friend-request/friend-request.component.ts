@@ -20,10 +20,8 @@ export class FriendRequestComponent {
   ) {}
 
   acceptRequest() {
-    console.log('accept friend request');
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     } else {
@@ -31,14 +29,10 @@ export class FriendRequestComponent {
         next: (data) => {
           const { friend, reverseFriend } = data;
           if (friend) {
-            // Send online notification to friend
-            console.log('friend', friend);
             this.api.getUserById(friend.user1).subscribe({
               next: (data) => {
                 const friendSocketId = data.socketId;
                 if (friendSocketId !== null) {
-                  console.log('friendSocketId', friendSocketId);
-                  console.log('friend.friendID', friend.user1);
                   this.socket.emit('new friend', {
                     friendId: friend.user1,
                     friendSocketId: friendSocketId,
@@ -49,7 +43,6 @@ export class FriendRequestComponent {
           }
         },
         error: (err) => {
-          console.log(err);
         },
       });
     }

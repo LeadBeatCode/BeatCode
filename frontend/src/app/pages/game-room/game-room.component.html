@@ -3,7 +3,6 @@
 </div>
 <div class="dark" [ngClass]="{ hidden: !showGameSummaryValue }">
   <div class="game-summary-container">
-    <!-- <div class="game-summary-content-container"> -->
     <div class="game-summary-header">
       {{ winner }} won! <span class="result"></span>
     </div>
@@ -27,13 +26,12 @@
         ></div>
         <div class="title">
           <div class="rank" [ngClass]="getRank(user2bp)"></div>
-          <div class="bp">BP: {{ user1bp }}</div>
+          <div class="bp">BP: {{ user2bp }}</div>
           <div class="nickname">{{ username2 }}</div>
         </div>
       </div>
     </div>
     <div class="game-detail-container">
-      <!-- <div class="game-detail-content"> -->
       <div class="game-title-container">
         <div class="game-title-title title">Question</div>
         <div class="game-title">{{ problemData.title }}</div>

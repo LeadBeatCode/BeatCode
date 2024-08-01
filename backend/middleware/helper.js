@@ -24,17 +24,9 @@ export const isAuthorized = async (req, res, next) => {
         accessToken: token,
       },
     });
-    console.log("logging user", user);
     if (!user)
       return res.status(401).json({ error: "Unauthenticated, please log in" });
     if (user.id !== req.params.id && user.id !== req.body.userId) {
-      console.log(
-        "not authorized",
-        user.id,
-        req.params.id,
-        req.body.userId,
-        req.body,
-      );
       return res.status(403).json({ error: "User not authorized" });
     }
     next();

@@ -16,7 +16,6 @@ export class FriendActionComponent {
   ) {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
     } else {
       this.api.getPendingFriendRequests(accessToken).subscribe({
@@ -24,7 +23,6 @@ export class FriendActionComponent {
           this.pendingRequests = requests;
         },
         error: (err) => {
-          console.log(err);
         },
       });
       this.api.getFriends(accessToken).subscribe({
@@ -32,7 +30,6 @@ export class FriendActionComponent {
           this.friends = friends;
         },
         error: (err) => {
-          console.log(err);
         },
       });
     }
@@ -41,7 +38,6 @@ export class FriendActionComponent {
   ngOnInit(): void {}
 
   sendFriendRequest() {
-    console.log('send friend request');
     const friendId = (
       document.querySelector('.friend-search') as HTMLInputElement
     ).value;
@@ -52,7 +48,6 @@ export class FriendActionComponent {
         next: (data) => {
           const accessToken = localStorage.getItem('accessToken');
           if (!accessToken) {
-            console.log('Please sign in');
             this.router.navigate(['/']);
             return;
           }
@@ -64,11 +59,9 @@ export class FriendActionComponent {
           });
         },
         error: (err) => {
-          console.log(err); // User not found needs to be handled
         },
       });
     } else {
-      console.log('Please enter a friendId');
     }
   }
 }

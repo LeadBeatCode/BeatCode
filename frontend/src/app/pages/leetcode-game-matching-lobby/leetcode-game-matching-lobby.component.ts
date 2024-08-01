@@ -36,7 +36,6 @@ export class LeetcodeGameMatchingLobbyComponent {
   ) {
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     }

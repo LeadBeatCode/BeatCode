@@ -23,7 +23,6 @@ export class FriendListComponent implements OnInit {
   ngOnInit(): void {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
     } else {
       this.api.getFriends(accessToken).subscribe({
@@ -31,7 +30,6 @@ export class FriendListComponent implements OnInit {
           this.friends = friends;
         },
         error: (err) => {
-          console.log(err);
         },
       });
     }
@@ -44,24 +42,14 @@ export class FriendListComponent implements OnInit {
     });
 
     this.socket.on('friend offline', (friendId: any) => {
-      console.log('friend offline', friendId);
       this.onlineFriends = this.onlineFriends.filter((id) => id !== friendId);
     });
   }
 
   isFriendOnline(friendId: any): boolean {
-    console.log(
-      'is friend online',
-      this.onlineFriends.includes(friendId),
-      friendId,
-      this.onlineFriends,
-    );
     return this.onlineFriends.includes(friendId);
   }
 
   removeFriend() {
-    console.log('remove friend');
-    // Call the API to remove the friend
-    // You can use fetch or any other HTTP library to make the API call
   }
 }

@@ -157,12 +157,6 @@ export class GameRoomComponent implements OnInit {
                     roomId: string,
                     toSocketId: string,
                   ) => {
-                    console.log(
-                      'opponent_reconnected',
-                      title,
-                      socketId,
-                      toSocketId,
-                    );
                     if (this.playerTitle !== title) {
                       this.opponentSocketId = socketId;
                     }
@@ -179,15 +173,12 @@ export class GameRoomComponent implements OnInit {
                     this.socket.on(
                       'reconnected',
                       (userId: string, socketId: string) => {
-                        console.log('reconnecting', userId, socketId);
                         this.api
                           .setUserSocketId(accessToken, socketId, this.userId1)
                           .subscribe({
                             next: (data) => {
-                              console.log('socket id set');
                             },
                             error: (err) => {
-                              console.log(err);
                             },
                           });
                         this.api
@@ -203,10 +194,6 @@ export class GameRoomComponent implements OnInit {
                               accessToken,
                             );
                             socketOpponentUpdated = true;
-                            console.log(
-                              'opponent socket id',
-                              this.opponentSocketId,
-                            );
                           });
                       },
                     );
@@ -224,15 +211,12 @@ export class GameRoomComponent implements OnInit {
                     this.socket.on(
                       'reconnected',
                       (userId: string, socketId: string) => {
-                        console.log('reconnecting', userId, socketId);
                         this.api
                           .setUserSocketId(accessToken, socketId, this.userId2)
                           .subscribe({
                             next: (data) => {
-                              console.log('socket id set');
                             },
                             error: (err) => {
-                              console.log(err);
                             },
                           });
                         this.api
@@ -248,10 +232,6 @@ export class GameRoomComponent implements OnInit {
                               accessToken,
                             );
                             socketOpponentUpdated = true;
-                            console.log(
-                              'opponent socket id',
-                              this.opponentSocketId,
-                            );
                           });
                       },
                     );
@@ -264,29 +244,24 @@ export class GameRoomComponent implements OnInit {
             this.getProblem();
           },
           error: (err) => {
-            console.log(err);
             if (err.status === 401) {
-              console.log('Please sign in');
               this.router.navigate(['/']);
             } else if (err.status === 403) {
-              console.log('You are not authorized to access this page');
               this.router.navigate(['/']);
             }
           },
         });
       } else {
-        console.log('Please sign in');
         this.router.navigate(['/']);
       }
     });
   }
 
   ngOnInit() {
-    this.socket.on('game won by opponent', () => {
-      console.log('game won by opponent');
+    this.socket.on('game terminated by opponent', () => {
+      
       this.showGameSummary();
     });
-    console.log('game room init');
 
     this.dateStart = moment();
 
@@ -359,7 +334,6 @@ export class GameRoomComponent implements OnInit {
   getUserSocket() {
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     }
@@ -370,7 +344,6 @@ export class GameRoomComponent implements OnInit {
         });
       },
       error: (err) => {
-        console.log(err);
       },
     });
   }
@@ -395,7 +368,27 @@ export class GameRoomComponent implements OnInit {
 
   showGameSummary = () => {
     clearInterval(this.timeElapsedInterval);
-    this.showGameSummaryValue = true;
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      this.router.navigate(['/']);
+      return;
+    }
+    this.api.getRoom(parseInt(this.currentRoom), token).subscribe({
+      next: (data) => {
+        if (data.winner === 'p1') {
+          this.winner = this.username1;
+          this.user1bp += 50;
+          this.user2bp = Math.max(0, this.user2bp - 50);
+        } else {
+          this.winner = this.username2;
+          this.user1bp = Math.max(0, this.user1bp - 50);
+          this.user2bp += 50;
+        }
+        this.showGameSummaryValue = true;
+      },
+      error: (err) => {
+      },
+    });
   };
 
   gameOver = () => {
@@ -416,12 +409,10 @@ export class GameRoomComponent implements OnInit {
         });
     }
     if (totalCorrect === totalTestcases) {
-      console.log('Game Over');
       clearInterval(this.timeInterval);
       clearInterval(this.timeElapsedInterval);
       const token = localStorage.getItem('accessToken');
       if (!token) {
-        console.log('Please sign in');
         this.router.navigate(['/']);
         return;
       }
@@ -435,6 +426,7 @@ export class GameRoomComponent implements OnInit {
           this.socket.emit('game over', {
             roomId: this.currentRoom,
             token: token,
+            playerTitle: this.playerTitle,
           });
           this.showGameSummary();
         });
@@ -481,12 +473,6 @@ export class GameRoomComponent implements OnInit {
                     (this.submissionDetails.compileError &&
                       this.submissionDetails.compileError != '')
                   ) {
-                    console.log(
-                      this.submissionDetails.runtimeError,
-                      this.submissionDetails.compileError,
-                      !this.submissionDetails.runtimeError,
-                      !this.submissionDetails.compileError,
-                    );
                     this.showError(
                       this.submissionDetails.runtimeError
                         ? this.submissionDetails.runtimeError
@@ -511,10 +497,6 @@ export class GameRoomComponent implements OnInit {
                   }
                   const token = localStorage.getItem('accessToken');
                   if (token) {
-                    console.log(
-                      this.submissionDetails.expectedOutput,
-                      this.numAttempts,
-                    );
                     this.api
                       .updateGameResult(
                         parseInt(this.currentRoom),
@@ -595,16 +577,6 @@ export class GameRoomComponent implements OnInit {
           }
         }
       });
-    } else {
-      // var code = this.playerTitle === 'p1' ? this.player1Code : this.player2Code;
-      // console.log(this.playerTitle);
-      // //code = this.import + code;
-      // //code = this.player2Code + 'print(solution(' + JSON.stringify(expectedInputs[0].subInput1) + '))';
-      // //code += 'print(solution("aaabb"))';
-      // console.log(code);
-      // this.api.submitCode(code, this.language).subscribe((data) => {
-      //   this.checkSubmission(data.token, isGptResponse, this.expectedOutput, 'aaabb');
-      // });
     }
   }
 
@@ -614,23 +586,15 @@ export class GameRoomComponent implements OnInit {
     user1Result: number,
     user2Result: number,
   ) => {
-    console.log(user1Attempts, user2Attempts, user1Result, user2Result);
     var winner = 2;
     if (user1Result > user2Result) {
       winner = 1;
-      this.user1bp += 50;
-      this.user2bp = Math.max(0, this.user2bp - 50);
     } else if (user1Result === user2Result && user1Attempts < user2Attempts) {
       winner = 1;
-      this.user1bp += 50;
-      this.user2bp = Math.max(0, this.user2bp - 50);
-    } else {
-      this.user1bp = Math.max(0, this.user1bp - 50);
-      this.user2bp += 50;
     }
 
     this.winner = winner === 1 ? this.username1 : this.username2;
-    return `p${winner}`;
+    return winner;
   };
 
   reduceHeartCount() {
@@ -641,7 +605,6 @@ export class GameRoomComponent implements OnInit {
       this.player2HeartCount[this.numAttempts] = 0;
       this.player2HeartCount = [...this.player2HeartCount];
     }
-    console.log(this.numAttempts, this.HEART_COUNT);
     if (this.numAttempts < this.HEART_COUNT - 1) {
       this.numAttempts += 1;
     } else {
@@ -665,18 +628,18 @@ export class GameRoomComponent implements OnInit {
             .roomGameOver(
               parseInt(this.currentRoom),
               token,
-              this.playerTitle === 'p1' && winner === 'p1' ? 'p1' : 'p2',
+              winner === 1  ? 'p1' : 'p2',
             )
             .subscribe((data) => {
               this.socket.emit('game over', {
                 roomId: this.currentRoom,
                 token: token,
+                playerTitle: this.playerTitle,
               });
               this.showGameSummary();
             });
         },
         error: (err) => {
-          console.log(err);
         },
       });
     }
@@ -784,7 +747,6 @@ export class GameRoomComponent implements OnInit {
             } else {
               this.player2Code += data[this.language];
             }
-            console.log(this.player1Code);
           });
         } else {
           this.problemInitialCode = {
@@ -849,8 +811,6 @@ export class GameRoomComponent implements OnInit {
     }
     if (language !== 'choose') {
       this.language = language;
-      //this.editor.setLanguageConfiguration(language);
-      //monaco.editor.setModelLanguage(this.editor.getModel(), language);
       if (!this.isPve) {
         this.socket.emit('change language', {
           language: language,

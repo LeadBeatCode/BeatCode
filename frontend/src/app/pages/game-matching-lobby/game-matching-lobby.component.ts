@@ -37,14 +37,11 @@ export class GameMatchingLobbyComponent {
   ) {
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      console.log('Please sign in');
       this.router.navigate(['/']);
       return;
     }
     this.loading();
     const navigation = this.router.getCurrentNavigation();
-    console.log('navigation', navigation);
-    //console.log('navigation.extras.state', navigation.extras.state);
     if (navigation && navigation.extras.state) {
       this.userId = navigation.extras.state['userId'];
     }
@@ -135,7 +132,6 @@ export class GameMatchingLobbyComponent {
       (roomId: number, accessToken: string, playerTitle: string) => {
         this.game.updateStatus(true);
         clearInterval(this.timerInterval);
-        console.log('start game', playerTitle);
         this.router.navigate(['/game-room'], {
           queryParams: { roomId: roomId },
           state: { playerTitle: playerTitle },

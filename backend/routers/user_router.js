@@ -153,7 +153,6 @@ userRouter.put("/clearSocket", async (req, res) => {
       },
     });
     if (!user) return res.status(404).json({ error: "User not found" });
-    console.log("clear socket was called", req.body.socketId);
     user.set("socketId", "");
     await user.save();
     return res.status(200).json(user);
