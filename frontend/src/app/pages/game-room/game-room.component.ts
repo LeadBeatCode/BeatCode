@@ -177,10 +177,8 @@ export class GameRoomComponent implements OnInit {
                         this.api
                           .setUserSocketId(accessToken, socketId, this.userId1)
                           .subscribe({
-                            next: (data) => {
-                            },
-                            error: (err) => {
-                            },
+                            next: (data) => {},
+                            error: (err) => {},
                           });
                         this.api
                           .getRoomSocketIds(this.currentRoom)
@@ -215,10 +213,8 @@ export class GameRoomComponent implements OnInit {
                         this.api
                           .setUserSocketId(accessToken, socketId, this.userId2)
                           .subscribe({
-                            next: (data) => {
-                            },
-                            error: (err) => {
-                            },
+                            next: (data) => {},
+                            error: (err) => {},
                           });
                         this.api
                           .getRoomSocketIds(this.currentRoom)
@@ -259,8 +255,7 @@ export class GameRoomComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    this.socket.on("reduce", (roomId: string) => {
+    this.socket.on('reduce', (roomId: string) => {
       if (this.playerTitle === 'p1') {
         this.player2HeartCount[this.opponentNumAttempts] = 0;
         this.player2HeartCount = [...this.player2HeartCount];
@@ -272,7 +267,6 @@ export class GameRoomComponent implements OnInit {
     });
 
     this.socket.on('game terminated by opponent', () => {
-      
       this.showGameSummary();
     });
 
@@ -353,11 +347,11 @@ export class GameRoomComponent implements OnInit {
     this.gameService.getUserSocket(token).subscribe({
       next: (data) => {
         localStorage.removeItem('accessToken');
-        this.gameService.getUserSocket('need to do it').subscribe((result) => {
-        });
+        this.gameService
+          .getUserSocket('need to do it')
+          .subscribe((result) => {});
       },
-      error: (err) => {
-      },
+      error: (err) => {},
     });
   }
 
@@ -372,11 +366,11 @@ export class GameRoomComponent implements OnInit {
     this.submissionDetails.compileError = check_data.compileError;
     this.submissionDetails.codeOutput = 'Output : ' + check_data.codeOutput;
     this.submissionDetails.lastTestcase =
-      'Test case : ' + check_data.lastTestcase; // check_data.lastTestcase != "" ? JSON.parse(check_data.lastTestcase) : "";
+      'Test case : ' + check_data.lastTestcase;
     this.submissionDetails.totalCorrect = check_data.totalCorrect;
     this.submissionDetails.totalTestcases = ' / ' + check_data.totalTestcases;
     this.submissionDetails.expectedOutput =
-      'Expected : ' + check_data.expectedOutput; // check_data.expectedOutput != "" ? JSON.parse(check_data.expectedOutput) : "";
+      'Expected : ' + check_data.expectedOutput;
   };
 
   showGameSummary = () => {
@@ -399,8 +393,7 @@ export class GameRoomComponent implements OnInit {
         }
         this.showGameSummaryValue = true;
       },
-      error: (err) => {
-      },
+      error: (err) => {},
     });
   };
 
@@ -418,8 +411,7 @@ export class GameRoomComponent implements OnInit {
           this.numAttempts,
           token,
         )
-        .subscribe((data) => {
-        });
+        .subscribe((data) => {});
     }
     if (totalCorrect === totalTestcases) {
       clearInterval(this.timeInterval);
@@ -517,8 +509,7 @@ export class GameRoomComponent implements OnInit {
                         this.numAttempts,
                         token,
                       )
-                      .subscribe((data) => {
-                      });
+                      .subscribe((data) => {});
                   }
                   this.reduceHeartCount();
                 }
@@ -608,7 +599,7 @@ export class GameRoomComponent implements OnInit {
       winner = 1;
       this.user1bp += 50;
       this.user2bp = Math.max(0, this.user2bp - 50);
-    } else{
+    } else {
       this.user1bp = Math.max(0, this.user1bp - 50);
       this.user2bp += 50;
     }
@@ -627,13 +618,15 @@ export class GameRoomComponent implements OnInit {
     }
     if (this.numAttempts < this.HEART_COUNT - 1) {
       this.numAttempts += 1;
-      this.socket.emit('reduce', {roomId: this.currentRoom, playerTo: this.opponentSocketId});
+      this.socket.emit('reduce', {
+        roomId: this.currentRoom,
+        playerTo: this.opponentSocketId,
+      });
     } else {
       clearInterval(this.timeInterval);
       clearInterval(this.timeElapsedInterval);
       const token = localStorage.getItem('accessToken');
       if (!token) {
-        // Not sign in
         this.router.navigate(['/']);
         return;
       }
@@ -649,7 +642,7 @@ export class GameRoomComponent implements OnInit {
             .roomGameOver(
               parseInt(this.currentRoom),
               token,
-              winner === 1  ? 'p1' : 'p2',
+              winner === 1 ? 'p1' : 'p2',
             )
             .subscribe((data) => {
               this.socket.emit('game over', {
@@ -660,8 +653,7 @@ export class GameRoomComponent implements OnInit {
               this.showGameSummary();
             });
         },
-        error: (err) => {
-        },
+        error: (err) => {},
       });
     }
   }
@@ -791,21 +783,12 @@ export class GameRoomComponent implements OnInit {
   }
 
   formatString(input: string): string {
-    // Step 1: Replace all dashes with spaces
     let formattedString = input.replace(/-/g, ' ');
-
-    // Step 2: Split the string into words
     let words = formattedString.split(' ');
-
-    // Step 3: Capitalize the first letter of each word
     words = words.map(
       (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
     );
-
-    // Step 4: Join the words back into a single string
     formattedString = words.join(' ');
-
-    // Step 5: Return the formatted string
     return formattedString;
   }
 

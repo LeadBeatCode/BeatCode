@@ -87,7 +87,6 @@ leetcodeRouter.get("/official-solution/:title", async (req, res) => {
               const codes = response.data.data.allPlaygroundCodes;
               codes.map((element) => {
                 const code = element.code;
-
               });
               return res.json(response.data);
             });

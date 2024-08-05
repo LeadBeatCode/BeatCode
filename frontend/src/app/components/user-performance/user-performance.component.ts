@@ -53,14 +53,12 @@ export class UserPerformanceComponent implements OnInit {
           return groups;
         }, {});
 
-        // Edit: to add it in the array format instead
         this.quickHistory = Object.keys(groups).map((date) => {
           return {
             date,
             games: groups[date],
           };
         });
-
 
         this.quickHistoryGames = this.quickHistory.map((group: any) => {
           return group.games;
@@ -72,8 +70,7 @@ export class UserPerformanceComponent implements OnInit {
 
         this.nickname = data['nickName'];
       },
-      error: (err) => {
-      },
+      error: (err) => {},
     });
   }
 

@@ -64,22 +64,6 @@ userRouter.get("/:id", async (req, res) => {
   }
 });
 
-// userRouter.put("/:nickname/socket", isAuthorized, async (req, res) => {
-//   try {
-//     const user = await User.findOne({
-//       where: {
-//         nickname: req.params.nickname,
-//       },
-//     });
-//     if (!user) return res.status(404).json({ error: "User not found" });
-//     user.set("socketId", req.body.socketId);
-//     await user.save();
-//     return res.json(user);
-//   } catch (error) {
-//     return res.status(400).json({ error: error.message });
-//   }
-// } )
-
 userRouter.put("/:id/rank", isAuthorized, async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);

@@ -17,26 +17,9 @@ export class GptService {
     dangerouslyAllowBrowser: true,
   });
 
-  //private openai: AzureOpenAI;
-
-  constructor(private http: HttpClient) {
-    // const credential = new InteractiveBrowserCredential({clientId: "redirect"});
-    // const scope = 'https://cognitiveservices.azure.com/.default';
-    // const azureADTokenProvider = getBearerTokenProvider(credential, scope);
-    // this.openai = new AzureOpenAI({
-    //   azureADTokenProvider
-    // });
-  }
-  /**
-   * HttpClient has methods for all the CRUD actions: get, post, put, patch, delete, and head.
-   * First parameter is the URL, and the second parameter is the body.
-   * You can use this as a reference for how to use HttpClient.
-   * @param content The content of the message
-   * @returns
-   */
+  constructor(private http: HttpClient) {}
 
   getResponse(content: string): Promise<string | null> {
-    //const returnData = null;
     return this.chatgpt.chat.completions
       .create({
         messages: [{ role: 'user', content: content }],

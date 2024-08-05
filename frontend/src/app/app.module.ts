@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ProblemComponent } from './components/problem/problem.component';
-// import { EditorComponent } from './components/editor/editor.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
 
@@ -82,7 +81,7 @@ const socketIoConfig: SocketIoConfig = {
 
     BrowserModule,
     FormsModule,
-    MonacoEditorModule.forRoot(), // use forRoot() in main app module only.
+    MonacoEditorModule.forRoot(),
     HttpClientModule,
     SocketIoModule.forRoot(socketIoConfig),
     AppRoutingModule,

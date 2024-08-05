@@ -16,8 +16,7 @@ export class QuickMatchHistoryElementComponent implements OnInit {
   @Input() user1bp: number = 0;
   @Input() user2bp: number = 0;
   constructor(private api: ApiService) {}
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
   getRank(rank: number): string {
     if (rank === null) {
       return 'unranked';
