@@ -17,9 +17,7 @@ export class GptService {
     dangerouslyAllowBrowser: true,
   });
 
-
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   getResponse(content: string): Promise<string | null> {
     return this.chatgpt.chat.completions

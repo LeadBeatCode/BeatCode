@@ -22,15 +22,13 @@ export class FriendActionComponent {
         next: (requests) => {
           this.pendingRequests = requests;
         },
-        error: (err) => {
-        },
+        error: (err) => {},
       });
       this.api.getFriends(accessToken).subscribe({
         next: (friends) => {
           this.friends = friends;
         },
-        error: (err) => {
-        },
+        error: (err) => {},
       });
     }
   }
@@ -42,7 +40,6 @@ export class FriendActionComponent {
       document.querySelector('.friend-search') as HTMLInputElement
     ).value;
     if (friendId) {
-
       this.api.getUserById(friendId).subscribe({
         next: (data) => {
           const accessToken = localStorage.getItem('accessToken');
@@ -51,14 +48,11 @@ export class FriendActionComponent {
             return;
           }
           this.api.sendFriendRequest(accessToken, friendId).subscribe({
-            next: (data) => {
-            },
-            error: (err) => {
-            },
+            next: (data) => {},
+            error: (err) => {},
           });
         },
-        error: (err) => {
-        },
+        error: (err) => {},
       });
     } else {
     }

@@ -148,8 +148,7 @@ pre {
   margin: auto;
   background:
     linear-gradient(rgb(26, 25, 25), rgb(26, 25, 25)) padding-box,
-    linear-gradient(to right, rgb(69, 202, 220), rgb(6, 255, 6))
-      border-box;
+    linear-gradient(to right, rgb(69, 202, 220), rgb(6, 255, 6)) border-box;
   border-radius: 50em;
   border: 5px solid transparent;
 }

@@ -42,8 +42,7 @@ export class FriendRequestComponent {
             });
           }
         },
-        error: (err) => {
-        },
+        error: (err) => {},
       });
     }
   }

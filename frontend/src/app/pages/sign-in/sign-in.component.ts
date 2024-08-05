@@ -53,8 +53,7 @@ export class SignInComponent implements OnInit {
                         state: { userData: userData, socketId: this.socketId },
                       });
                     },
-                    error: (err) => {
-                    },
+                    error: (err) => {},
                   });
               }
             },
@@ -64,8 +63,7 @@ export class SignInComponent implements OnInit {
   }
 
   loginUser() {
-    this.oidcSecurityService.checkAuth().subscribe((auth) => {
-    });
+    this.oidcSecurityService.checkAuth().subscribe((auth) => {});
 
     this.oidcSecurityService.authorize();
   }

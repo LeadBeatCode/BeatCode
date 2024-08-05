@@ -29,8 +29,7 @@ export class FriendListComponent implements OnInit {
         next: (friends) => {
           this.friends = friends;
         },
-        error: (err) => {
-        },
+        error: (err) => {},
       });
     }
     this.socket.on('friend online', (friendId: any) => {
@@ -50,6 +49,5 @@ export class FriendListComponent implements OnInit {
     return this.onlineFriends.includes(friendId);
   }
 
-  removeFriend() {
-  }
+  removeFriend() {}
 }

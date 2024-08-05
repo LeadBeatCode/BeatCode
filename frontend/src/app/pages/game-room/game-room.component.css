@@ -325,7 +325,6 @@
   display: block;
 }
 
-
 .rank1 {
   background-image: url(../../../assets/rank1.png);
 }
@@ -374,7 +373,7 @@
     width: 240px;
     height: 900px;
   }
-  
+
   .editor-contaier-left,
   .editor-contaier-right {
     width: 240px;

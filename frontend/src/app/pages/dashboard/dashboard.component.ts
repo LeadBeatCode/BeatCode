@@ -48,10 +48,8 @@ export class DashboardComponent implements OnInit {
         this.api
           .setUserSocketId(token, this.socketId, this.userData.sub)
           .subscribe({
-            next: (data) => {
-            },
-            error: (err) => {
-            },
+            next: (data) => {},
+            error: (err) => {},
           });
       });
     }
@@ -74,8 +72,7 @@ export class DashboardComponent implements OnInit {
         this.userDetails.subrank = data.subrank;
         this.userDetails.bp = data.bp;
       },
-      error: (err) => {
-      },
+      error: (err) => {},
     });
     if (!token) {
       this.router.navigate(['/']);
@@ -103,8 +100,7 @@ export class DashboardComponent implements OnInit {
           }
         }
       },
-      error: (err) => {
-      },
+      error: (err) => {},
     });
   }
 
@@ -194,8 +190,7 @@ export class DashboardComponent implements OnInit {
         });
         this.socket.emit('logout', this.userData.sub);
       },
-      error: (err) => {
-      },
+      error: (err) => {},
     });
   }
   startPveGame() {
@@ -214,12 +209,10 @@ export class DashboardComponent implements OnInit {
                 queryParams: { roomId: data.id },
               });
             },
-            error: (err) => {
-            },
+            error: (err) => {},
           });
       },
-      error: (err) => {
-      },
+      error: (err) => {},
     });
   }
 }

@@ -49,7 +49,6 @@ export class UserPerformanceComponent implements OnInit {
           };
         });
 
-
         this.quickHistoryGames = this.quickHistory.map((group: any) => {
           return group.games;
         });
@@ -60,8 +59,7 @@ export class UserPerformanceComponent implements OnInit {
 
         this.nickname = data['nickName'];
       },
-      error: (err) => {
-      },
+      error: (err) => {},
     });
   }
 

@@ -9,8 +9,7 @@ export class WebSocketService {
   constructor(private socket: Socket) {}
 
   setupSocketConnection() {
-    this.socket.on('connect', () => {
-    });
+    this.socket.on('connect', () => {});
   }
 
   getEditorUpdates(): Observable<any> {
