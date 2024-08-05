@@ -46,7 +46,5 @@ export class FriendRequestComponent {
         },
       });
     }
-    // Call the API to accept the friend request
-    // You can use fetch or any other HTTP library to make the API call
   }
 }

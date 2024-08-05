@@ -7,7 +7,6 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class ApiService {
-  // endpoint = 'http://localhost:3000';
   endpoint = environment.apiEndpoint;
   judege0Token = environment.judge0Token;
   judege0Url = environment.judge0Url;
@@ -75,7 +74,6 @@ export class ApiService {
     userId2: string,
     token: string,
     isPve: boolean,
-    // questionTitleSlug: string,
     gameType: string,
   ): Observable<any> {
     return this.http.post(
@@ -85,7 +83,6 @@ export class ApiService {
         isPve,
         userId1,
         userId2,
-        // questionTitleSlug,
         gameType,
       },
       {

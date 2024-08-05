@@ -42,7 +42,6 @@ export class UserPerformanceComponent implements OnInit {
           return groups;
         }, {});
 
-        // Edit: to add it in the array format instead
         this.quickHistory = Object.keys(groups).map((date) => {
           return {
             date,

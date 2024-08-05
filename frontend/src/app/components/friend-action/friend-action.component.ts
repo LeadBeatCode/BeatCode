@@ -42,8 +42,7 @@ export class FriendActionComponent {
       document.querySelector('.friend-search') as HTMLInputElement
     ).value;
     if (friendId) {
-      // Call the API to check if the user with the given friendId exists
-      // You can use fetch or any other HTTP library to make the API call
+
       this.api.getUserById(friendId).subscribe({
         next: (data) => {
           const accessToken = localStorage.getItem('accessToken');
