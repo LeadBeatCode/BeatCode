@@ -33,7 +33,11 @@
         <div class="overview-inner-container">
           <div class="title">STATISTICS</div>
           <div class="overview-contents-container">
-            <div class="content">No Statistics Available</div>
+            <div class="content">
+              <radarchart [categories]="radarCategories" [data]="radarData"></radarchart>
+              <tag-list [tagsMap]="tags"></tag-list>
+              <div></div>
+            </div>
           </div>
         </div>
       </div>

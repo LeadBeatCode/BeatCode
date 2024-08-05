@@ -134,6 +134,14 @@
   align-items: center;
 }
 
+.content {
+  display: flex;
+  margin-top: -20px;
+  letter-spacing: 2px;
+  color: rgb(182, 182, 182);
+  align-items: start;
+}
+
 .ranking-title {
   color:rgb(206, 206, 206);
   letter-spacing: 2px;

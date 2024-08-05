@@ -9,6 +9,17 @@ import { ApiService } from '../../services/apiService/api.service';
 export class UserPerformanceComponent implements OnInit {
   wins: number = 7;
   losses: number = 3;
+  radarCategories: string[] = ['Graphs', 'SQL', 'Python', 'Heap', 'Recursions', 'Shell'];
+  radarData: number[] = [80, 50, 30, 40, 100, 20];
+  tags: Map<string, number> = new Map<string, number>([
+    ['#dynamic programming', 12],
+    ['#mathematics', 30],
+    ['backtracking', 5],
+    ['implementation', 10],
+    ['bruteforcing', 3],
+    ['data structures', 20],
+    ['number theory', 15],
+  ]);
   @Input() changeLoadMenu: Function = () => {};
   @Input() userId: string = '';
   rank: string = '';
