@@ -70,7 +70,6 @@ export const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
 
   const createRandomProblem = async () => {
     const problem = await apiService.getRandomProblem();

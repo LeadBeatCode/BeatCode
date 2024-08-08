@@ -71,7 +71,7 @@ export class SignInComponent implements OnInit {
   logout() {
     this.oidcSecurityService
       .logoff()
-      .subscribe((result) => console.log(result));
+      .subscribe((result) => {});
   }
 
   toggleCredits() {

@@ -67,7 +67,6 @@ import {
     }
   
     updateChart() {
-      console.log(`Categories: ${this.categories}, Data: ${this.data}`);
   
       this.chartOptions.series = [
         {
