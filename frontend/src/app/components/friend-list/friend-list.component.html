@@ -1,0 +1,14 @@
+<div class="friend-list-container">
+  <div class="friend-container">
+    <div class="friend-item" *ngFor="let friend of friends">
+      <app-friend
+        #friendComponent
+        [isOnline]="isFriendOnline(friend.id)"
+        [name]="friend.nickname"
+        [rank]="friend.rank"
+        [image]="friend.picture"
+        [id]="friend.id"
+      ></app-friend>
+    </div>
+  </div>
+</div>

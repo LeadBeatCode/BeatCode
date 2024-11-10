@@ -1,0 +1,97 @@
+<div class="mobile">BeatCode is not supported on mobile.</div>
+<div class="dark" [ngClass]="{ hidden: !showLeetcodeSessionValue }">
+  <div class="leetcode-session-container">
+    <div class="close-btn" (click)="closeLeetcodeSession()"></div>
+    <div class="leetcode-session-header">
+      <div class="title">Enter LeetCode Cookie</div>
+      <div class="details">
+        You need LEETCODE_SESSION to play this game as we cannot login to your
+        leetcode account. Get your cookie from leetcode.com.
+      </div>
+    </div>
+    <form [formGroup]="leetcodeCookieForm" class="leetcode-session-data">
+      <input
+        class="leetcode-session-input"
+        type="text"
+        id="submit-btn"
+        required
+        placeholder="LEETCODE_SESSION = ..."
+        formControlName="cookie"
+      />
+      <div type="submit" class="submit-btn" (click)="checkLeetcodeSession()">
+        Submit
+      </div>
+      <div class="error" [innerHTML]="showLeetcodeSessionFormError"></div>
+    </form>
+  </div>
+</div>
+<div class="body-container">
+  <div class="header-side-container">
+    <div class="user-profile-container">
+      <div class="user-profile-image-container">
+        <div
+          class="user-profile-image"
+          [style.backgroundImage]="'url(' + userData.picture + ')'"
+        ></div>
+      </div>
+      <div class="username">{{ userData.nickname }}</div>
+    </div>
+    <div class="friends-container">
+      <div class="friends-title">
+        <div class="title-container">
+          <div class="text">friends</div>
+          <div class="number">0</div>
+        </div>
+        <div class="add-friend-btn" (click)="changeLoadFriendList()"></div>
+      </div>
+      <div class="friends-component">
+        <app-friend-list
+          *ngIf="loadFriendList"
+          [onlineFriends]="onlineFriends"
+        ></app-friend-list>
+        <app-friend-action *ngIf="!loadFriendList"></app-friend-action>
+      </div>
+    </div>
+    <div class="footer">
+      <app-header></app-header>
+    </div>
+  </div>
+  <div class="main-container highlight">
+    <div class="header-container">
+      <div class="menu">
+        <div
+          class="menu-item"
+          [ngClass]="{ active: loadMenu === 'performance' }"
+          (click)="changeLoadMenu('performance')"
+        >
+          User Performance
+        </div>
+        <div
+          class="menu-item"
+          [ngClass]="{ active: loadMenu === 'rankers' }"
+          (click)="changeLoadMenu('rankers')"
+        >
+          Top Rankers
+        </div>
+      </div>
+      <div class="play-pvp-game-container">
+        <div class="play-game-btn" (click)="showLobby()">Start Game</div>
+        <div class="pvp-btns-container" [ngClass]="{ hidden: !showLobbyValue }">
+          <div class="play-game-btn" (click)="enterLobby()">Normal</div>
+          <div class="play-game-btn" (click)="showLeetcodeSession()">
+            Leetcode
+          </div>
+          <div class="play-game-btn" (click)="startPveGame()">PVE</div>
+        </div>
+      </div>
+      <div class="logOut-btn" (click)="logOut()">LogOut</div>
+    </div>
+    <app-user-performance
+      *ngIf="loadMenu === 'performance'"
+      [changeLoadMenu]="changeLoadMenuFunc"
+      [bp]="userDetails.bp"
+      [userId]="userData.sub"
+    ></app-user-performance>
+    <app-rankers *ngIf="loadMenu === 'rankers'"></app-rankers>
+  </div>
+</div>

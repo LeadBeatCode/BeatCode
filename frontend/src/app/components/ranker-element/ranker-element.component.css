@@ -1,0 +1,142 @@
+.ranker-container {
+  width: 100%;
+  display: block;
+  height: 52px;
+  margin-top: 50px;
+  user-select: none;
+  letter-spacing: 2px;
+  background-image: linear-gradient(
+    90deg,
+    rgba(253, 8, 61, 0.4) 0%,
+    rgba(17, 107, 105, 0.2) 60%,
+    rgba(61, 157, 247, 0.1) 90%,
+    transparent 100%
+  );
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.ranker-content {
+  width: inherit;
+  height: inherit;
+  display: flex;
+  align-items: center;
+  margin-left: -10px;
+  width: 100%;
+  flex-basis: calc(3 / 12 * 100%);
+}
+
+.user-info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 500px;
+  height: 100%;
+}
+
+.user-profile-image-container {
+  margin-left: 50px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  margin-top: 10px;
+  height: 50px;
+  width: 50px;
+}
+
+.user-info {
+  font-size: 24px;
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.user-info .username {
+  flex-flow: row;
+  width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-info .profile-image {
+  margin-right: 4px;
+  height: 35px;
+  width: 35px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 1;
+  border: 1px solid transparent;
+  border-radius: 50%;
+}
+
+.rank {
+  display: flex;
+  align-items: center;
+  width: 200px;
+  height: 100%;
+  font-size: 20px;
+  margin-left: -90px;
+  color: white;
+}
+
+.user-info-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rank-image-container {
+  height: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 2px;
+  margin-right: 5px;
+}
+
+.rank-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.rank1 {
+  background-image: url(../../../assets/rank1.png);
+}
+
+.rank2 {
+  background-image: url(../../../assets/rank2.png);
+}
+
+.rank3 {
+  background-image: url(../../../assets/rank3.png);
+}
+
+.rank4 {
+  background-image: url(../../../assets/rank4.png);
+}
+
+.rank5 {
+  background-image: url(../../../assets/rank5.png);
+}
+
+.duration .time {
+  margin-left: 3px;
+}
+
+@media (max-width: 1000px) {
+  .rank-image {
+    display: none;
+  }
+
+  .profile-image {
+    display: none;
+  }
+}

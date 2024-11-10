@@ -1,0 +1,123 @@
+.lobby-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  inset: 0;
+  margin: auto;
+  position: absolute;
+  width: 550px;
+  height: 500px;
+}
+
+.accept-btn {
+  padding: 8px 12px;
+  line-height: 20px;
+  border-radius: 8px;
+  font-size: 32px;
+  font-family: "Tiny5";
+  color: rgb(104, 104, 104);
+  cursor: pointer;
+  margin: 8px;
+  letter-spacing: 2px;
+  visibility: hidden;
+}
+
+.accept-btn.active {
+  visibility: visible;
+}
+
+.accept-btn:hover {
+  color: rgb(6, 255, 6);
+  transition: 0.5s;
+}
+
+.accept-btn.clicked {
+  color: rgb(6, 255, 6);
+}
+
+.loading-animation {
+  height: 24px;
+  font-size: 32px;
+  font-family: "Tiny5";
+  letter-spacing: 5px;
+  margin-bottom: 80px;
+}
+
+.error {
+  font-family: "Saira";
+  letter-spacing: 2px;
+  /* border: 1px solid; */
+  border-color: rgb(28, 28, 28);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: rgb(255, 45, 45);
+  height: 80px;
+  text-align: center;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.lobby-container .timer {
+  font-family: "Tiny5";
+  font-size: 25px;
+}
+
+.assets {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 510px;
+  margin-bottom: 140px;
+}
+
+.assets .player-sprite {
+  background-image: url("../../../assets/player_sprite.png");
+  width: 70px;
+  height: 70px;
+  background-size: contain;
+}
+
+.assets .you-player {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+.blur {
+  opacity: 0.2;
+}
+
+.mobile {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(0, 0, 0);
+  position: absolute;
+  z-index: 10000;
+  visibility: hidden;
+  color: rgb(188, 188, 188);
+  font-family: "Saira";
+  letter-spacing: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  text-align: center;
+}
+
+@media (max-width: 620px) {
+  .mobile {
+    visibility: visible;
+  }
+}

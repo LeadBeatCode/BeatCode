@@ -1,0 +1,139 @@
+.quick-match-history-container {
+  width: 110%;
+  height: 60px;
+  margin-top: 60px;
+  margin-left: -22px;
+  user-select: none;
+  background-image: linear-gradient(
+    90deg,
+    rgba(253, 8, 61, 0.4) 0%,
+    rgba(17, 107, 105, 0.2) 60%,
+    rgba(61, 157, 247, 0.1) 90%,
+    transparent 100%
+  );
+}
+
+.quick-match-history-container.lose {
+  background-image: linear-gradient(
+    90deg,
+    rgba(253, 8, 61, 0.4) 0%,
+    rgba(184, 78, 126, 0.2) 60%,
+    rgba(164, 17, 46, 0.1) 90%,
+    transparent 100%
+  );
+}
+
+.quick-match-history-container.win {
+  background-image: linear-gradient(
+    90deg,
+    rgba(25, 116, 208, 0.3) 0%,
+    rgba(41, 255, 251, 0.3) 60%,
+    rgba(41, 255, 251, 0.1) 90%,
+    transparent 100%
+  );
+}
+
+.quick-match-history-content {
+  width: inherit;
+  height: inherit;
+  display: flex;
+  align-items: center;
+  margin-left: -10px;
+}
+
+.quick-match-history-content:first-child {
+  margin-left: 3px;
+}
+
+.user-info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+}
+
+.user-profile-image-container {
+  margin-top: 2px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  height: 28px;
+  width: 28px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.user-info {
+  margin-top: 2px;
+  font-size: 10px;
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.user-info .username {
+  max-width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-info .rank-image {
+  margin-right: 4px;
+  height: 20px;
+  width: 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.match-result-container {
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 2px;
+  margin-right: 5px;
+}
+
+.match-result-container .result {
+  font-weight: 700;
+  font-size: 24px;
+  height: 34px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.match-result-container .duration {
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: rgb(199, 199, 199);
+  text-transform: capitalize;
+}
+
+.duration .time {
+  margin-left: 3px;
+}
+
+.rank1 {
+  background-image: url(../../../assets/rank1.png);
+}
+
+.rank2 {
+  background-image: url(../../../assets/rank2.png);
+}
+
+.rank3 {
+  background-image: url(../../../assets/rank3.png);
+}
+
+.rank4 {
+  background-image: url(../../../assets/rank4.png);
+}
+
+.rank5 {
+  background-image: url(../../../assets/rank5.png);
+}

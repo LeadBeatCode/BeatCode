@@ -1,0 +1,55 @@
+<div class="contents-container">
+  <div class="btns">
+    <div class="btn" [ngClass]="{ active: problem }" (click)="showProblem()">
+      Problem
+    </div>
+    <div class="word-break">|</div>
+    <div
+      class="btn"
+      [ngClass]="{ active: testResult }"
+      (click)="showTestResult()"
+    >
+      Test Result
+    </div>
+  </div>
+  <div class="problem content" *ngIf="problem">
+    <h1 class="problem-title" [innerHTML]="problemTitle"></h1>
+    <div
+      class="problem-text"
+      [innerHTML]="sanitizer.bypassSecurityTrustHtml(problemText)"
+    ></div>
+  </div>
+  <!-- <div class="test-result content" *ngIf="!stderr && !stdout"> -->
+  <div class="loader" *ngIf="!stderr && !stdout && testResult"></div>
+  <!-- </div> -->
+  <div class="test-result content" *ngIf="testResult">
+    <div class="result-container">
+      <div class="testcases">
+        <span
+          class="correct"
+          [innerHTML]="correct_testcases"
+          *ngIf="!stderr"
+        ></span>
+        <span
+          class="total"
+          [innerHTML]="total_testcases"
+          *ngIf="!stderr"
+        ></span>
+      </div>
+      <div
+        class="last_testcase"
+        [innerHTML]="last_testcase"
+        *ngIf="!stderr"
+      ></div>
+      <div class="stdout" [innerHTML]="stdout" *ngIf="!stderr"></div>
+      <div
+        class="expected_output"
+        [innerHTML]="expected_output"
+        *ngIf="!stderr"
+      ></div>
+      <div [ngClass]="[resultStyle]" [innerHTML]="result" *ngIf="!stderr"></div>
+      <div class="stderr" [innerHTML]="stderr" *ngIf="stderr"></div>
+    </div>
+  </div>
+  <div class="resize-icon"></div>
+</div>

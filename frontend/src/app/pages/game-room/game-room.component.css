@@ -1,0 +1,391 @@
+.editors-container {
+  display: flex;
+  align-items: center;
+}
+
+.editors-container.reverse {
+  flex-direction: row-reverse;
+}
+
+.dark {
+  background-color: rgba(0, 0, 0, 0.99);
+  width: 100%;
+  z-index: 1000;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+}
+
+.dark::-webkit-scrollbar {
+  display: none;
+}
+
+.dark {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.game-summary-container {
+  display: flex;
+  letter-spacing: 1px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 16px 20px;
+  font-family: "Saira";
+  padding: 80px;
+  position: absolute;
+  background-color: rgb(17, 16, 16);
+  border-radius: 10px;
+  inset: 0;
+  margin: auto;
+  width: 58%;
+  height: 58%;
+  z-index: 100;
+}
+
+.game-summary-container .game-summary-header {
+  font-size: 40px;
+}
+
+.game-summary-container .vs {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.game-summary-container .game-detail-container {
+  color: rgb(196, 196, 196);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  border-top: 1px solid rgb(33, 33, 33);
+  border-bottom: 1px solid rgb(33, 33, 33);
+  padding: 10px;
+}
+
+.game-summary-container .exit-btn {
+  margin: 20px 0 -20px;
+  color: rgb(7, 195, 72);
+  font-size: 30px;
+  font-weight: 600;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.game-summary-container .exit-btn:hover {
+  color: rgb(6, 255, 6);
+}
+
+.game-detail-container > * {
+  margin: 0 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.game-detail-container .time-elapsed {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.player .image {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  background-color: rgb(31, 31, 31);
+}
+
+.game-summary-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 380px;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-summary-header {
+  font-size: 40px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: -20px;
+  margin-bottom: 30px;
+}
+
+.game-title {
+  text-align: center;
+}
+
+.player .title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.player .rank {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.game-detail-container .title {
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.editor-contaier-left {
+  margin-right: 10px;
+}
+
+.editor-contaier-left,
+.editor-contaier-right {
+  flex: 1;
+}
+
+.game-room-exit-btn {
+  background-image: url(../../../assets/exit_btn.png);
+  width: 36px;
+  height: 36px;
+  background-size: contain;
+  margin-right: 2px;
+}
+
+.game-room-exit-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 18px;
+  letter-spacing: 1px;
+  opacity: 0.8;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.game-room-exit-container:hover {
+  opacity: 1;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 20px;
+  font-family: "Saira";
+}
+
+.game-room-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  position: absolute;
+  left: 50%;
+  margin-left: -85px;
+}
+
+.game-room-header-container .time-elapsed {
+  color: rgb(192, 192, 192);
+  letter-spacing: 1px;
+  margin-left: 25px;
+}
+
+.header-container .submit-btn {
+  background-color: black;
+  color: white;
+  border: 1px solid rgb(6, 255, 6);
+  padding: 6px 12px 6px 6px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.header-container .submit-btn:hover {
+  color: rgb(6, 255, 6);
+}
+
+.editor-header-container {
+  display: flex;
+  align-items: center;
+  margin: 0 20px 16px 20px;
+}
+
+.lang {
+  font-size: 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: rgb(192, 192, 192);
+  padding: 6px 10px;
+  font-family: "Roboto", sans-serif;
+  letter-spacing: 1px;
+  background-color: rgb(31, 31, 31);
+}
+
+.lang-list {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-left: 10px;
+  padding: 0;
+  float: left;
+}
+
+.lang-choice {
+  float: left;
+  font-size: 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: rgb(192, 192, 192);
+  padding: 6px 10px;
+  font-family: "Roboto", sans-serif;
+  letter-spacing: 1px;
+  background-color: rgb(53, 51, 51);
+}
+
+.lang-choice.on {
+  cursor: pointer;
+}
+
+.lang.on {
+  background-color: rgb(31, 31, 31);
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+.hearts {
+  margin-left: auto;
+  display: flex;
+}
+
+.heart-container {
+  margin: 0 4px;
+  width: 20px;
+  height: 20px;
+}
+
+.heart {
+  background-image: url(../../../assets/heart.png);
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+}
+
+.lang-selector {
+  cursor: pointer;
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 150px;
+  z-index: 1000;
+}
+
+.dropdown-menu li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+.lang.active .dropdown-menu {
+  display: block;
+}
+
+.rank1 {
+  background-image: url(../../../assets/rank1.png);
+}
+
+.rank2 {
+  background-image: url(../../../assets/rank2.png);
+}
+
+.rank3 {
+  background-image: url(../../../assets/rank3.png);
+}
+
+.rank4 {
+  background-image: url(../../../assets/rank4.png);
+}
+
+.rank5 {
+  background-image: url(../../../assets/rank5.png);
+}
+
+.pve-class {
+  display: none;
+}
+
+.mobile {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(0, 0, 0);
+  position: absolute;
+  color: rgb(188, 188, 188);
+  font-family: "Saira";
+  letter-spacing: 1px;
+  z-index: 1000;
+  visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .editor-left,
+  .editor-right {
+    width: 240px;
+    height: 900px;
+  }
+
+  .editor-contaier-left,
+  .editor-contaier-right {
+    width: 240px;
+  }
+
+  .mobile {
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 620px) {
+  .mobile {
+    visibility: visible;
+  }
+}

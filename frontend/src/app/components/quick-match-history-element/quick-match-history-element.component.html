@@ -1,0 +1,31 @@
+<div class="quick-match-history-container" [ngClass]="result">
+  <div class="quick-match-history-content">
+    <div class="user-info-container">
+      <div
+        class="user-profile-image-container"
+        [ngStyle]="{ 'background-image': 'url(' + image + ')' }"
+      >
+        <div class="user-profile-image"></div>
+      </div>
+      <div class="user-info">
+        <div class="rank-image" [ngClass]="getRank(user1bp)"></div>
+        <div class="username">{{ nickname }}</div>
+      </div>
+    </div>
+    <div class="match-result-container">
+      <div class="result">{{ result }}</div>
+    </div>
+    <div class="user-info-container">
+      <div
+        class="user-profile-image-container"
+        [ngStyle]="{ 'background-image': 'url(' + opponentImage + ')' }"
+      >
+        <div class="user-profile-image"></div>
+      </div>
+      <div class="user-info">
+        <div class="rank-image" [ngClass]="getRank(user2bp)"></div>
+        <div class="username">{{ opponent }}</div>
+      </div>
+    </div>
+  </div>
+</div>

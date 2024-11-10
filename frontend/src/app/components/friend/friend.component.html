@@ -1,0 +1,14 @@
+<div class="friend">
+  <div class="friend-image-container">
+    <div class="friend-image" [style.background-image]="'url(' + image + ')'">
+      <div class="online-icon" [ngClass]="{ online: isOnline }"></div>
+    </div>
+  </div>
+  <div class="friend-info">
+    <div class="friend-name" [innerHTML]="name">User2</div>
+    <div class="friend-rank" [innerHTML]="rank">silver II</div>
+  </div>
+  <div class="friend-action-btns">
+    <div class="delete-friend-btn"></div>
+  </div>
+</div>
