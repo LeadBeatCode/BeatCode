@@ -132,3 +132,4 @@ dist
 # env files
 backend/.env
 frontend/.env
+frontend\src\environments\environment.ts

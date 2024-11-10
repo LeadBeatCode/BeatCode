@@ -13,7 +13,7 @@ import {
 })
 export class GptService {
   private chatgpt = new OpenAI({
-    apiKey: 'sk-proj-ExjG1m4cJ0VFYlJrE8fOT3BlbkFJ4n10ruuAMlW75HCsFuRr',
+    apiKey: environment.openaiApiKey,
     dangerouslyAllowBrowser: true,
   });
 
